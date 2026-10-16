@@ -215,3 +215,15 @@ with subject-specific TikZ diagrams and numerical field tools for its figures. T
 specialized extensions like these belong in each manual's own files
 (`mycommands.sty`, `myfigures.sty`, companion Lua files), not in
 `solution-manual/`.
+
+## License
+
+Copyright (c) 2026 P.O. Bolduc. The original framework, build scripts,
+documentation and examples in this repository are licensed under the
+[MIT License](LICENSE). You may reuse, modify and redistribute them, including
+commercially, provided you retain the copyright and license notices.
+
+Using this framework does not require you to license your own manual under
+MIT. Choose a license for your own content and clearly identify any material
+owned by others. Third-party packages and other dependencies retain their own
+licenses.

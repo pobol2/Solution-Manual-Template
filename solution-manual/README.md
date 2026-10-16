@@ -73,3 +73,11 @@ git submodule update --remote template
 
 Compile and review the manual, then commit the updated submodule reference in
 the manual's repository. Keep project customizations outside the submodule.
+
+## License
+
+The framework is licensed under the [MIT License](../LICENSE), copyright
+(c) 2026 P.O. Bolduc. Retain the copyright and license notices when
+redistributing it. If you copy this folder without the rest of the repository,
+include a copy of `../LICENSE` with it. Your manual's own content can use a
+different license.
