@@ -13,4 +13,6 @@ use File::Spec;
 my $shared = File::Spec->rel2abs("$framework_dir/latexmkrc");
 do $shared or die "Could not load $shared: ", ($@ || $!), "\n";
 
-# Project-specific latexmk settings can be added below.
+# Project-specific latexmk settings can be added below, e.g. the name of the
+# completion report copied to this folder ('' to keep it in build/ only):
+# $completion_report = 'COMPLETION.md';

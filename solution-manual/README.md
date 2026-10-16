@@ -33,6 +33,10 @@ The project then has, in its root:
   `mycommands.sty` and `myfigures.sty`;
 - `.gitignore` entries for `build/` and `Figures/*.pdf`.
 
+With completion tracking, the build also copies the report to `COMPLETION.md`
+in the project root (set `$completion_report` in the project's `latexmkrc` to
+rename it, or to `''` to keep it in `build/`).
+
 `latexmk` runs from the project root and adds this folder to `TEXINPUTS`, so
 `\documentclass{SolutionManual}` and `\documentclass{SolutionFigure}` work
 unchanged. All outputs (`build/`, `Figures/*.pdf`, the final PDF) stay in the

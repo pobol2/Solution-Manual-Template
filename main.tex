@@ -14,15 +14,19 @@
     % theme color=red!50!black,     % also set FigureAccent in myfigures.sty
     % layout={margin=25mm},         % any geometry options
     % problem on new page=false,
+    % problem numbering=subdivision, % chapter (default), subdivision or continuous
+    completion tracking=true,       % "Not done" markers, overview, COMPLETION.md
 }
 
 \begin{document}
 
 \maketitle
 \tableofcontents
+\completionoverview % needs completion tracking
 
 % One file per chapter
 \input{Chapters/1-Basics}
 \input{Chapters/2-Figures}
+\input{Chapters/3-Sections}
 
 \end{document}
