@@ -35,7 +35,31 @@ The project then has, in its root:
 
 With completion tracking, the build also copies the report to `COMPLETION.md`
 in the project root (set `$completion_report` in the project's `latexmkrc` to
-rename it, or to `''` to keep it in `build/`).
+rename it, or to `''` to keep it in `build/`). To put the report inside the
+project's `README.md` instead, set `$completion_readme`:
+
+```perl
+$framework_dir = 'template/solution-manual';
+
+use File::Spec;
+my $shared = File::Spec->rel2abs("$framework_dir/latexmkrc");
+do $shared or die "Could not load $shared: ", ($@ || $!), "\n";
+
+$completion_readme = 'README.md';  # the report goes between the markers
+$completion_report = '';           # optional: no separate COMPLETION.md
+```
+
+and add the two marker lines to `README.md` where the report goes, each alone
+on its line and outside code blocks:
+
+```markdown
+<!-- completion report: begin -->
+<!-- completion report: end -->
+```
+
+Each successful build replaces the text between them (the markers stay),
+keeping the file's line endings and rewriting it only when the report has
+changed. Without the markers, `latexmk` warns and leaves the file unchanged.
 
 `latexmk` runs from the project root and adds this folder to `TEXINPUTS`, so
 `\documentclass{SolutionManual}` and `\documentclass{SolutionFigure}` work

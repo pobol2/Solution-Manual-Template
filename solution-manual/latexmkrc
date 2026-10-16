@@ -52,6 +52,13 @@ $aux_dir  = 'build';
 # to '' in the project's latexmkrc to keep the report in build/ only).
 $completion_report = 'COMPLETION.md' unless defined $completion_report;
 
+# The report can also be put inside a Markdown file of the project (e.g.
+# 'README.md'), between the lines
+#   <!-- completion report: begin -->
+#   <!-- completion report: end -->
+# ('' for none; both options can be used together).
+$completion_readme = '' unless defined $completion_readme;
+
 # After a successful build, copy the final PDF to the project root, and the
 # completion report when it is not empty and has changed.
 $success_cmd = 'internal copy_pdf_to_root %D';
@@ -64,7 +71,75 @@ sub copy_pdf_to_root {
         copy($report, $completion_report)
             or warn "Could not copy $report to $completion_report: $!\n";
     }
+    sm_insert_report($report, $completion_readme)
+        if $completion_readme ne '' && -s $report;
     return 0;
+}
+
+# Replace the text between the completion report markers of the Markdown file
+# $file with the report $report, keeping the file's line endings. The file is
+# rewritten only when its content changes; problems only give a warning.
+sub sm_insert_report {
+    my ($report, $file) = @_;
+    my $begin = '<!-- completion report: begin -->';
+    my $end   = '<!-- completion report: end -->';
+    my $text = sm_read_file($file);
+    my $new  = sm_read_file($report);
+    return unless defined $text && defined $new;
+    # The marked text starts after the line of the begin marker and stops at
+    # the start of the line of the end marker. Each marker is alone on its
+    # line, outside fenced code blocks (where a README may document them).
+    my ($pos, $start, $stop, $fence) = (0);
+    for my $line (split /(?<=\n)/, $text) {
+        if (defined $fence) {
+            # Closed by a line of at least as many of the same characters
+            my $char = substr($fence, 0, 1);
+            undef $fence if $line =~ /^ {0,3}(\Q$char\E+)\s*$/
+                         && length($1) >= length($fence);
+        }
+        elsif ($line =~ /^ {0,3}(`{3,}|~{3,})/) {
+            $fence = $1;
+        }
+        elsif (!defined $start) {
+            $start = $pos + length($line) if $line =~ /^\s*\Q$begin\E\s*$/;
+        }
+        elsif ($line =~ /^\s*\Q$end\E\s*$/) {
+            $stop = $pos;
+            last;
+        }
+        $pos += length($line);
+    }
+    unless (defined $stop) {
+        warn "Completion report not inserted: $file needs the lines\n"
+           . "  $begin\n  $end\n";
+        return;
+    }
+    my $eol = $text =~ /\r\n/ ? "\r\n" : "\n";
+    $new =~ s/\r?\n/$eol/g;
+    $new =~ s/(?:$eol)*\z/$eol/;
+    my $updated = substr($text, 0, $start) . $eol . $new . $eol
+                . substr($text, $stop);
+    return if $updated eq $text;
+    if (open(my $out, '>:raw', $file)) {
+        print $out $updated;
+        close($out) or warn "Could not write $file: $!\n";
+    }
+    else {
+        warn "Completion report not inserted: could not write $file: $!\n";
+    }
+}
+
+# Content of $file as bytes, or undef (with a warning) if it cannot be read
+sub sm_read_file {
+    my $file = shift;
+    open(my $in, '<:raw', $file) or do {
+        warn "Completion report not inserted: could not read $file: $!\n";
+        return undef;
+    };
+    local $/;
+    my $text = <$in>;
+    close($in);
+    return defined $text ? $text : '';
 }
 
 # Normalized absolute path (forward slashes, no '.' segments), used to compare

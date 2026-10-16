@@ -263,6 +263,23 @@
         \vskip\dimen@ \penalty9999 \vskip-\dimen@ \vskip\z@skip
     \endgroup}
 
+% Section sign (§) in small caps (headings, titles, header): Computer Modern,
+% like many fonts, has none, so LaTeX uses the upright one with a warning.
+% Declare that substitution as silent for the main font of the document.
+\AtBeginDocument{%
+    \begingroup
+        \fontencoding{TS1}\fontfamily{\familydefault}\fontseries{m}\fontshape{n}%
+        \selectfont % loads the font definitions
+        \@for\@tempa:=m,b,bx\do{%
+            \ifcsname TS1/\familydefault/\@tempa/n\endcsname
+                \ifcsname TS1/\familydefault/\@tempa/sc\endcsname\else
+                    \edef\@tempb{\noexpand\DeclareFontShape{TS1}{\familydefault}%
+                        {\@tempa}{sc}{<->ssub*\familydefault/\@tempa/n}{}}%
+                    \@tempb
+                \fi
+            \fi}%
+    \endgroup}
+
 % Textbook numbers. \textbooknumber{\S 12} before \section{...} shows "§12"
 % for that section, its subsections (§12.1, ...) and references to it, until
 % the next section (likewise for a chapter or a subsection). The automatic
@@ -702,9 +719,10 @@
                 \SM@ovline{0pt}{}{\bfseries\scshape\SM@totallabel}{all}%
                 \medskip
                 \def\SM@ovindent{0pt}\SM@ovopenfalse
-                \expandafter\SM@walk\csname SM@\SM@ns @list\endcsname
+                % The last "Not done" line ends inside the walk, where its
+                % size and indent (set by \SM@ov@problem) are still in force
+                \SM@walk{\csname SM@\SM@ns @list\endcsname\par}%
                     \SM@ov@heading\SM@ov@problem
-                \par
             \endgroup
         \else
             \ClassWarningNoLine{SolutionManual}{Completion overview empty:

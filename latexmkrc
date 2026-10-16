@@ -16,3 +16,6 @@ do $shared or die "Could not load $shared: ", ($@ || $!), "\n";
 # Project-specific latexmk settings can be added below, e.g. the name of the
 # completion report copied to this folder ('' to keep it in build/ only):
 # $completion_report = 'COMPLETION.md';
+# or a Markdown file to insert the report into, between the lines
+# <!-- completion report: begin --> and <!-- completion report: end -->:
+# $completion_readme = 'README.md';

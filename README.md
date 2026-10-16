@@ -43,7 +43,8 @@ run the same command with the same options, from `latexmkrc`:
   framework that it reads (`SolutionFigure.cls`, `myfigures.sty`, an `\input`
   data file, ...), changes; unchanged figures are reused;
 - the finished PDF is copied to the project root, with the completion report
-  `COMPLETION.md` when [completion tracking](#completion-tracking) is on.
+  `COMPLETION.md` when [completion tracking](#completion-tracking) is on (the
+  report can also be [inserted into a README](#report-in-a-readme)).
 
 | Location             | Contents                                                    |
 | -------------------- | ----------------------------------------------------------- |
@@ -228,9 +229,10 @@ complete after a single compilation.
 ### Markdown report
 
 The build also writes `COMPLETION.md` in the project root, from the same data:
-a summary line and a table to link from, or paste into, a repository README
-(see the example's [`COMPLETION.md`](COMPLETION.md)). There is no list or count
-to maintain: run `latexmk` to refresh the PDF and the report.
+a summary line and a table to link from a repository README, or to
+[insert into it](#report-in-a-readme) (see the example's
+[`COMPLETION.md`](COMPLETION.md)). There is no list or count to maintain: run
+`latexmk` to refresh the PDF and the report.
 
 The report reflects the latest compilation. The contents markers, the markers
 of problems with parts and an overview at the start of the manual use the
@@ -241,6 +243,31 @@ copied to the root when it has changed. To keep it in `build/` only, add
 `$completion_report = '';` to the project's `latexmkrc`; give another file name
 to rename it. Turning completion tracking off leaves the last `COMPLETION.md`
 in place: delete it if it is no longer wanted.
+
+### Report in a README
+
+The build can also put the report inside a Markdown file, such as the
+project's `README.md`. Add these two lines where the report goes:
+
+```markdown
+<!-- completion report: begin -->
+<!-- completion report: end -->
+```
+
+and name the file in the project's `latexmkrc`:
+
+```perl
+$completion_readme = 'README.md';  # the report goes between the markers
+$completion_report = '';           # optional: no separate COMPLETION.md
+```
+
+After each successful build, the text between the markers is replaced with the
+report; the markers stay. Each marker must be alone on its line; markers in
+fenced code blocks, like the ones above, are ignored. The file keeps its line
+endings and is rewritten only when the report has changed. If a marker is
+missing, `latexmk` warns and leaves the file unchanged; the build still
+succeeds. `$completion_report` works as before, so without
+`$completion_report = ''` the build writes both.
 
 ## Customization
 
@@ -294,6 +321,13 @@ effective text size, or review the layout after choosing a larger size.
 
 **Packages and commands** go in `mypackages.sty` and `mycommands.sty`, which
 `main.tex` loads.
+
+**Build settings** go at the end of the project's `latexmkrc`:
+
+| Variable             | Default                                                   |
+| -------------------- | --------------------------------------------------------- |
+| `$completion_report` | `'COMPLETION.md'` (copy of the report; `''` for none)      |
+| `$completion_readme` | `''` (Markdown file to [insert the report into](#report-in-a-readme), e.g. `'README.md'`) |
 
 ## Figures
 
