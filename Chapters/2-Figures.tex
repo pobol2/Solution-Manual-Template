@@ -1,0 +1,136 @@
+\chapter{Figures and References}
+
+% ============ Problem 1 ============ %
+% Subproblems sharing one figure (Figures/Tangent.tex).
+
+\begin{problem}
+{
+Consider the function $f(x) = \frac{1}{4} x^2 + \frac{1}{2}$, shown in
+\figref{fig:tangent}, and the point $P = (3, f(3))$ on its graph.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Tangent.pdf}
+    \caption{Graph of $f$, its tangent at $P$ and the area $A$.}
+    \label{fig:tangent}
+\end{figure}
+}{}{}
+\end{problem}
+
+\begin{subproblem}
+{
+Find the slope of the tangent at $P$ and the angle $\theta$ that it makes
+with the $x$ axis.
+}
+{
+The derivative is
+\begin{align*}
+    \deriv{f}{x} &= \frac{x}{2},
+\end{align*}
+so the slope at $x = 3$ is $f'(3) = 3/2$. In the slope triangle of
+\figref{fig:tangent}, $\Delta y / \Delta x = \tan\theta$, hence
+$\theta = \arctan(3/2)$.
+}
+{
+Slope $3/2$, and $\theta = \arctan(3/2) \approx 56.31^\circ$.
+}
+\end{subproblem}
+
+\begin{subproblem}
+{
+Find the equation of the tangent at $P$.
+}
+{
+Since $f(3) = \frac{9}{4} + \frac{1}{2} = \frac{11}{4}$, the line through $P$
+with slope $3/2$ is
+\begin{align*}
+    y &= \frac{11}{4} + \frac{3}{2}(x - 3) = \frac{3}{2} x - \frac{7}{4}.
+\end{align*}
+}
+{
+$y = \frac{3}{2} x - \frac{7}{4}$.
+}
+\end{subproblem}
+
+\begin{subproblem}
+{
+Find the area $A$ under the graph of $f$ between $x = \frac{1}{2}$ and
+$x = \frac{3}{2}$.
+}
+{
+\begin{align*}
+    A &= \int_{1/2}^{3/2} \left( \frac{x^2}{4} + \frac{1}{2} \right) \dd x
+       = \left[ \frac{x^3}{12} + \frac{x}{2} \right]_{1/2}^{3/2}
+       = \frac{27 - 1}{96} + \frac{1}{2}
+       = \frac{13}{48} + \frac{24}{48}.
+\end{align*}
+}
+{
+$A = \frac{37}{48} \approx 0.771$.
+}
+\end{subproblem}
+
+% ============ Problem 2 ============ %
+% A figure and a table in the solution.
+
+\begin{problem}
+{
+Use Euclid's algorithm (\figref{fig:euclid}) to find the greatest common
+divisor of $84$ and $36$.
+}
+{
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Euclid.pdf}
+    \caption{Euclid's algorithm.}
+    \label{fig:euclid}
+\end{figure}
+Starting from $a = 84$ and $b = 36$, each step replaces $(a, b)$ by
+$(b, a \bmod b)$:
+\begin{center}
+    \begin{tabular}{cccc}
+        \toprule
+        Step & $a$ & $b$ & $r = a \bmod b$ \\
+        \midrule
+        1 & 84 & 36 & 12 \\
+        2 & 36 & 12 & 0 \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+The remainder is zero at step 2, so the algorithm outputs $b = 12$. Indeed
+$84 = 7 \cdot 12$ and $36 = 3 \cdot 12$, with $\gcd(7, 3) = 1$.
+}
+{
+$\gcd(84, 36) = 12$.
+}
+\end{problem}
+
+% ============ Problem 3 ============ %
+% References to problems, subproblems and equations of another chapter.
+
+\begin{problem}
+{
+For which $n$ does the sum $S_n$ of Problem~\ref{prob:odd-sum} satisfy
+$S_n = 5n - 6$?
+}
+{
+By part~\ref{prob:odd-sum-guess} (proved in \probref{1}{2}), $S_n = n^2$, so
+the condition becomes $n^2 - 5n + 6 = 0$. This is the equation of
+\probref{1}{1}, whose factorization \eqref{eq:quadratic-factored} gives
+$n = 2$ or $n = 3$. Both are positive integers, and indeed $S_2 = 4 = 5 \cdot 2 - 6$
+and $S_3 = 9 = 5 \cdot 3 - 6$.
+}
+{
+$n = 2$ or $n = 3$.
+}
+\end{problem}
+
+% ============ Problem 4 ============ %
+% A question without solution and answer (an exercise left to the reader).
+
+\begin{problem}
+{
+Show that the sum of the first $n$ even numbers, $2 + 4 + \dots + 2n$, is
+$n(n + 1)$. (Hint: compare it with $S_n$, or use induction as in
+\eqref{eq:odd-sum-induction}.)
+}{}{}
+\end{problem}

@@ -1,0 +1,17 @@
+% Packages, colors and TikZ styles of the standalone figures in Figures/.
+% Loaded by SolutionFigure.cls; a change here rebuilds every figure.
+\ProvidesPackage{myfigures}
+
+% Packages used in figure labels (the math packages of mypackages.sty)
+\RequirePackage{amsmath}
+
+% Keep FigureAccent equal to the theme color of the manual, e.g. after
+% \SolutionManualSetup{theme color=blue!50!black} in main.tex:
+% \colorlet{FigureAccent}{blue!50!black}
+
+% Project styles (an example, used in Figures/Tangent.tex)
+\tikzset{
+    tangent/.style={highlight, shorten <=-4mm, shorten >=-4mm},
+}
+
+\endinput

@@ -1,0 +1,124 @@
+\chapter{Basic Problems}
+
+% ============ Problem 1 ============ %
+% An ordinary problem: question, solution and answer.
+
+\begin{problem}
+{
+Solve the equation $x^2 - 5x + 6 = 0$.
+}
+{
+We look for two numbers whose sum is $5$ and whose product is $6$: they are $2$
+and $3$, so the polynomial factors as
+\begin{align}
+    x^2 - 5x + 6 &= (x - 2)(x - 3). \label{eq:quadratic-factored}
+\end{align}
+A product is zero only when one of its factors is zero, so $x - 2 = 0$ or
+$x - 3 = 0$. As a check, the quadratic formula gives the same roots:
+\begin{align*}
+    x &= \frac{5 \pm \sqrt{5^2 - 4 \cdot 6}}{2} = \frac{5 \pm 1}{2}.
+\end{align*}
+}
+{
+$x = 2$ or $x = 3$.
+}
+\end{problem}
+
+% ============ Problem 2 ============ %
+% A problem in several parts: the main question has no solution and no answer
+% ({}{}), and each subproblem may omit its solution or its answer.
+
+\begin{problem}
+{
+Let $S_n = 1 + 3 + 5 + \dots + (2n - 1)$ be the sum of the first $n$ odd
+numbers.\label{prob:odd-sum}
+}{}{}
+\end{problem}
+
+\begin{subproblem}
+{
+Compute $S_1$, $S_2$, $S_3$ and $S_4$, and guess a formula for $S_n$.
+\label{prob:odd-sum-guess}
+}
+{
+Adding one odd number at a time,
+\begin{align*}
+    S_1 &= 1, & S_2 &= 1 + 3 = 4, & S_3 &= 4 + 5 = 9, & S_4 &= 9 + 7 = 16.
+\end{align*}
+These are the squares of $1$, $2$, $3$ and $4$.
+}
+{
+$S_n = n^2$.
+}
+\end{subproblem}
+
+\begin{subproblem}
+{
+Prove the formula of part (a) by induction.
+}
+{
+For $n = 1$, $S_1 = 1 = 1^2$. If $S_n = n^2$ for some $n \ge 1$, then
+\begin{align}
+    S_{n+1} &= S_n + (2n + 1) = n^2 + 2n + 1 = (n + 1)^2,
+    \label{eq:odd-sum-induction}
+\end{align}
+so the formula also holds for $n + 1$, and by induction for every $n \ge 1$.
+This part is a proof, so it has no answer box.
+}
+{}
+\end{subproblem}
+
+\begin{subproblem}
+{
+Evaluate $S_{10}$.
+}
+{}
+{
+$S_{10} = 10^2 = 100$ (no solution is needed, so only the answer is given).
+}
+\end{subproblem}
+
+\begin{subproblem}
+{
+How many consecutive odd numbers, starting from $1$, must be added for the sum
+to exceed $1000$?
+}
+{
+We need the smallest $n$ with $n^2 > 1000$, that is $n > \sqrt{1000} \approx
+31.6$. Indeed $31^2 = 961 \le 1000$ while $32^2 = 1024 > 1000$.
+}
+{
+$32$ odd numbers.
+}
+\end{subproblem}
+
+% ============ Problem 3 ============ %
+% A problem with a standalone TikZ figure (Figures/RightTriangle.tex).
+
+\begin{problem}
+{
+A right triangle has legs $a = 3$ and $b = 4$, as shown in \figref{fig:triangle}.
+Find the length of the hypotenuse $c$ and the angle $\theta$ opposite the
+leg $a$.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/RightTriangle.pdf}
+    \caption{Right triangle with legs $a$ and $b$.}
+    \label{fig:triangle}
+\end{figure}
+}
+{
+By the Pythagorean theorem,
+\begin{align*}
+    c &= \sqrt{a^2 + b^2} = \sqrt{9 + 16} = 5.
+\end{align*}
+The leg $a$ is opposite $\theta$ and the leg $b$ is adjacent to it, so
+\begin{align*}
+    \tan\theta &= \frac{a}{b} = \frac{3}{4},
+    & \theta &= \arctan\frac{3}{4} \approx 36.87^\circ.
+\end{align*}
+}
+{
+$c = 5$ and $\theta = \arctan(3/4) \approx 36.87^\circ$.
+}
+\end{problem}

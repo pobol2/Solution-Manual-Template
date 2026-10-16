@@ -1,6 +1,35 @@
-# ignore ALL .aux .log .out .toc .synctex.gz files
+# All compilation files go in build/; the final PDF is copied to the root.
+build/
+
+# Safety net for compilation outside latexmk.
 *.aux
 *.log
 *.out
 *.toc
+*.fls
+*.fdb_latexmk
+*.synctex
 *.synctex.gz
+*.synctex(busy)
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+
+# Editor / OS files.
+.vscode/*
+!.vscode/settings.json
+*~
+*.bak
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Standalone TikZ figure PDFs are generated from Figures/*.tex.
+Figures/*.pdf

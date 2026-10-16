@@ -1,22 +1,28 @@
+% Class options (font size, ...) are passed to the report class.
 \documentclass[12pt]{SolutionManual}
 
-\usepackage{mypackages} % put your packages in the file mypackages.sty
-\usepackage{mycommands} % put your commands in the file mycommands.sty
+\usepackage{mypackages} % packages of this manual
+\usepackage{mycommands} % commands of this manual
 
-\def \authorName{Name} % name of the author
-
-% Some books have two titles (if not just put in \mainTitle)
-\def \firstTitle{First Title}
-\def \mainTitle{Main Title}
+% Titles, author and appearance (every key is listed in README.md). The older
+% form \def\authorName{...}, \def\firstTitle{...}, \def\mainTitle{...} also works.
+\SolutionManualSetup{
+    author={Your Name},
+    title={Main Title of the Book},
+    subtitle={Subtitle or Series},  % leave empty, or remove, for a single title
+    % title prefix={Solutions to},
+    % theme color=red!50!black,     % also set FigureAccent in myfigures.sty
+    % layout={margin=25mm},         % any geometry options
+    % problem on new page=false,
+}
 
 \begin{document}
 
-\maketitle % insert title page
-\tableofcontents % insert table of content
+\maketitle
+\tableofcontents
 
-% Put the solutions of each chapter in separate files and use \input{}
-\input{Chapters/1-First}
-\input{Chapters/2-Second}
-
+% One file per chapter
+\input{Chapters/1-Basics}
+\input{Chapters/2-Figures}
 
 \end{document}

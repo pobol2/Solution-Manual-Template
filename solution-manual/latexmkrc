@@ -1,0 +1,118 @@
+# Shared latexmk rules of the solution-manual framework: do not edit them in a
+# project. They are loaded by the project's latexmkrc, which sets
+# $framework_dir (the folder of this file, relative to the project root).
+# latexmk runs from the project root, so every output stays in the project.
+
+use Cwd qw(getcwd abs_path);
+use File::Basename;
+use File::Copy;
+use File::Path qw(make_path);
+
+$framework_dir = 'solution-manual' unless defined $framework_dir;
+
+# Absolute path in the form understood by the TeX programs: a Perl from MSYS
+# (Git Bash) or Cygwin returns /c/..., /cygdrive/c/... or /tmp/..., but MiKTeX
+# needs C:/...
+my %sm_native_cache;
+sub sm_native_path {
+    my $path = shift;
+    $path =~ s{\\}{/}g;
+    return $path unless $^O =~ /^(cygwin|msys)$/ && $path =~ m{^/};
+    unless (exists $sm_native_cache{$path}) {
+        my $native = `cygpath -m "$path" 2>/dev/null`;
+        chomp $native;
+        unless ($? == 0 && $native =~ m{^[A-Za-z]:/}) {
+            ($native = $path) =~ s{^(?:/cygdrive)?/([A-Za-z])(/|$)}{$1:/};
+        }
+        $sm_native_cache{$path} = $native;
+    }
+    return $sm_native_cache{$path};
+}
+
+# Find SolutionManual.cls and SolutionFigure.cls in the framework folder
+# (for both pdfLaTeX and the LuaLaTeX figure compilations).
+ensure_path('TEXINPUTS', sm_native_path(abs_path($framework_dir)));
+
+# Compile the manual with pdfLaTeX. The options are set here (not by the
+# editor), so a terminal build and a VS Code build are identical, SyncTeX
+# included.
+$pdf_mode = 1;
+set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error %O %S');
+
+# Put every compilation file (aux, log, toc, synctex, pdf, ...) in build/
+$out_dir  = 'build';
+$aux_dir  = 'build';
+
+# After a successful build, copy only the final PDF to the project root
+$success_cmd = 'internal copy_pdf_to_root %D';
+sub copy_pdf_to_root {
+    my $pdf = shift;
+    copy($pdf, basename($pdf)) or warn "Could not copy $pdf to root: $!\n";
+    return 0;
+}
+
+# Normalized absolute path (forward slashes, no '.' segments), used to compare
+# the paths written in .fls files.
+sub sm_normalize_path {
+    my $path = shift;
+    $path =~ s{\\}{/}g;
+    $path = sm_native_path($path) if $path =~ m{^/};
+    $path = sm_native_path(getcwd()) . "/$path" unless $path =~ m{^[A-Za-z]:|^/};
+    1 while $path =~ s{/\./}{/};
+    $path =~ s{/+}{/}g;
+    $path =~ s{/$}{};
+    return $path;
+}
+
+# True if $path is $dir or inside it (case-insensitive on Windows)
+sub sm_is_inside {
+    my ($path, $dir) = @_;
+    ($path, $dir) = (lc($path), lc($dir)) if $^O =~ /^(MSWin32|cygwin|msys)$/;
+    return $path eq $dir || index($path, "$dir/") == 0;
+}
+
+# TikZ figures: each Figures/<name>.tex is a standalone LuaLaTeX document (using
+# SolutionFigure.cls) compiled to Figures/<name>.pdf (intermediate files go in
+# build/figures-aux). latexmk only reruns this when <name>.tex, or a project or
+# framework file it reads (e.g. SolutionFigure.cls, myfigures.sty), changes or
+# when the PDF is missing.
+add_cus_dep('tex', 'pdf', 0, 'compile_figure');
+sub compile_figure {
+    my $base = shift;
+    my $name = basename($base);
+    my $dir  = "$out_dir/figures-aux";
+    make_path($dir);
+    my $ret = system('lualatex', '-interaction=nonstopmode', '-halt-on-error', '-recorder',
+                     "-output-directory=$dir", "$base.tex");
+    if ($ret) {
+        warn "Figure $base.tex failed to compile: see $dir/$name.log\n";
+        return $ret;
+    }
+    copy("$dir/$name.pdf", "$base.pdf") or die "Could not copy $dir/$name.pdf: $!\n";
+
+    # Register the files read by the figure as extra sources, so that the figure
+    # is rebuilt when one of them changes. Only files of the project and of the
+    # framework are tracked (not the TeX distribution, nor build outputs).
+    my $root      = sm_normalize_path(getcwd());
+    my $framework = sm_normalize_path(abs_path($framework_dir));
+    my $build     = sm_normalize_path($out_dir);
+    my $source    = sm_normalize_path("$base.tex");
+    if (open(my $fls, '<', "$dir/$name.fls")) {
+        while (<$fls>) {
+            next unless /^INPUT\s+(.+?)\s*$/;
+            my $file = sm_normalize_path($1);
+            next if sm_is_inside($file, $source) || sm_is_inside($file, $build);
+            if (sm_is_inside($file, $root)) {
+                # Project files are named relative to the root, as latexmk does
+                rdb_ensure_file($rule, substr($file, length($root) + 1));
+            }
+            elsif (sm_is_inside($file, $framework)) {
+                rdb_ensure_file($rule, $file);
+            }
+        }
+        close($fls);
+    }
+    return 0;
+}
+
+1;

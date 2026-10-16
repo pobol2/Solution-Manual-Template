@@ -1,0 +1,19 @@
+% !TEX root = ../main.tex
+% Flowchart of Euclid's algorithm (Problem 2.2)
+\documentclass[12pt]{SolutionFigure} % same font size as main.tex
+
+\begin{document}
+\begin{tikzpicture}[node distance=7mm and 12mm]
+    \node[diagram node] (input) {Input $a \ge b > 0$};
+    \node[diagram node, below=of input] (divide) {$r \gets a \bmod b$};
+    \node[decision node, below=of divide] (test) {$r = 0$?};
+    \node[diagram node, below=of test] (output) {Output $b$};
+    \node[diagram node, right=of test] (update) {$a \gets b$\\ $b \gets r$};
+
+    \draw[diagram arrow] (input) -- (divide);
+    \draw[diagram arrow] (divide) -- (test);
+    \draw[diagram arrow] (test) -- node[annotation, right] {yes} (output);
+    \draw[diagram arrow] (test) -- node[annotation, above] {no} (update);
+    \draw[diagram arrow] (update) |- (divide);
+\end{tikzpicture}
+\end{document}

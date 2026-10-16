@@ -1,0 +1,35 @@
+% !TEX root = ../main.tex
+% Graph of f(x) = x^2/4 + 1/2 with its tangent at x = 3 and the area A under
+% the curve between x = 1/2 and x = 3/2 (Problem 2.1)
+\documentclass[12pt]{SolutionFigure} % same font size as main.tex
+
+\begin{document}
+\begin{tikzpicture}[scale=1.2, declare function={f(\x) = 0.25*\x*\x + 0.5;}]
+    % Grid and axes
+    \draw[grid lines] (0, 0) grid (4.5, 5);
+    \draw[axis] (0, 0) -- (4.8, 0) node[axis label, right] {$x$};
+    \draw[axis] (0, 0) -- (0, 5.3) node[axis label, above] {$y$};
+    \foreach \x in {1, 2, 3, 4}
+        \draw[tick] (\x, 0) -- (\x, -0.08) node[axis label, below] {$\x$};
+
+    % Area under the curve
+    \fill[region] (0.5, 0) -- plot[domain=0.5:1.5, samples=20] (\x, {f(\x)}) -- (1.5, 0) -- cycle;
+    \node at (1, 0.4) {$A$};
+
+    % Curve
+    \draw[curve, domain=0:4.2, samples=50] plot (\x, {f(\x)}) node[right] {$y = f(x)$};
+
+    % Tangent at P = (3, f(3)), of slope f'(3) = 3/2, and its slope triangle
+    \coordinate (P) at (3, {f(3)});
+    \coordinate (A) at (2, {f(3) - 1.5});
+    \coordinate (B) at (3, {f(3) - 1.5});
+    \draw[tangent] (A) -- (P);
+    \draw[guide] (A) -- (B) -- (P);
+    \draw pic[angle arc, "$\theta$"] {angle = B--A--P};
+    \draw[dimension] ([yshift=-3mm]A) -- node[below] {$\Delta x$} ([yshift=-3mm]B);
+    \draw[dimension] ([xshift=3mm]B) -- node[right] {$\Delta y$} ([xshift=3mm]P);
+    \node[point, label=above left:$P$] at (P) {};
+
+    \node[annotation] at (3.3, 0.45) {slope $= \Delta y / \Delta x$};
+\end{tikzpicture}
+\end{document}
