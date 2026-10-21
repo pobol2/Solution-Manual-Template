@@ -1,4 +1,4 @@
-% Packages, colors and TikZ styles of the standalone figures in Figures/.
+% Packages, colors and TikZ/PGFPlots styles of standalone figures in Figures/.
 % Loaded by SolutionFigure.cls; a change here rebuilds every figure.
 \ProvidesPackage{myfigures}
 
@@ -13,5 +13,8 @@
 \tikzset{
     tangent/.style={highlight, shorten <=-4mm, shorten >=-4mm},
 }
+% Shared defaults for all plots; local axis options still take precedence.
+% \pgfplotsset{plot axes/.append style={width=10cm, height=6cm}}
+% \tikzset{node distance=8mm and 14mm} % shared diagram spacing
 
 \endinput

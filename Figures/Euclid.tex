@@ -3,7 +3,7 @@
 \documentclass[12pt]{SolutionFigure} % same font size as main.tex
 
 \begin{document}
-\begin{tikzpicture}[node distance=7mm and 12mm]
+\begin{tikzpicture} % node spacing comes from SolutionFigure
     \node[diagram node] (input) {Input $a \ge b > 0$};
     \node[diagram node, below=of input] (divide) {$r \gets a \bmod b$};
     \node[decision node, below=of divide] (test) {$r = 0$?};

@@ -7,7 +7,7 @@ their own files and never edit this folder.
 | File                   | Purpose                                                     |
 | ---------------------- | ----------------------------------------------------------- |
 | `SolutionManual.cls`   | Class of the manual (pdfLaTeX)                              |
-| `SolutionFigure.cls`   | Class of the standalone TikZ figures (LuaLaTeX)             |
+| `SolutionFigure.cls`   | Class of the standalone TikZ/PGFPlots figures (LuaLaTeX)    |
 | `latexmkrc`            | Build rules, loaded by the project's `latexmkrc`            |
 | `vscode-settings.json` | LaTeX Workshop settings, to copy to `.vscode/settings.json` |
 
@@ -33,33 +33,9 @@ The project then has, in its root:
   `mycommands.sty` and `myfigures.sty`;
 - `.gitignore` entries for `build/` and `Figures/*.pdf`.
 
-With completion tracking, the build also copies the report to `COMPLETION.md`
-in the project root (set `$completion_report` in the project's `latexmkrc` to
-rename it, or to `''` to keep it in `build/`). To put the report inside the
-project's `README.md` instead, set `$completion_readme`:
-
-```perl
-$framework_dir = 'template/solution-manual';
-
-use File::Spec;
-my $shared = File::Spec->rel2abs("$framework_dir/latexmkrc");
-do $shared or die "Could not load $shared: ", ($@ || $!), "\n";
-
-$completion_readme = 'README.md';  # the report goes between the markers
-$completion_report = '';           # optional: no separate COMPLETION.md
-```
-
-and add the two marker lines to `README.md` where the report goes, each alone
-on its line and outside code blocks:
-
-```markdown
-<!-- completion report: begin -->
-<!-- completion report: end -->
-```
-
-Each successful build replaces the text between them (the markers stay),
-keeping the file's line endings and rewriting it only when the report has
-changed. Without the markers, `latexmk` warns and leaves the file unchanged.
+With completion tracking, the build copies the report to `COMPLETION.md`.
+See [build settings](../README.md#customization) to rename or disable it, or
+[report in a README](../README.md#report-in-a-readme) to embed it in a Markdown file.
 
 `latexmk` runs from the project root and adds this folder to `TEXINPUTS`, so
 `\documentclass{SolutionManual}` and `\documentclass{SolutionFigure}` work

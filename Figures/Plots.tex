@@ -1,0 +1,42 @@
+% !TEX root = ../main.tex
+% Curves, legends, subplots and CSV input in one example (Problem 2.5).
+\documentclass[12pt]{SolutionFigure} % same font size as main.tex
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{groupplot}[
+        subplot grid, % two 6 x 4 cm panels with shared fonts and 15 mm spacing
+        xlabel={$x$}, ylabel={$y$},
+        group style={ylabels at=all}, % label both panels: their scales differ
+        legend pos=north west,
+    ]
+        \nextgroupplot[
+            title={(a) Functions},
+            domain=0:1,
+            xmin=0, xmax=1, ymin=0, ymax=1,
+            xtick={0, 0.5, 1}, ytick={0, 0.5, 1},
+            legend columns=2,
+        ]
+            % The shared cycle supplies colors, line patterns and thicknesses.
+            % Use \addplot+[...] to keep the cycle when adding curve options.
+            \addplot {x};       \addlegendentry{$x$}
+            \addplot {x^2};     \addlegendentry{$x^2$}
+            \addplot {x^3};     \addlegendentry{$x^3$}
+            \addplot {sqrt(x)}; \addlegendentry{$\sqrt{x}$}
+
+        \nextgroupplot[
+            title={(b) Observations},
+            xmin=0, xmax=4, ymin=0, ymax=10,
+            xtick={0, 2, 4}, ytick={0, 5, 10},
+            grid=none, % local options override the shared defaults
+        ]
+            % CSV paths are relative to the project root, where latexmk runs.
+            % Select columns by header name; changing the CSV rebuilds the PDF.
+            \addplot table[col sep=comma, x=x, y=reference] {Figures/Data/Linear.csv};
+            \addlegendentry{$2x + 1$}
+            \addplot[plot points] table[col sep=comma, x=x, y=measured]
+                {Figures/Data/Linear.csv};
+            \addlegendentry{Observations}
+    \end{groupplot}
+\end{tikzpicture}
+\end{document}

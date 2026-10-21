@@ -162,8 +162,8 @@ sub sm_is_inside {
     return $path eq $dir || index($path, "$dir/") == 0;
 }
 
-# TikZ figures: each Figures/<name>.tex is a standalone LuaLaTeX document (using
-# SolutionFigure.cls) compiled to Figures/<name>.pdf (intermediate files go in
+# Figures/<name>.tex is a standalone LuaLaTeX document (using SolutionFigure.cls)
+# compiled to Figures/<name>.pdf (intermediate files go in
 # build/figures-aux). latexmk only reruns this when <name>.tex, or a project or
 # framework file it reads (e.g. SolutionFigure.cls, myfigures.sty), changes or
 # when the PDF is missing.

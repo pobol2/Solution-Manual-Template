@@ -31,5 +31,5 @@ Thumbs.db
 desktop.ini
 .DS_Store
 
-# Standalone TikZ figure PDFs are generated from Figures/*.tex.
+# Standalone figure PDFs are generated from Figures/*.tex.
 Figures/*.pdf

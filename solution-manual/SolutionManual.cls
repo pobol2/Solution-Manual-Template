@@ -3,7 +3,7 @@
 %
 % ============ Identification ============ %
 \NeedsTeXFormat{LaTeX2e}[2022/06/01] % mark classes, command hooks
-\ProvidesClass{SolutionManual}[2026/10/16 Solution Manual Template]
+\ProvidesClass{SolutionManual}[2026/10/21 Solution Manual Template]
 
 % Shared class of the solution-manual framework: do not edit it in a project.
 % Customize a manual from its preamble instead, with \SolutionManualSetup{...},
@@ -45,6 +45,7 @@
 \newcommand*{\SM@problemlabel}{Problem}
 \newcommand*{\SM@solutionlabel}{Solution:}
 \newcommand*{\SM@answerlabel}{Answer to Problem}
+\newcommand*{\SM@verificationlabel}{Verification:}
 \newcommand*{\SM@footer}{%
     \SM@titleprefix~\mainTitle
     \SM@ifnotblank{\authorName}{~by \authorName}}
@@ -92,6 +93,7 @@
     problem label/.code={\def\SM@problemlabel{#1}},
     solution label/.code={\def\SM@solutionlabel{#1}},
     answer label/.code={\def\SM@answerlabel{#1}},
+    verification label/.code={\def\SM@verificationlabel{#1}},
     chapter abbreviation/.code={\def\SM@chapabbrev{#1}},
     section abbreviation/.code={\def\SM@secabbrev{#1}},
     problem abbreviation/.code={\def\SM@probabbrev{#1}},
@@ -458,14 +460,15 @@
                          title=\scshape \SM@answerlabel{} \theProblemNum~\theSubProblemNum.
                          }
 
-% Solution and answer of a problem or subproblem; each one is omitted when
-% its argument is empty or blank.
+% Solution, answer and verification; omitted when their arguments are blank.
 % #1 = Solution
 % #2 = Answer
-% #3 = Answer environment (answer or subanswer)
-\newcommand{\SM@solutionandanswer}[3]{%
+% #3 = Verification
+% #4 = Answer environment (answer or subanswer)
+\newcommand{\SM@response}[4]{%
     \SM@ifblank{#1}{}{\solution #1\par}%
-    \SM@ifblank{#2}{}{\begin{#3}#2\end{#3}}%
+    \SM@ifblank{#2}{}{\begin{#4}#2\end{#4}}%
+    \SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\par}%
 }
 
 % Running header: the last problem started on the page (mark class SMproblem;
@@ -480,7 +483,8 @@
 % #2 = Question
 % #3 = Solution (optional: leave empty)
 % #4 = Answer (optional: leave empty)
-\newenvironment{problem}[4][]
+% #5 = Verification (optional, after the answer)
+\NewDocumentEnvironment{problem}{O{} +m +m +m +O{}}
 {%
     \SM@finishproblem
     \SM@readstatus{#1}%
@@ -508,7 +512,7 @@
     \begin{question}
         #2
     \end{question}
-    \SM@solutionandanswer{#3}{#4}{answer}%
+    \SM@response{#3}{#4}{#5}{answer}%
 }{\par}
 
 % Wrapper for subproblems, after a problem
@@ -516,7 +520,8 @@
 % #2 = Question
 % #3 = Solution (optional: leave empty)
 % #4 = Answer (optional: leave empty)
-\newenvironment{subproblem}[4][]
+% #5 = Verification (optional, after the answer)
+\NewDocumentEnvironment{subproblem}{O{} +m +m +m +O{}}
 {%
     \par
     \refstepcounter{SubProblemNum}%
@@ -525,7 +530,7 @@
     \begin{subquestion}
         #2
     \end{subquestion}
-    \SM@solutionandanswer{#3}{#4}{subanswer}%
+    \SM@response{#3}{#4}{#5}{subanswer}%
 }{\par}
 
 % Contents indentation of a problem in a chapter (0), section (1) or

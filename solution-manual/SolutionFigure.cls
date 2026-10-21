@@ -3,7 +3,7 @@
 %
 % ============ Identification ============ %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{SolutionFigure}[2026/10/16 General TikZ figures for solution manuals]
+\ProvidesClass{SolutionFigure}[2026/10/21 TikZ and PGFPlots figures for solution manuals]
 
 % Shared class of the solution-manual framework: do not edit it in a project.
 % Each Figures/<name>.tex is a standalone document compiled with LuaLaTeX:
@@ -29,6 +29,9 @@
 \RequirePackage{iftex}
 \RequireLuaTeX
 \usetikzlibrary{arrows.meta, calc, angles, quotes, positioning, shapes.geometric}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
 
 % ============ Colors ============ %
 \colorlet{FigureAccent}{red!50!black} % highlighted elements (ThemeColor of the manual)
@@ -38,6 +41,7 @@
 % ============ General-purpose styles ============ %
 \tikzset{
     >={Latex},
+    node distance=7mm and 12mm,
     % --- Diagrams ---
     diagram node/.style={
         draw=FigureAccent, rounded corners=2pt, fill=FigureAccent!5,
@@ -61,12 +65,54 @@
     region/.style={fill=FigureFill, draw=none},
     % --- Points, vectors, angles and lengths ---
     point/.style={circle, fill, inner sep=0pt, minimum size=1.5mm},
+    plot points/.style={only marks, mark=*, mark size=0.75mm, color=FigureAccent},
     vector/.style={thick, -{Latex}},
     angle arc/.style={draw, thin, angle radius=8mm, angle eccentricity=1.3},
     right angle mark/.style={draw, thin, angle radius=2.5mm},
     dimension/.style={thin, |<->|, >={Latex[length=1.5mm]}},
     % --- Annotations ---
     annotation/.style={font=\small, text=FigureGuide, align=center},
+}
+
+% PGFPlots defaults, applied to every axis before its local options. Dimensions
+% describe the plotting rectangle; labels and the standalone border add space.
+% Use \addplot (or \addplot+ with options) to retain the shared curve cycle.
+\pgfplotsset{
+    plot axes/.style={
+        width=9cm, height=5cm,
+        scale only axis,
+        axis lines=left,
+        axis line style={draw=FigureGuide, thick},
+        tick align=outside,
+        tick pos=left,
+        tick style={draw=FigureGuide, thin},
+        tick label style={font=\small},
+        label style={font=\small},
+        title style={font=\small},
+        grid=major,
+        grid style={draw=FigureGuide!35, very thin},
+        legend style={font=\small, draw=FigureGuide!50, fill=white, inner sep=3pt},
+        legend cell align=left,
+        samples=80,
+        every axis plot/.append style={curve, mark size=0.75mm},
+        cycle list={
+            {color=FigureAccent, solid, mark=none},
+            {color=black, dashed, mark=none},
+            {color=FigureAccent, dashdotted, mark=none},
+            {color=FigureGuide, dotted, mark=none}
+        },
+    },
+    every axis/.append style={plot axes},
+    small plot/.style={width=6cm, height=4cm},
+    wide plot/.style={width=13cm, height=7cm},
+    square plot/.style={width=7cm, height=7cm},
+    % Group defaults live here so they are not reapplied inside each panel.
+    group/group size=2 by 1,
+    group/horizontal sep=15mm,
+    group/vertical sep=15mm,
+    group/xlabels at=edge bottom,
+    group/ylabels at=edge left,
+    subplot grid/.style={small plot},
 }
 
 % ============ Project styles ============ %

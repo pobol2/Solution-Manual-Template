@@ -1,0 +1,21 @@
+% !TEX root = ../main.tex
+% PGFPlots graph used in the verification of Problem 1.1.
+\documentclass[12pt]{SolutionFigure} % same font size as main.tex
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        % Inherited: 9 x 5 cm plotting area, fonts, ticks, grid and 80 samples.
+        xlabel={$x$}, ylabel={$y$},
+        % Local options override the defaults; this graph puts axes at zero.
+        axis lines=middle,
+        xmin=0, xmax=4.5, ymin=-1, ymax=6.5,
+        xtick={1, 2, 3, 4}, ytick={2, 4, 6},
+    ]
+        % The + keeps the shared curve cycle when adding per-curve options.
+        \addplot+[domain=0:4.2] {x^2 - 5*x + 6};
+        % An explicit style replaces the cycle for these isolated points.
+        \addplot[plot points] coordinates {(2, 0) (3, 0)};
+    \end{axis}
+\end{tikzpicture}
+\end{document}

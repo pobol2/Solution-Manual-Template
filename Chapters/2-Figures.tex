@@ -135,3 +135,47 @@ $n(n + 1)$. (Hint: compare it with $S_n$, or use induction as in
 \eqref{eq:odd-sum-induction}.)
 }{}{}
 \end{problem}
+
+% ============ Problem 5 ============ %
+% One figure combines PGFPlots styles, legends, subplots and CSV input.
+% See Figures/Plots.tex and Figures/Data/Linear.csv.
+
+\begin{problem}
+{
+Use the two panels in \figref{fig:plots} to answer the following questions.
+}{}{}
+\end{problem}
+
+% Outside the question box so the panels fit at their natural size.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Plots.pdf}
+    \caption{Functions on the unit interval and observations of $y = 2x + 1$.}
+    \label{fig:plots}
+\end{figure}
+
+\begin{subproblem}
+{
+Order $x$, $x^2$, $x^3$ and $\sqrt{x}$ for $0 < x < 1$.
+}
+{
+Multiplication by $0 < x < 1$ decreases a positive number, so
+$x^3 < x^2 < x$. Also $x^2 < x$ implies $x < \sqrt{x}$.
+}
+{
+$x^3 < x^2 < x < \sqrt{x}$.
+}
+\end{subproblem}
+
+\begin{subproblem}
+{
+What is the largest absolute deviation of the five observations from $y = 2x + 1$?
+}
+{
+The absolute deviations $|y_{\mathrm{measured}} - (2x + 1)|$ at
+$x = 0,1,2,3,4$ are $0.1$, $0.1$, $0.2$, $0.2$ and $0.1$, respectively.
+}
+{
+The largest absolute deviation is $0.2$, at $x = 2$ and $x = 3$.
+}
+\end{subproblem}

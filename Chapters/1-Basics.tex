@@ -1,7 +1,7 @@
 \chapter{Basic Problems}
 
 % ============ Problem 1 ============ %
-% An ordinary problem: question, solution and answer.
+% A problem with an optional verification after the answer, using PGFPlots.
 
 \begin{problem}
 {
@@ -14,14 +14,22 @@ and $3$, so the polynomial factors as
     x^2 - 5x + 6 &= (x - 2)(x - 3). \label{eq:quadratic-factored}
 \end{align}
 A product is zero only when one of its factors is zero, so $x - 2 = 0$ or
-$x - 3 = 0$. As a check, the quadratic formula gives the same roots:
-\begin{align*}
-    x &= \frac{5 \pm \sqrt{5^2 - 4 \cdot 6}}{2} = \frac{5 \pm 1}{2}.
-\end{align*}
+$x - 3 = 0$.
 }
 {
 $x = 2$ or $x = 3$.
 }
+[
+Substitution gives $2^2 - 5 \cdot 2 + 6 = 0$ and
+$3^2 - 5 \cdot 3 + 6 = 0$. The graph in \figref{fig:quadratic} crosses
+the $x$ axis at these two roots.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Quadratic.pdf}
+    \caption{The polynomial $y = x^2 - 5x + 6$ and its roots.}
+    \label{fig:quadratic}
+\end{figure}
+]
 \end{problem}
 
 % ============ Problem 2 ============ %
@@ -87,11 +95,15 @@ to exceed $1000$?
 }
 {
 We need the smallest $n$ with $n^2 > 1000$, that is $n > \sqrt{1000} \approx
-31.6$. Indeed $31^2 = 961 \le 1000$ while $32^2 = 1024 > 1000$.
+31.6$.
 }
 {
 $32$ odd numbers.
 }
+[
+The preceding sum is $S_{31} = 961$, while $S_{32} = 1024$.
+Thus $32$ is the first value that exceeds $1000$.
+]
 \end{subproblem}
 
 % ============ Problem 3 ============ %
