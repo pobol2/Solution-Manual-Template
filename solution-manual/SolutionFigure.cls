@@ -3,7 +3,7 @@
 %
 % ============ Identification ============ %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{SolutionFigure}[2026/10/21 TikZ and PGFPlots figures for solution manuals]
+\ProvidesClass{SolutionFigure}[2026/10/21 v1.0 TikZ and PGFPlots figures for solution manuals]
 
 % Shared class of the solution-manual framework: do not edit it in a project.
 % Each Figures/<name>.tex is a standalone document compiled with LuaLaTeX:

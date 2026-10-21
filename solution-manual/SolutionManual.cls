@@ -3,7 +3,7 @@
 %
 % ============ Identification ============ %
 \NeedsTeXFormat{LaTeX2e}[2022/06/01] % mark classes, command hooks
-\ProvidesClass{SolutionManual}[2026/10/21 Solution Manual Template]
+\ProvidesClass{SolutionManual}[2026/10/21 v1.0 Solution Manual Template]
 
 % Shared class of the solution-manual framework: do not edit it in a project.
 % Customize a manual from its preamble instead, with \SolutionManualSetup{...},
