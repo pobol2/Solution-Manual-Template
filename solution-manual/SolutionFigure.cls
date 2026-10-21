@@ -16,8 +16,9 @@
 %   \end{tikzpicture}
 %   \end{document}
 %
-% Projects add their own packages, colors and styles in myfigures.sty (in the
-% project root), which is loaded at the end of this class if it exists.
+% Projects set the theme color shared with the manual in mytheme.sty, and add
+% their own packages, colors and styles in myfigures.sty (both in the project
+% root, loaded by this class if they exist).
 
 % ============ Options ============ %
 % Every option (12pt, border=5pt, ...) is passed to the standalone class.
@@ -34,7 +35,9 @@
 \usepgfplotslibrary{groupplots}
 
 % ============ Colors ============ %
-\colorlet{FigureAccent}{red!50!black} % highlighted elements (ThemeColor of the manual)
+\colorlet{ThemeColor}{red!50!black}   % same default as SolutionManual.cls
+\IfFileExists{mytheme.sty}{\RequirePackage{mytheme}}{} % theme of the manual
+\colorlet{FigureAccent}{ThemeColor}   % highlighted elements
 \colorlet{FigureGuide}{black!50}      % axes, construction lines and grids
 % FigureFill (shaded regions) is FigureAccent!12, defined after myfigures.sty
 

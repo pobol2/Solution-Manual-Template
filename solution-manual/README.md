@@ -30,7 +30,7 @@ The project then has, in its root:
   spaces allowed);
 - `.vscode/settings.json`, a copy of `vscode-settings.json`;
 - its own `main.tex`, `Chapters/`, `Figures/`, `mypackages.sty`,
-  `mycommands.sty` and `myfigures.sty`;
+  `mycommands.sty`, `myfigures.sty` and (optional) `mytheme.sty`;
 - `.gitignore` entries for `build/` and `Figures/*.pdf`.
 
 With completion tracking, the build copies the report to `COMPLETION.md`.

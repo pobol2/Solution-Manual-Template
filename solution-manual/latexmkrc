@@ -165,8 +165,8 @@ sub sm_is_inside {
 # Figures/<name>.tex is a standalone LuaLaTeX document (using SolutionFigure.cls)
 # compiled to Figures/<name>.pdf (intermediate files go in
 # build/figures-aux). latexmk only reruns this when <name>.tex, or a project or
-# framework file it reads (e.g. SolutionFigure.cls, myfigures.sty), changes or
-# when the PDF is missing.
+# framework file it reads (e.g. SolutionFigure.cls, mytheme.sty, myfigures.sty),
+# changes or when the PDF is missing.
 add_cus_dep('tex', 'pdf', 0, 'compile_figure');
 sub compile_figure {
     my $base = shift;

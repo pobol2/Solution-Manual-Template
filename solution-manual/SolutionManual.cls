@@ -60,6 +60,9 @@
 % Colors: ThemeColor is a named color; the boxes use color expressions, which
 % are evaluated where they are used (so they follow later ThemeColor changes).
 \colorlet{ThemeColor}{red!50!black}
+% The project's mytheme.sty, if it exists, sets ThemeColor for the manual and
+% its figures (SolutionFigure.cls loads it too)
+\IfFileExists{mytheme.sty}{\RequirePackage{mytheme}}{}
 \newcommand*{\SM@questionback}{gray!5!white}
 \newcommand*{\SM@questionframe}{gray!50!black}
 \newcommand*{\SM@subquestionframe}{gray!75!black}
