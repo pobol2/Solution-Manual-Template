@@ -3,7 +3,7 @@
 %
 % ============ Identification ============ %
 \NeedsTeXFormat{LaTeX2e}[2022/06/01] % mark classes, command hooks
-\ProvidesClass{SolutionManual}[2026/10/21 v1.0 Solution Manual Template]
+\ProvidesClass{SolutionManual}[2026/10/21 v1.1.0 Solution Manual Template]
 
 % Shared class of the solution-manual framework: do not edit it in a project.
 % Customize a manual from its preamble instead, with \SolutionManualSetup{...},
@@ -40,7 +40,11 @@
 % Texts
 \newcommand*{\SM@titleprefix}{Solutions to}
 \newcommand*{\SM@authorlabel}{Author}
-\newcommand*{\SM@date}{\today}
+% Month and year of the build, e.g. "October 2026" (date=\today for the day)
+\newcommand*{\SM@date}{%
+    \ifcase\month\or January\or February\or March\or April\or May\or June\or
+    July\or August\or September\or October\or November\or December\fi
+    ~\the\year}
 \newcommand*{\SM@contentslabel}{Table of Contents}
 \newcommand*{\SM@problemlabel}{Problem}
 \newcommand*{\SM@solutionlabel}{Solution:}

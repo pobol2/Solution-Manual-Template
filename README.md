@@ -313,7 +313,7 @@ Customize the manual from the project files only.
 | `title`                | empty                                    |
 | `subtitle`             | empty (the line is then omitted)         |
 | `title prefix`         | `Solutions to`                           |
-| `date`                 | `\today`                                 |
+| `date`                 | month and year of the build, e.g. `October 2026` (`date=\today` for the full date, as before 1.1.0) |
 | `author label`         | `Author`                                 |
 | `contents label`       | `Table of Contents`                      |
 | `problem label`        | `Problem`                                |
@@ -517,6 +517,10 @@ with subject-specific TikZ diagrams and numerical field tools for its figures. T
 specialized extensions like these belong in each manual's own files
 (`mycommands.sty`, `myfigures.sty`, companion Lua files), not in
 `solution-manual/`.
+
+## Changelog
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the changes in each version.
 
 ## License
 
