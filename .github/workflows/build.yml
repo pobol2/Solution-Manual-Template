@@ -23,6 +23,8 @@ jobs:
       - uses: xu-cheng/latex-action@4.1.0
         with:
           root_file: main.tex
+          # No -halt-on-error: missing Figures/*.pdf must not stop pdfLaTeX before latexmk builds them all
+          args: -file-line-error -interaction=nonstopmode
 
       - uses: actions/upload-artifact@v7
         with:
