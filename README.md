@@ -340,9 +340,15 @@ Customize the manual from the project files only.
 | `completion title`     | `Completion` (overview and report)       |
 | `completion total label` | `All problems`                         |
 
-Colors accept any `xcolor` expression. The older
-`\def\authorName{...}`, `\def\firstTitle{...}` and `\def\mainTitle{...}`
-also work. Other texts come from standard LaTeX commands: `\chaptername`.
+Colors accept any `xcolor` expression. Other texts come from standard LaTeX
+commands: `\chaptername`.
+
+**Title and author in other settings**: `\authorName`, `\mainTitle` and
+`\firstTitle` (the subtitle) hold the values of `author`, `title` and
+`subtitle`. Use them wherever a setting needs the title or author, for example
+`footer={Solution to \mainTitle~by \authorName}`. Setting them with
+`\def\authorName{...}`, `\def\mainTitle{...}` and `\def\firstTitle{...}` still
+works.
 
 **Theme color**: set it once in the optional `mytheme.sty`, which both classes
 load, so the manual and the figures stay matched:
