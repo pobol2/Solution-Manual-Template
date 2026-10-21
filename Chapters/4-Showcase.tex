@@ -1,0 +1,68 @@
+% Chapter 3 switched to numbering within sections; return to the default
+% numbering within chapters from here on.
+\SolutionManualSetup{problem numbering=chapter}
+
+\chapter{Showcase}
+
+% ============ Problem 1 ============ %
+% Most features on one page: a two-panel figure (TikZ and PGFPlots), parts
+% with solutions, answers and a verification, a numbered equation, references
+% to a part, an equation, a figure and a problem of another chapter, and a
+% part left not done.
+
+\begin{problem}
+{
+\figref{fig:showcase} shows the point $P$ at the angle $\theta$ and the area $A$.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Showcase.pdf}
+    \caption{Left: the sector $S$ of angle $\theta$. Right: the area $A$
+    between $\sin x$ and $\cos x$.}
+    \label{fig:showcase}
+\end{figure}
+}{}{}
+\end{problem}
+
+\begin{subproblem}
+{
+Find the area of the sector $S$.\label{prob:sector}
+}
+{
+The sector is the fraction $\theta / 2\pi$ of the disk, of area $\pi r^2$:
+\begin{align}
+    S &= \frac{\theta}{2\pi} \, \pi r^2 = \frac{\theta r^2}{2}. \label{eq:sector}
+\end{align}
+}
+{
+$S = \theta / 2$ for $r = 1$.
+}
+\end{subproblem}
+
+\begin{subproblem}
+{
+Find the area $A$.
+}
+{
+The curves cross at $x = \pi/4$ and $5\pi/4$. As in \probref{2}{1},
+\begin{align*}
+    A = \int_{\pi/4}^{5\pi/4} (\sin x - \cos x) \dd x
+      = \Big[ -\cos x - \sin x \Big]_{\pi/4}^{5\pi/4}
+      = \sqrt{2} + \sqrt{2}.
+\end{align*}
+}
+{
+$A = 2\sqrt{2} \approx 2.83$.
+}
+[
+As $\sin x - \cos x = \sqrt{2} \sin(x - \pi/4)$, $A$ is $\sqrt{2}$ times one
+arch of $\sin$, of area $2$: the sector \eqref{eq:sector} of part
+\ref{prob:sector} with $\theta = 4\sqrt{2}$.
+]
+\end{subproblem}
+
+\begin{subproblem}
+{
+Show that $\sin^2 \theta + \cos^2 \theta = 1$ from the lengths in
+\figref{fig:showcase}.
+}{}{}
+\end{subproblem}

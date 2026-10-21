@@ -5,6 +5,12 @@ problem, solution, answer and verification sections, standalone TikZ/PGFPlots
 figures, and one `latexmk` build that compiles the manual and its figures
 incrementally.
 
+<p align="center">
+  <img src="images/title.png" width="32%" alt="The title page">
+  <img src="images/contents.png" width="32%" alt="The table of contents, with problems marked not done">
+  <img src="images/showcase.png" width="32%" alt="A problem in parts with a TikZ and PGFPlots figure, answer boxes, a verification and a part not done">
+</p>
+
 ```
 solution-manual/        Shared framework (classes, build rules): never edited by a project
 latexmkrc               Project build file: loads solution-manual/latexmkrc
@@ -123,6 +129,7 @@ figures and tables, but not verbatim text.
 solution or answer, verification sections, a question alone, equations, figures,
 a table, references across chapters, and (`3-Sections.tex`) sections with their
 own numbering, a textbook section number, `\probref` and completion tracking.
+`4-Showcase.tex` combines most of them on one page.
 
 ## Chapters, sections and numbering
 

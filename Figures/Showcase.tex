@@ -1,0 +1,62 @@
+% !TEX root = ../main.tex
+% Unit circle with a sector, projections and a tangent vector, next to the
+% area between sin and cos (Problem 4.1). Every color and line comes from the
+% shared styles of SolutionFigure.cls.
+\documentclass[12pt]{SolutionFigure} % same font size as main.tex
+\usepgfplotslibrary{fillbetween}      % a library used by this figure only
+
+\begin{document}
+\begin{tikzpicture}
+    % ============ (a) Unit circle, of radius R on the page ============ %
+    \def\R{1.9}
+    \draw[grid lines, step=\R/2] (-2.05, -2.05) grid (2.05, 2.05);
+    \draw[axis] (-2.2, 0) -- (2.9, 0) node[axis label, right] {$x$};
+    \draw[axis] (0, -2.2) -- (0, 2.4) node[axis label, above] {$y$};
+    \foreach \x/\t in {-\R/-1, \R/1}
+        \draw[tick] (\x, 0) -- (\x, -0.08) node[axis label, below left] {$\t$};
+
+    % Sector of angle theta
+    \coordinate (O) at (0, 0);
+    \coordinate (X) at (\R, 0);
+    \coordinate (P) at (50:\R);
+    \fill[region] (O) -- (X) arc[start angle=0, end angle=50, radius=\R] -- cycle;
+    \node at (35:1.25) {$S$};
+    \draw[curve] (O) circle[radius=\R];
+    \draw[highlight] (O) -- (P);
+    \draw pic[angle arc, angle radius=5mm, "$\theta$"] {angle = X--O--P};
+
+    % Projections of P, with their lengths (sin theta outside the circle)
+    \draw[guide] (P) -- (P |- O);
+    \draw[guide] (P) -- (\R + 0.5, 0 |- P);
+    \draw[dimension] ([yshift=-4mm]O) -- node[below] {$\cos\theta$} ([yshift=-4mm]P |- O);
+    \draw[dimension] (\R + 0.4, 0) -- node[right] {$\sin\theta$} (\R + 0.4, 0 |- P);
+
+    % Unit tangent vector at P
+    \draw[vector] (P) -- ++(140:1) node[above] {$\hat{t}$};
+    \node[point, label=above right:$P$] at (P) {};
+    \node[annotation, anchor=south east] at (-0.3, 2.05) {$x^2 + y^2 = 1$};
+
+    % ============ (b) Area between sin and cos ============ %
+    \begin{axis}[
+        at={(4.6cm, -1.6cm)}, anchor=south west,
+        width=7cm, height=3.2cm,
+        trig format plots=rad,
+        domain=0:2*pi,
+        xmin=0, xmax=2*pi, ymin=-1.2, ymax=1.2,
+        xtick={0, pi/2, pi, 3*pi/2, 2*pi},
+        xticklabels={$0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
+        ytick={-1, 0, 1},
+        legend pos=south west,
+        set layers,
+    ]
+        % The shared cycle styles the curves; the region is drawn behind them
+        \addplot+[name path=sin] {sin(x)}; \addlegendentry{$\sin x$}
+        \addplot+[name path=cos] {cos(x)}; \addlegendentry{$\cos x$}
+        \addplot[fill=FigureFill, draw=none, forget plot, on layer=axis background]
+            fill between[of=sin and cos, soft clip={domain=pi/4:5*pi/4}];
+        \addplot[plot points, forget plot]
+            coordinates {(pi/4, {sqrt(2)/2}) (5*pi/4, {-sqrt(2)/2})};
+        \node at (3*pi/4, 0) {$A$};
+    \end{axis}
+\end{tikzpicture}
+\end{document}
