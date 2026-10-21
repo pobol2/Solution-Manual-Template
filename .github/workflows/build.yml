@@ -1,0 +1,36 @@
+# Builds the manual and its figures with the project's latexmkrc, uploads
+# main.pdf and checks that the committed COMPLETION.md is up to date.
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # TeX Live image with pdfLaTeX, LuaLaTeX, latexmk and Perl. latexmk runs
+      # from the repository root, so it reads ./latexmkrc (and through it
+      # solution-manual/latexmkrc), which also copies main.pdf and
+      # COMPLETION.md to the root.
+      - uses: xu-cheng/latex-action@4.1.0
+        with:
+          root_file: main.tex
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: main.pdf
+          path: main.pdf
+          if-no-files-found: error
+
+      # main.pdf changes on every build (dates, IDs), so only the report is
+      # compared with the committed version.
+      - name: Check that COMPLETION.md is up to date
+        run: git diff --exit-code COMPLETION.md
