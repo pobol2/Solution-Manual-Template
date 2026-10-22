@@ -1,0 +1,9 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-title-test.tex
+\begin{document}
+\tableofcontents
+\chapter{Moving titles}
+\begin{problem}[title={Period \texorpdfstring{$T$}{T}, \textbf{energy} and phase}]{Q.}{Solution.}{}\end{problem}
+\begin{subproblem}[title={Approximation \texorpdfstring{$\theta$}{theta}}]{Q.}{Solution.}{}\end{subproblem}
+\end{document}

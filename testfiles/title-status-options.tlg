@@ -1,0 +1,38 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(title-status-options.toc)
+Bookmark level 1: Problem 1. Forced done
+Heading: Problem 1. Forced done
+Bookmark level 1: Problem 2. Forced not done
+Heading: Problem 2. Forced not done
+Bookmark level 1: Problem 3
+Heading: Problem 3.
+Heading: \(a\)
+Bookmark level 1: Problem 4
+Heading: Problem 4.
+Bookmark level 1: Problem 5. Parts
+Heading: Problem 5. Parts
+Bookmark level 2: Problem 5\(a\). Unfinished part
+Heading: \(a\) Unfinished part
+Bookmark level 2: Problem 5\(b\). Finished part
+Heading: \(b\) Finished part
+Contents tokens: \scshape Problem~1. Forced done
+Contents tokens: \scshape Problem~2. Forced not done
+Contents tokens: \scshape Problem~3.
+Contents tokens: \scshape Problem~4.
+Contents tokens: \scshape Problem~5. Parts
+Contents tokens: (a) Unfinished part
+Contents tokens: (b) Finished part
+Forced done: no marker
+Forced not done: not done marker
+Part not done: not done marker
+Part done: no marker
+Problem 1: number=1; done=1; unfinished parts=[]
+Problem 2: number=2; done=0; unfinished parts=[]
+Problem 3: number=3; done=1; unfinished parts=[]
+Problem 4: number=4; done=0; unfinished parts=[]
+Problem 5: number=5; done=0; unfinished parts=[a]
+Total: 2/5
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

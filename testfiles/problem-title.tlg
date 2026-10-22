@@ -1,0 +1,19 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(problem-title.toc)
+Bookmark level 1: Problem 1. Period of a simple pendulum
+Heading: Problem 1. Period of a simple pendulum
+Bookmark level 1: Problem 2
+Heading: Problem 2.
+Bookmark level 1: Problem 3. Energy, frequency and phase
+Heading: Problem 3. Energy, frequency and phase
+Contents tokens: \scshape Problem~1. Period of a simple pendulum
+Contents tokens: \scshape Problem~2.
+Contents tokens: \scshape Problem~3. Energy, frequency and phase
+Problem 1: number=1; done=1; unfinished parts=[]
+Problem 2: number=2; done=0; unfinished parts=[]
+Problem 3: number=3; done=1; unfinished parts=[]
+Total: 2/3
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

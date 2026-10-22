@@ -1,0 +1,20 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(titles-in-contents.toc)
+Bookmark level 1: Problem 1. Hidden from contents
+Heading: Problem 1. Hidden from contents
+Bookmark level 2: Problem 1\(a\). Part hidden from contents
+Heading: \(a\) Part hidden from contents
+Bookmark level 1: Problem 2. Shown in contents
+Heading: Problem 2. Shown in contents
+Bookmark level 2: Problem 2\(a\). Part shown in contents
+Heading: \(a\) Part shown in contents
+Contents tokens: \scshape Problem~1.
+Contents tokens: \scshape Problem~2. Shown in contents
+Contents tokens: (a) Part shown in contents
+Problem 1: number=1; done=1; unfinished parts=[]
+Problem 2: number=2; done=1; unfinished parts=[]
+Total: 2/2
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

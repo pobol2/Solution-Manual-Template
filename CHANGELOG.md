@@ -5,6 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-22
+
+### Added
+
+- Optional `title={...}` in `problem` and `subproblem`, alone or combined
+  with the existing `done` / `not done` status options. Titles appear in
+  question headings, PDF bookmarks and contents; titled parts gain their
+  own navigation entries. Untitled output remains unchanged.
+- `problem titles in contents` setup key (default `true`); set it to
+  `false` for plain problem entries and no part entries in the contents,
+  while retaining titles in headings and bookmarks.
+- Regression tests and showcase examples for problem and part titles.
+
+### Fixed
+
+- Regression CI uses the Debian TeX Live image with GNU diff; Alpine's
+  BusyBox diff does not support the `-c` option used by `l3build check`.
+
 ## [1.2.0] - 2026-10-22
 
 ### Added
@@ -72,6 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Continuous integration that builds the example manual and checks
   `COMPLETION.md`.
 
+[1.3.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/pobol2/Solution-Manual-Template/releases/tag/v1.0.0

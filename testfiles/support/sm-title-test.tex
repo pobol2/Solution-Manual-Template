@@ -1,0 +1,40 @@
+% Observe real box titles, bookmark strings and the completed contents file.
+\input sm-test.tex
+\hypersetup{unicode=false}
+\makeatletter
+\def\SMTestNavigation{}
+\pdfstringdefDisableCommands{%
+  \let\SM@marker\@empty
+  \let\hypertarget\@secondoftwo}
+\newcommand\SMTestCapture[2]{%
+  \begingroup
+    \edef\SMTestLabel{#1}% freeze scratch counters before pdfstringdef uses them
+    \pdfstringdef\SMTestText{#2}%
+    \xdef\SMTestNavigation{\unexpanded\expandafter{\SMTestNavigation}%
+      \noexpand\TYPE{\SMTestLabel: \SMTestText}}%
+  \endgroup}
+\tcbset{before title={\SMTestCapture{Heading}{\kvtcb@title}}}
+\NewCommandCopy\SMTestBookmark\pdfbookmark
+\renewcommand\pdfbookmark[3][0]{%
+  \SMTestCapture{Bookmark level #1}{#2}%
+  \SMTestBookmark[#1]{#2}{#3}}
+\newcommand\SMTestShowContents{%
+  \immediate\closeout\tf@toc
+  \begingroup
+    \def\contentsline##1##2##3##4{}%
+    \let\SM@tocmark\@gobble
+    % Contents retain TeX formatting and math; compare those written tokens.
+    \def\hyperlink##1##2{%
+      \xdef\SMTestNavigation{\unexpanded\expandafter{\SMTestNavigation}%
+        \noexpand\TYPE{Contents tokens: \detokenize{##2}}}}%
+    \def\dotfill##1\par{}%
+    \setbox0=\vbox{\input{\jobname.toc}}%
+  \endgroup}
+\AddToHook{enddocument/afteraux}{%
+  \START
+  \SMTestShowContents
+  \SMTestNavigation
+  \SMTestMarkers
+  \SMTestRecords
+  \OMIT}
+\makeatother

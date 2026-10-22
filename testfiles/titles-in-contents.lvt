@@ -1,0 +1,13 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-title-test.tex
+\begin{document}
+\tableofcontents
+\chapter{Contents setting}
+\SolutionManualSetup{problem titles in contents=false}
+\begin{problem}[title={Hidden from contents}]{Q.}{Solution.}{}\end{problem}
+\begin{subproblem}[title={Part hidden from contents}]{Q.}{Solution.}{}\end{subproblem}
+\SolutionManualSetup{problem titles in contents=true}
+\begin{problem}[title={Shown in contents}]{Q.}{Solution.}{}\end{problem}
+\begin{subproblem}[title={Part shown in contents}]{Q.}{Solution.}{}\end{subproblem}
+\end{document}

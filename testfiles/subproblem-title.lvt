@@ -1,0 +1,14 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-title-test.tex
+\begin{document}
+\tableofcontents
+\chapter{Part titles}
+\section{Section}
+\begin{problem}[title={Pendulum}]{Q.}{}{}\end{problem}
+\begin{subproblem}[title={Small-angle approximation}]{Q.}{Solution.}{}\end{subproblem}
+\begin{subproblem}{Q.}{Solution.}{}\end{subproblem}
+\begin{subproblem}[done, title={Period}]{Q.}{}{}\end{subproblem}
+\begin{problem}{Q.}{}{}\end{problem}
+\begin{subproblem}{Q.}{}{}\end{subproblem}
+\end{document}

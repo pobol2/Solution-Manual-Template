@@ -22,6 +22,29 @@ environments, which take the same arguments:
 \begin{subproblem}{Part (b), a proof.}{Proof.}{}\end{subproblem}
 ```
 
+Add a short title in the optional argument before the question:
+
+```tex
+\begin{problem}[title={Period of a simple pendulum}]
+{Find the period.}{Worked solution.}{Final answer.}\end{problem}
+\begin{subproblem}[done, title={Small-angle approximation}]
+{State the approximation.}{}{Answer only.}\end{subproblem}
+```
+
+The heading reads "Problem 3. Period of a simple pendulum" (or
+"(a) Small-angle approximation" for a part). Titles also appear in PDF
+bookmarks and the table of contents; a titled part gets an entry beneath its
+parent. Set `\SolutionManualSetup{problem titles in contents=false}` to keep
+plain problem entries and omit part entries from the contents. This setting
+does not hide titles in headings or bookmarks.
+
+`[done]` and `[not done]` still work alone or alongside `title={...}`, in
+either order. Use braces around a title containing commas. Empty or
+space-only titles act like no title, and titles do not change completion
+status. Untitled problems and parts retain their original presentation.
+Titles are moving arguments: for mathematics in a bookmark, use, for example,
+`title={Period \texorpdfstring{$T$}{T}}`.
+
 Verification is optional and comes last, after the answer: omit
 `[Verification.]` entirely when it is not needed. Empty or whitespace-only
 contents inside `[...]` also omit it. It appears under a small-caps

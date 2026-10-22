@@ -1,0 +1,21 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{problem numbering=subdivision}
+\hypersetup{unicode=false}
+\begin{document}
+\chapter{Chapter}
+\section{Section}
+\subsection{Subsection}
+\begin{problem}[title={Oscillations}]{Q.\label{title:parent}}{}{}\end{problem}
+\begin{subproblem}[done, title={Period}]{Q.\label{title:part}}{}{}\end{subproblem}
+% Inspect the actual written outline, including the deepest supported part.
+\makeatletter
+\AddToHook{enddocument/afteraux}{%
+  \immediate\closeout\@outlinefile
+  \START
+  \TYPE{References: \getrefnumber{title:parent}, \getrefnumber{title:part}}%
+  \SHOWFILE{\jobname.out}%
+  \OMIT}
+\makeatother
+\end{document}

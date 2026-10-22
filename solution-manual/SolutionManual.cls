@@ -3,7 +3,7 @@
 %
 % ============ Identification ============ %
 \NeedsTeXFormat{LaTeX2e}[2022/06/01] % mark classes, command hooks
-\ProvidesClass{SolutionManual}[2026/10/22 v1.2.0 Solution Manual Template]
+\ProvidesClass{SolutionManual}[2026/10/22 v1.3.0 Solution Manual Template]
 
 % Shared class of the solution-manual framework: do not edit it in a project.
 % Customize a manual from its preamble instead, with \SolutionManualSetup{...},
@@ -78,6 +78,10 @@
 \newif\ifSM@problemnewpage
 \SM@problemnewpagetrue
 
+% Titles appear in the contents by default; untitled parts have no entry.
+\newif\ifSM@titlesintoc
+\SM@titlesintoctrue
+
 % Problem numbering restarts at each: 0 = never (continuous), 1 = chapter,
 % 2 = subdivision (see \SM@setnumbering)
 \def\SM@numbering{1}
@@ -116,6 +120,7 @@
     % Page layout (any geometry option) and problems
     layout/.code={\geometry{#1}},
     problem on new page/.is if=SM@problemnewpage,
+    problem titles in contents/.is if=SM@titlesintoc,
     problem numbering/.is choice,
     problem numbering/continuous/.code={\SM@setnumbering{0}},
     problem numbering/chapter/.code={\SM@setnumbering{1}},
@@ -173,7 +178,7 @@
     colorlinks,
     linkcolor=ThemeColor,
     urlcolor=ThemeColor,
-    bookmarksdepth=3, % problems inside subsections
+    bookmarksdepth=4, % titled parts of problems inside subsections
 }
 
 % ============ Chapter ============ %
@@ -422,18 +427,22 @@
     \fi}
 \newcommand{\SM@probtarget}[3]{\expandafter\gdef\csname SM@ref@#1\endcsname{{#2}{#3}}}
 
+% The title is local to each problem/part and reset by \SM@readstatus.
+\newcommand*{\SM@title}{}
+\newcommand*{\SM@titlesuffix}{\SM@ifnotblank{\SM@title}{\space\SM@title}}
+
 % Define question environment
 \newtcolorbox{question}{enhanced, breakable,
                       colback=\SM@questionback,
                       colframe=\SM@questionframe,
-                      title=\hypertarget{problem-title.\theHProblemNum}{\scshape \SM@problemlabel{} \theProblemNum}.\SM@marker
+                      title=\hypertarget{problem-title.\theHProblemNum}{\scshape \SM@problemlabel{} \theProblemNum}.\SM@titlesuffix\SM@marker
                       }
 
 % Define subproblem environment
 \newtcolorbox{subquestion}{enhanced, breakable,
                            colback=\SM@questionback,
                            colframe=\SM@subquestionframe,
-                           title=\theSubProblemNum\SM@marker
+                           title=\theSubProblemNum\SM@titlesuffix\SM@marker
                           }
 
 % Define solution command
@@ -486,7 +495,7 @@
     \hyperlink{#1}{\scshape \ifblank{#2}{}{#2\quad}\SM@problemlabel~#3.}}
 
 % Wrapper for problems
-% #1 = Status (optional): done or not done, to override the automatic status
+% #1 = Options: done / not done (status override), title={...}
 % #2 = Question
 % #3 = Solution (optional: leave empty)
 % #4 = Answer (optional: leave empty)
@@ -506,8 +515,9 @@
     \refstepcounter{ProblemNum}\stepcounter{SM@problem}%
     \SM@settarget
     \edef\@tempa{\the\numexpr\SM@depth+1}% bookmark level
-    \pdfbookmark[\@tempa]{\SM@problemlabel\space\theProblemNum}{problem.\theHProblemNum}%
-    \addtocontents{toc}{\protect\SM@tocskip{\SM@depth}\protect\hyperlink{\@currentHref}{\scshape \SM@problemlabel~\theProblemNum.}%
+    \pdfbookmark[\@tempa]{\SM@problemlabel\space\theProblemNum
+        \SM@ifnotblank{\SM@title}{.\space\SM@title}}{problem.\theHProblemNum}%
+    \addtocontents{toc}{\protect\SM@tocskip{\SM@depth}\protect\hyperlink{\@currentHref}{\scshape \SM@problemlabel~\theProblemNum.\ifSM@titlesintoc\SM@titlesuffix\fi}%
         \ifSM@completion\protect\SM@tocmark{\arabic{SM@problem}}\fi\hspace{0.5em}\dotfill\thepage\par}%
     \edef\@tempa{\noexpand\InsertMark{SMproblem}{\noexpand\SM@problemhead
         {\@currentHref}{\unexpanded\expandafter{\SM@unitname}}{\theProblemNum}}}%
@@ -523,7 +533,7 @@
 }{\par}
 
 % Wrapper for subproblems, after a problem
-% #1 = Status (optional): done or not done
+% #1 = Options: done / not done (status override), title={...}
 % #2 = Question
 % #3 = Solution (optional: leave empty)
 % #4 = Answer (optional: leave empty)
@@ -534,6 +544,16 @@
     \refstepcounter{SubProblemNum}%
     \SM@readstatus{#1}%
     \SM@startsubproblem{#3}%
+    % Only titled parts gain navigation entries: keep untitled output intact.
+    \SM@ifnotblank{\SM@title}{%
+        \edef\@tempa{\the\numexpr\SM@p@depth+2}% one level below the parent
+        \pdfbookmark[\@tempa]{\SM@problemlabel\space\theProblemNum\theSubProblemNum.\space\SM@title}%
+            {subproblem.\theHSubProblemNum}%
+        \ifSM@titlesintoc
+            \addtocontents{toc}{\protect\SM@tocskip{\SM@p@depth}\protect\hspace{1.5em}%
+                \protect\hyperlink{\@currentHref}{\theSubProblemNum\space\SM@title}%
+                \hspace{0.5em}\dotfill\thepage\par}%
+        \fi}%
     \begin{subquestion}
         #2
     \end{subquestion}
@@ -585,14 +605,17 @@
 
 \newcommand*{\SM@notdonemarker}{\hfill{\normalfont\footnotesize\itshape \SM@notdonelabel}}
 
-% #1 = Status (empty, done or not done): sets \SM@forced to 0, 1 or 2
+% Options: status sets \SM@forced to 0, 1 or 2; title is independent of it.
 \pgfqkeys{/SolutionManual/status}{
     done/.code={\def\SM@forced{1}},
     not done/.code={\def\SM@forced{2}},
+    title/.store in=\SM@title,
     .unknown/.code={\ClassError{SolutionManual}{Unknown status
-        `\pgfkeyscurrentname'}{Use [done] or [not done].}},
+        `\pgfkeyscurrentname'}{Use done, not done or title={...}.}},
 }
-\newcommand{\SM@readstatus}[1]{\def\SM@forced{0}\pgfqkeys{/SolutionManual/status}{#1}}
+\newcommand{\SM@readstatus}[1]{%
+    \def\SM@forced{0}\let\SM@title\@empty
+    \pgfqkeys{/SolutionManual/status}{#1}}
 
 % \@tempa = own status (1 = done) from the solution #1 and \SM@forced
 \newcommand{\SM@ownstatus}[1]{%
@@ -614,6 +637,7 @@
     \xdef\SM@p@forced{\SM@forced}%
     \gdef\SM@p@nparts{0}\gdef\SM@p@allparts{1}\gdef\SM@p@parts{}%
     \xdef\SM@p@serial{\arabic{SM@problem}}%
+    \xdef\SM@p@depth{\SM@depth}% navigation level for parts after the environment
     \xdef\SM@p@ids{{\SM@id@i}{\SM@id@ii}{\SM@id@iii}}%
     \protected@xdef\SM@p@num{\theProblemNum}%
     \xdef\SM@p@href{\@currentHref}%

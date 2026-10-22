@@ -1,0 +1,15 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-title-test.tex
+\begin{document}
+\tableofcontents
+\chapter{Titles and status}
+\begin{problem}[done, title={Forced done}]{Q.\SMTestSaveMarker{Forced done}}{}{}\end{problem}
+\begin{problem}[title={Forced not done}, not done]{Q.\SMTestSaveMarker{Forced not done}}{Partial solution.}{}\end{problem}
+\begin{problem}[title={}]{Q.}{}{}\end{problem}
+\begin{subproblem}[done, title={   }]{Q.}{}{}\end{subproblem}
+\begin{problem}[title={   }]{Q.}{}{}\end{problem}
+\begin{problem}[title={Parts}]{Q.}{}{}\end{problem}
+\begin{subproblem}[title={Unfinished part}, not done]{Q.\SMTestSaveMarker{Part not done}}{Partial solution.}{}\end{subproblem}
+\begin{subproblem}[title={Finished part}, done]{Q.\SMTestSaveMarker{Part done}}{}{}\end{subproblem}
+\end{document}

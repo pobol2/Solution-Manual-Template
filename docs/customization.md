@@ -32,6 +32,7 @@ Customize the manual from the project files only.
 | `subanswer frame`      | `ThemeColor`                             |
 | `layout`               | `a4paper, margin=25mm` (any `geometry` options) |
 | `problem on new page`  | `true`                                   |
+| `problem titles in contents` | `true` (include problem titles and titled part entries) |
 | `problem numbering`    | `chapter` (or `subdivision`, `continuous`) |
 | `chapter abbreviation` | `Chap.` (`\probref`)                     |
 | `section abbreviation` | `Sec.` (`\probref`)                      |
@@ -44,6 +45,13 @@ Customize the manual from the project files only.
 
 Colors accept any `xcolor` expression. Other texts come from standard LaTeX
 commands: `\chaptername`.
+
+**Problem titles** are set per problem or part, for example
+`\begin{problem}[done, title={Period of a simple pendulum}]`.
+`\SolutionManualSetup{problem titles in contents=false}` hides these titles
+from problem entries and omits part entries in the contents; headings and PDF
+bookmarks still include them. Set it back to `true` to include them again.
+See [Writing problems](writing-problems.md) for the full syntax.
 
 **Title and author in other settings**: `\authorName`, `\mainTitle` and
 `\firstTitle` (the subtitle) hold the values of `author`, `title` and

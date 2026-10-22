@@ -1,0 +1,11 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-title-test.tex
+\begin{document}
+\tableofcontents
+\chapter{Problem titles}
+\begin{problem}[title={Period of a simple pendulum}]{Q.}{Solution.}{}\end{problem}
+% A subsequent untitled problem must not inherit the title or extra spacing.
+\begin{problem}{Q.}{}{}\end{problem}
+\begin{problem}[title={Energy, frequency and phase}]{Q.}{Solution.}{}\end{problem}
+\end{document}

@@ -18,6 +18,8 @@ jobs:
       - name: Run class regression tests
         uses: xu-cheng/texlive-action@v3
         with:
+          # l3build uses diff -c; Alpine's BusyBox diff lacks this option.
+          os: debian
           texlive_version: 2026
           run: l3build check
       - name: Upload regression diagnostics
