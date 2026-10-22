@@ -1,6 +1,6 @@
 # Builds the starter, showcase and French example with each project's
 # latexmkrc, uploads their PDFs and the showcase editions, builds and checks
-# the websites of the showcase and French example, and checks class versions
+# the websites of the three projects, and checks class versions
 # and the committed COMPLETION.md.
 name: Build
 
@@ -48,6 +48,7 @@ jobs:
         include:
           - project: starter
             directory: .
+            site: true
           - project: showcase
             directory: examples/showcase
             site: true
@@ -112,8 +113,8 @@ jobs:
         if: matrix.site
         working-directory: ${{ matrix.directory }}
         run: |
-          python -m pip install -r ../../solution-manual/site/requirements.txt
-          python ../../solution-manual/site/build.py --out _site
+          python -m pip install -r "$GITHUB_WORKSPACE/solution-manual/site/requirements.txt"
+          python "$GITHUB_WORKSPACE/solution-manual/site/build.py" --out _site
 
       - uses: actions/upload-artifact@v7
         if: matrix.site

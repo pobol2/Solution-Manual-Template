@@ -164,6 +164,10 @@ TEXT = {
         "report": "Report an error",
         "report_on": "Report an error on {host}",
         "resource_type": "Worked solution",
+        "editions": "Also as PDF",
+        "modes": {"shown": "the full manual", "hidden": "questions only",
+                  "answers only": "questions and answers",
+                  "answers at end": "questions, solutions at the end"},
     },
     "french": {
         "lang": "fr",
@@ -195,6 +199,10 @@ TEXT = {
         "report": "Signaler une erreur",
         "report_on": "Signaler une erreur sur {host}",
         "resource_type": "Solution détaillée",
+        "editions": "Aussi en PDF",
+        "modes": {"shown": "le manuel complet", "hidden": "énoncés seuls",
+                  "answers only": "énoncés et réponses",
+                  "answers at end": "énoncés, solutions à la fin"},
     },
 }
 
@@ -239,6 +247,7 @@ class Settings:
     book: Book | None = None
     google_site_verification: str = ""
     publish_unsolved: bool = False
+    editions: list = field(default_factory=list)
 
 
 def join_and(items, conj):
@@ -287,7 +296,8 @@ def read_settings(base_url, errors):
     data = read_toml(SETTINGS)
     required = ("title", "short_name", "author", "description", "base_url", "repository",
                 "license")
-    optional = {"google_site_verification": str, "publish_unsolved": bool, "book": dict}
+    optional = {"google_site_verification": str, "publish_unsolved": bool, "book": dict,
+                "editions": list}
     if base_url:
         data["base_url"] = base_url
     for key in data.keys() - set(required) - optional.keys():
@@ -295,11 +305,19 @@ def read_settings(base_url, errors):
     for key in required:
         if not isinstance(data.get(key), str) or not data[key].strip():
             errors.append(f"{SETTINGS}: {key} is missing or is not a text")
+    kinds = {bool: "true or false", dict: "a table", list: "a list", str: "a text"}
     for key, kind in optional.items():
         if key in data and not isinstance(data[key], kind):
-            errors.append(f"{SETTINGS}: {key} must be "
-                          f"{'true or false' if kind is bool else 'a table' if kind is dict else 'a text'}")
+            errors.append(f"{SETTINGS}: {key} must be {kinds[kind]}")
     errors.check(SETTINGS)
+    editions = data.get("editions", [])
+    for name in editions:
+        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", name) \
+                or name == "main":
+            errors.append(f"{SETTINGS}: editions: {name!r} is not the name of an edition "
+                          f"(%editions in latexmkrc)")
+    if len(set(map(str, editions))) != len(editions):
+        errors.append(f"{SETTINGS}: editions: an edition is listed twice")
     for key in ("base_url", "repository", "license"):
         if not is_url(data[key]):
             errors.append(f"{SETTINGS}: {key} = {data[key]!r} is not an http(s) URL")
@@ -326,7 +344,8 @@ def read_settings(base_url, errors):
     return Settings(**{k: data[k].strip() for k in required},
                     book=book,
                     google_site_verification=data.get("google_site_verification", "").strip(),
-                    publish_unsolved=data.get("publish_unsolved", False))
+                    publish_unsolved=data.get("publish_unsolved", False),
+                    editions=editions)
 
 
 # ============ Model ============ #
@@ -733,6 +752,52 @@ def read_manual(reader, anchors, data, layout_bottom, errors):
     return chapters, headings, problems
 
 
+# ============ Editions ============ #
+
+@dataclass
+class Edition:
+    name: str                 # job name (%editions in latexmkrc)
+    solutions: str            # its solutions mode
+    pages: int
+    size: int
+
+    @property
+    def pdf(self):
+        return f"{self.name}.pdf"
+
+
+def read_editions(settings, data, errors):
+    """The editions of site.toml: build/<name>.pdf and its index, which must
+    have the problems of the manual (latexmk only warns when an edition
+    fails, which leaves the previous one in build/)."""
+    problems = [(p["id"], p["status"]) for p in data["problems"]]
+    editions = []
+    for name in settings.editions:
+        pdf, index = Path(f"build/{name}.pdf"), Path(f"build/{name}-problems.json")
+        if not pdf.is_file() or not index.is_file():
+            errors.append(f"edition {name}: build/{name}.pdf or build/{name}-problems.json is "
+                          f"missing (is {name} in %editions of latexmkrc? see docs/editions.md)")
+            continue
+        try:
+            other = json.loads(index.read_text(encoding="utf-8"))
+        except ValueError as e:
+            errors.append(f"edition {name}: {index.as_posix()}: {e}")
+            continue
+        if not isinstance(other, dict) or other.get("solutions") not in TEXT["english"]["modes"] \
+                or not isinstance(other.get("problems"), list):
+            errors.append(f"edition {name}: {index.as_posix()} is not a problem index {STALE}")
+            continue
+        if [(p.get("id"), p.get("status")) if isinstance(p, dict) else None
+                for p in other["problems"]] != problems:
+            errors.append(f"edition {name} does not have the problems of the manual: it is out "
+                          f"of date (rebuild with latexmk, and see build/{name}.log)")
+            continue
+        editions.append(Edition(name, other["solutions"], len(PdfReader(pdf).pages),
+                                pdf.stat().st_size))
+    errors.check("editions")
+    return editions
+
+
 # ============ Titles ============ #
 
 def add_titles(problems, errors):
@@ -792,6 +857,7 @@ class Site:
         self.repository = settings.repository.rstrip("/")
         self.theme = data["theme_color"].lower()
         self.manual_pages = manual_pages
+        self.editions = []        # Edition, linked from the homepage
         epoch = os.environ.get("SOURCE_DATE_EPOCH")
         self.year = (datetime.datetime.fromtimestamp(int(epoch), datetime.timezone.utc)
                      if epoch and epoch.isdigit() else datetime.datetime.now()).year
@@ -1036,10 +1102,11 @@ def verify_site(out, problems, site, errors):
     the sitemap: exactly the expected URLs, all published."""
     pages = {"index.html": ""} | {p.page: p.page for p in problems if p.done}
     pdf_pages = {p.pdf: p.pages for p in problems if p.published} | {"main.pdf": site.manual_pages}
+    pdf_pages |= {e.pdf: e.pages for e in site.editions}
     if sorted(f.relative_to(out).as_posix() for f in out.rglob("*.html")) != sorted(pages):
         errors.append("the HTML pages are not the homepage and the solved-problem pages")
     if sorted(f.relative_to(out).as_posix() for f in out.rglob("*.pdf")) != sorted(pdf_pages):
-        errors.append("the PDFs are not the manual and the published problem PDFs")
+        errors.append("the PDFs are not the manual, its editions and the published problem PDFs")
     errors.check("website pages")
     parsed = {}
     for path in pages:
@@ -1089,7 +1156,7 @@ def verify_site(out, problems, site, errors):
 
     root = ElementTree.parse(out / "sitemap.xml").getroot()
     locs = [e.text for e in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")]
-    if locs != [site.url(u) for u in site_paths(problems)]:
+    if locs != [site.url(u) for u in site_paths(problems, site)]:
         errors.append("sitemap.xml does not list the expected URLs")
     for loc in locs:
         path = loc.removeprefix(site.url()) or "index.html"
@@ -1123,6 +1190,8 @@ def catalogue_data(chapters, problems, site, author):
         "site": site.url(),
         "repository": site.repository,
         "manual": {"pdf": "main.pdf", "pages": site.manual_pages},
+        "editions": [{"name": e.name, "pdf": e.pdf, "solutions": e.solutions, "pages": e.pages}
+                     for e in site.editions],
         "done": done_count(problems),
         "total": len(problems),
         "headings": [{
@@ -1293,6 +1362,17 @@ def render_index(chapters, problems, site, manual_size):
     if b and esc(b.title) in heading:
         heading = heading.replace(esc(b.title), f"<em>{esc(b.title)}</em>", 1)
     by = esc(t["solutions_by"].format(author=s.author))
+    # Editions, by their mode (and their name when two have the same mode)
+    editions = ""
+    if site.editions:
+        modes = [e.solutions for e in site.editions]
+        links = []
+        for e in site.editions:
+            label = t["modes"][e.solutions] + (f" ({e.name})" if modes.count(e.solutions) > 1 else "")
+            links.append(f'<a href="{e.pdf}">{esc(label)}</a> <span class="note">'
+                         f'({esc(t["pages"](e.pages))}, {esc(site.size(e.size))})</span>')
+        editions = (f'<p class="editions">{esc(t["editions"])}{esc(site.colon())} '
+                    f'{" · ".join(links)}</p>\n')
     reference = f"{b.reference(t['and'])} · {by}" if b else by
     return f"""<!doctype html>
 <html lang="{t['lang']}">
@@ -1305,7 +1385,7 @@ def render_index(chapters, problems, site, manual_size):
 <p class="actions"><a class="button" href="main.pdf">{esc(t['download_manual'])}</a>
 <span class="note">PDF, {esc(t['pages'](site.manual_pages))}, {esc(site.size(manual_size))}</span> ·
 <a href="{esc(site.repository)}">{esc(site.repository_name())}</a></p>
-<p class="progress">{esc(t['progress'](done_count(problems), len(problems)))}</p>
+{editions}<p class="progress">{esc(t['progress'](done_count(problems), len(problems)))}</p>
 </header>
 <main>
 {chr(10).join(body)}
@@ -1421,16 +1501,17 @@ def render_problem_page(problem, previous, following, site, pdf_size):
 """
 
 
-def site_paths(problems):
+def site_paths(problems, site):
     """Paths of the sitemap: the homepage, the solved-problem pages, the full
-    manual and the solved-problem PDFs."""
+    manual, its editions and the solved-problem PDFs."""
     solved = [p for p in problems if p.done]
-    return [""] + [p.page for p in solved] + ["main.pdf"] + [p.pdf for p in solved]
+    return [""] + [p.page for p in solved] + ["main.pdf"] + [e.pdf for e in site.editions] \
+        + [p.pdf for p in solved]
 
 
 def render_sitemap(problems, site):
     entries = "".join(f"  <url><loc>{esc(site.url(u))}</loc></url>\n"
-                      for u in site_paths(problems))
+                      for u in site_paths(problems, site))
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
             f"{entries}</urlset>\n")
@@ -1502,6 +1583,7 @@ def main():
                                                data["layout"]["margin_bottom"], errors)
     add_titles(problems, errors)
     check_titles(site, problems, errors)
+    site.editions = read_editions(settings, data, errors)
 
     prepare_output(out, root)
     for problem in problems:
@@ -1526,6 +1608,8 @@ def main():
     verify_pdfs(out, problems, site, index_ids, errors)
 
     shutil.copyfile(MANUAL, out / "main.pdf")
+    for edition in site.editions:
+        shutil.copyfile(f"build/{edition.pdf}", out / edition.pdf)
     data = catalogue_data(chapters, problems, site, author)
     write_text(out / "catalogue.json", json.dumps(data, ensure_ascii=False, indent=2) + "\n")
     write_text(out / "index.html", render_index(chapters, problems, site, Path(MANUAL).stat().st_size))

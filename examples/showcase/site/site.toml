@@ -14,6 +14,7 @@ license = "https://creativecommons.org/licenses/by/4.0/"
 
 # Optional
 publish_unsolved = false          # true: PDFs of the unsolved problems too
+editions = ["exercises", "answers"]  # %editions of latexmkrc, linked from the homepage
 # google_site_verification = "..."  # Google Search Console, HTML tag method
 
 # Optional: the book of the problems (structured data, homepage, footer)

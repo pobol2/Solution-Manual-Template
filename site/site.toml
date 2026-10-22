@@ -1,0 +1,28 @@
+# Settings of the website of this manual (docs/website.md). Build it from
+# this folder, after latexmk:
+#   python solution-manual/site/build.py
+# and open _site/index.html. GitHub Actions publishes it once enabled (see
+# "GitHub Pages" in docs/website.md).
+
+title = "Solutions to Your Book Title"
+short_name = "Your Book Title"    # in page titles, after the problem
+author = "Your Name"
+# Homepage description, 25 to 160 characters; {done} and {total} are counts
+description = "Worked solutions to the problems of Your Book Title, chapter by chapter: {done} of {total} solved so far."
+base_url = "https://your-name.github.io/your-repository/"
+repository = "https://github.com/your-name/your-repository"
+license = "https://creativecommons.org/licenses/by/4.0/"
+
+# Optional
+# publish_unsolved = true           # PDFs of the unsolved problems too
+# editions = ["exercises", "answers"]  # %editions of latexmkrc, linked from the homepage
+# google_site_verification = "..."  # Google Search Console, HTML tag method
+
+# Optional: the book of the problems (structured data, homepage, footer)
+# [book]
+# authors = ["A. Author", "B. Author"]
+# title = "Your Book Title"
+# edition = "Second edition"
+# year = 2026
+# publisher = "Publisher"
+# isbn = "978-..."

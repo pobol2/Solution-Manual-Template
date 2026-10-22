@@ -49,8 +49,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   by problem ID. The build checks the settings, the index against the PDF,
   titles and descriptions, the problem PDFs, every link and anchor, and the
   sitemap, and refuses a manual that is not in `shown` mode. See
-  `docs/website.md`. The showcase and French example have a site, built and
-  checked by CI and uploaded as `showcase-site` and `french-site`.
+  `docs/website.md`. The starter, the showcase and the French example have a site,
+  built and checked by CI and uploaded as `starter-site`, `showcase-site` and
+  `french-site`; the starter's `site/site.toml` is there to edit. `editions = [...]` in `site.toml`
+  links editions from the homepage, each described by its solutions mode,
+  and checked against the manual.
+- `.github/workflows/website.yml`: builds the manual and its website, and
+  publishes it on GitHub Pages on each push to the default branch (pull
+  requests and other branches: build and check only), with the figure PDFs
+  in the Actions cache. It is off until the repository variable
+  `SOLUTION_MANUAL_WEBSITE` is `true`, so repositories created from the
+  template get no failing run. It publishes the root project, or the
+  showcase and its editions in pobol2/Solution-Manual-Template: the live
+  demo at <https://pobol2.github.io/Solution-Manual-Template/>, linked from
+  the README.
 - The JSON problem index also has the `solutions` mode, the `theme_color`,
   the page `layout` (paper size and margins, in PDF points) and the
   `headings` (serial, ID, level, number, title, anchor). Each problem also

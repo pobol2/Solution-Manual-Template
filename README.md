@@ -8,6 +8,10 @@ incrementally.
 The root is a minimal starter. The previews below come from the separate
 [showcase project](examples/showcase/), which demonstrates the full framework.
 
+**[Live demo](https://pobol2.github.io/Solution-Manual-Template/)**: the
+showcase as a [website](docs/website.md), with a page and a PDF per solved
+problem and its exercise and answer editions, published by GitHub Actions.
+
 <p align="center">
   <img src="images/title.png" width="32%" alt="The title page">
   <img src="images/contents.png" width="32%" alt="The table of contents, with problems marked not done">
@@ -64,7 +68,7 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 | Group | Files | Purpose |
 | ----- | ----- | ------- |
 | Edit regularly | [`main.tex`](main.tex), [`Chapters/`](Chapters/), [`Figures/`](Figures/) | Titles, chapter inputs, problems and figure sources. |
-| Customize optionally | [`mytheme.sty`](mytheme.sty), [`mycommands.sty`](mycommands.sty), [`mypackages.sty`](mypackages.sty), [`myfigures.sty`](myfigures.sty) | Theme colors, commands, packages and figure styles. |
+| Customize optionally | [`mytheme.sty`](mytheme.sty), [`mycommands.sty`](mycommands.sty), [`mypackages.sty`](mypackages.sty), [`myfigures.sty`](myfigures.sty), [`site/site.toml`](site/site.toml) | Theme colors, commands, packages, figure styles and [website](docs/website.md) settings. |
 | Framework, never edit | [`solution-manual/`](solution-manual/) | Shared classes and build rules; customize through the project files above. |
 | Generated | `build/`, `Figures/*.pdf`, `main.pdf`, `COMPLETION.md`, [edition](docs/editions.md) PDFs, `_site/` ([website](docs/website.md)) | Build outputs; run `latexmk` (and the website builder) to regenerate them. |
 

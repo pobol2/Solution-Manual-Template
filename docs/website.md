@@ -8,10 +8,12 @@ progress of the manual, and a page and a PDF for each solved problem. The
 pages are plain HTML and CSS, in the language of the manual (English or
 French), so any static host can serve them, GitHub Pages included.
 
-The [showcase](../examples/showcase/site/site.toml) and
-[French](../examples/french/site/site.toml) examples have a website; CI builds
-and checks both, and uploads them as the `showcase-site` and `french-site`
-artifacts.
+The [live demo](https://pobol2.github.io/Solution-Manual-Template/) is the
+website of the [showcase](../examples/showcase/site/site.toml), published by
+the template's [GitHub Pages workflow](#github-pages). The
+[starter](../site/site.toml) and the [French](../examples/french/site/site.toml)
+example have a website too; CI builds and checks all three, and uploads them
+as the `starter-site`, `showcase-site` and `french-site` artifacts.
 
 ## Setup
 
@@ -20,7 +22,7 @@ index](completion-tracking.md#json-problem-index), so it needs:
 
 - `completion tracking=true` in `main.tex`;
 - `solutions=shown` (the default) for the manual. [Editions](editions.md) keep
-  their own modes, and are not part of the website;
+  their own modes; the homepage can link to them (`editions` below);
 - each problem on a new page: `problem on new page=true` (the default);
 - Python 3.11 or later, with `pypdf`:
 
@@ -28,7 +30,8 @@ index](completion-tracking.md#json-problem-index), so it needs:
   python -m pip install -r solution-manual/site/requirements.txt
   ```
 
-Create `site/site.toml` in the project root:
+Set up the website in `site/site.toml`, in the project root (the starter has
+one to edit):
 
 ```toml
 title = "Solutions to Classical Mechanics"
@@ -47,8 +50,8 @@ latexmk
 python solution-manual/site/build.py
 ```
 
-The website is written to `_site/`; add `_site/` to the project's
-`.gitignore`. Each build deletes and rewrites that folder, so `--out` refuses
+The website is written to `_site/`, which the template's `.gitignore`
+ignores. Each build deletes and rewrites that folder, so `--out` refuses
 a folder that is not empty and was not written by `build.py`.
 
 ```text
@@ -72,6 +75,7 @@ that GitHub Pages gives the site (see [GitHub Pages](#github-pages)).
 | `repository` | yes | Address of the project's repository, linked from every page, with a link to report an error (a new issue on GitHub and GitLab). |
 | `license` | yes | Address of the license of the solutions; Creative Commons addresses are shown as `CC BY 4.0`, ... |
 | `publish_unsolved` | no | `true` to publish the PDFs of the unsolved problems too, linked from the catalogue (default `false`: they are listed, without a link). |
+| `editions` | no | [Editions](editions.md) to link from the homepage, by name (`%editions` in `latexmkrc`): `["exercises", "answers"]`. Each one is described by its solutions mode ("questions only", ...) and published as `<name>.pdf`; the build stops if one is missing or out of date. |
 | `google_site_verification` | no | Code of the Google Search Console HTML tag, added to the homepage. |
 | `[book]` | no | The book of the problems; see below. |
 
@@ -131,66 +135,41 @@ to the published site, not to the preview.
 
 ## GitHub Pages
 
-This workflow, saved as `.github/workflows/website.yml`, builds the manual and
-the website on each push to `main` and publishes it. Enable it once in the
-repository's **Settings > Pages > Build and deployment > Source: GitHub
-Actions**.
+The template's [`website.yml`](../.github/workflows/website.yml) workflow
+builds the manual with `latexmk`, then the website, and publishes it on GitHub
+Pages on each push to the repository's default branch. Pull requests and
+pushes to other branches build and check the website without publishing it,
+so a change that breaks it fails before it is merged.
 
-```yaml
-name: Website
+The workflow is off until the repository opts in, so that a repository
+created with **Use this template** gets no failing run. Edit `site/site.toml`
+first, then, in the repository on GitHub:
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+1. **Settings > Pages > Build and deployment > Source:** select
+   **GitHub Actions**.
+2. **Settings > Secrets and variables > Actions > Variables > New repository
+   variable:** name `SOLUTION_MANUAL_WEBSITE`, value `true`.
 
-permissions:
-  contents: read
+The next push to the default branch publishes the website, at the address
+shown in **Settings > Pages** (`https://<owner>.github.io/<repository>/`),
+which the workflow passes as `--base-url`. Run the **Website** workflow from
+the **Actions** tab to publish it right away. Set the variable to anything
+else, or delete it, to turn the workflow off again.
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: read   # configure-pages reads the site URL
-    steps:
-      - uses: actions/checkout@v7
-      - uses: xu-cheng/latex-action@4.1.0
-        with:
-          root_file: main.tex
-          args: -file-line-error -interaction=nonstopmode
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-      - run: python -m pip install -r solution-manual/site/requirements.txt
-      - id: pages
-        uses: actions/configure-pages@v5
-      - run: python solution-manual/site/build.py --base-url "${{ steps.pages.outputs.base_url }}"
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
-```
+The workflow publishes the project at the root of the repository. In
+[pobol2/Solution-Manual-Template](https://github.com/pobol2/Solution-Manual-Template)
+itself, it publishes the [showcase](../examples/showcase/) with its exercise
+and answer [editions](editions.md): this is the [live
+demo](https://pobol2.github.io/Solution-Manual-Template/). The figures
+(`Figures/*.pdf`, compiled with LuaLaTeX) are kept in the Actions cache and
+rebuilt only when their sources, `myfigures.sty`, `mytheme.sty` or the
+framework's figure class change.
 
 With the framework as a submodule (see [advanced
-submodule](advanced-submodule.md)), check out the submodule too and use its
-path, e.g. `template/solution-manual/site/build.py`.
+submodule](advanced-submodule.md)), copy the workflow, check out the
+submodule too (`actions/checkout` with `submodules: true`), and replace
+`solution-manual/` with the submodule's path, e.g.
+`template/solution-manual/`.
 
 ## What the website contains
 
@@ -200,8 +179,9 @@ path, e.g. `template/solution-manual/site/build.py`.
 | `problems/<id>.html` | A page per solved problem: breadcrumb, title, its PDF in the page, links to its parts and to the previous and next solved problems. |
 | `pdf/<id>.pdf` | The pages of a solved problem in the manual (unsolved too with `publish_unsolved`), with its parts as bookmarks and the manual's page numbers. |
 | `main.pdf` | The full manual. |
-| `catalogue.json` | Headings and problems, with their IDs, statuses, pages, parts and the problems they refer to and are referred to by. |
-| `sitemap.xml` | The homepage, the solved-problem pages, the full manual and the solved-problem PDFs. |
+| `<name>.pdf` | The editions of `editions`, linked from the homepage. |
+| `catalogue.json` | The editions, the headings and the problems, with their IDs, statuses, pages, parts and the problems they refer to and are referred to by. |
+| `sitemap.xml` | The homepage, the solved-problem pages, the full manual, its editions and the solved-problem PDFs. |
 | `style.css` | The style, in the manual's `ThemeColor` (from `mytheme.sty`), lighter in dark mode. |
 
 The texts of the pages are those of the manual's language: English or French
