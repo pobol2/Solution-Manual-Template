@@ -1,0 +1,37 @@
+% Observers for semantic tests: do not replace the class's behavior.
+\SolutionManualSetup{completion tracking=true, problem on new page=false,
+  date={Test date}, footer={}}
+\makeatletter
+\newcount\SMTestSolutions
+\newcount\SMTestAnswers
+\newcount\SMTestVerifications
+\AddToHook{cmd/solution/before}{\global\advance\SMTestSolutions by 1}
+\AddToHook{env/answer/begin}{\global\advance\SMTestAnswers by 1}
+\AddToHook{env/subanswer/begin}{\global\advance\SMTestAnswers by 1}
+\let\SMTestVerificationLabel\SM@verificationlabel
+\def\SM@verificationlabel{%
+  \global\advance\SMTestVerifications by 1\SMTestVerificationLabel}
+\newcommand\SMTestResponses{%
+  \TYPE{Solutions: \the\SMTestSolutions}%
+  \TYPE{Answers: \the\SMTestAnswers}%
+  \TYPE{Verifications: \the\SMTestVerifications}}
+\def\SMTestProblem#1#2#3#4#5#6#7#8{%
+  \TYPE{Problem #1: number=#6; done=#5; unfinished parts=[#8]}}
+\newcommand\SMTestRecords{%
+  \SM@finishproblem
+  \SM@walk\SM@cur@list\SM@gobblefive\SMTestProblem
+  \begingroup
+    \def\SM@ns{cur}%
+    \TYPE{Total: \SM@count{done}{all}/\SM@count{total}{all}}%
+  \endgroup}
+\newcommand\SMTestNumber[1]{%
+  \TYPE{#1: problem=\theProblemNum; ref=\p@ProblemNum\theProblemNum}}
+\def\SMTestMarkers{}
+% Call in a question, while its environment's marker is still in scope.
+\newcommand\SMTestSaveMarker[1]{%
+  \ifx\SM@marker\@empty
+    \g@addto@macro\SMTestMarkers{\TYPE{#1: no marker}}%
+  \else
+    \g@addto@macro\SMTestMarkers{\TYPE{#1: not done marker}}%
+  \fi}
+\makeatother

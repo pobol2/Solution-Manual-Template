@@ -1,0 +1,18 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+% Chapter numbering is the default.
+\begin{document}
+\chapter{First}
+\section{One}
+\begin{problem}{Q.}{}{}\label{chapter:first}\end{problem}
+\section{Two}
+\begin{problem}{Q.}{}{}\label{chapter:second}\end{problem}
+\chapter{Second}
+\begin{problem}{Q.}{}{}\end{problem}
+\START
+\SMTestNumber{New chapter}
+\TYPE{Earlier references: \getrefnumber{chapter:first}, \getrefnumber{chapter:second}}
+\SMTestRecords
+\OMIT
+\end{document}

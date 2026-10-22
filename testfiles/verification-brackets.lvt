@@ -1,0 +1,19 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\makeatletter
+\let\SMTestResponse\SM@response
+\long\def\SM@response#1#2#3#4{%
+  \expandafter\gdef\csname SMTestVerification@#4\endcsname{#3}%
+  \SMTestResponse{#1}{#2}{#3}{#4}}
+\makeatother
+\begin{document}
+\chapter{Verification brackets}
+\begin{problem}{Question.}{Solution.}{Answer.}[Before [outer [inner] outer] after.]\end{problem}
+\begin{subproblem}{Part.}{Solution.}{Answer.}[Check $[0,[1,2]]$ then [a[b]c].]\end{subproblem}
+\START
+\TYPE{Problem verification: \csname SMTestVerification@answer\endcsname}
+\TYPE{Part verification: \csname SMTestVerification@subanswer\endcsname}
+\SMTestResponses
+\OMIT
+\end{document}

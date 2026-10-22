@@ -1,0 +1,27 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{problem numbering=subdivision}
+\begin{document}
+\chapter{Chapter level}
+\begin{problem}{Q.}{}{}\label{subdivision:chapter}\end{problem}
+\chapter{Section level}
+\section{One}
+\begin{problem}{Q.}{}{}\label{subdivision:section1}\end{problem}
+\begin{problem}{Q.}{}{}\label{subdivision:section2}\end{problem}
+\section{Two}
+\begin{problem}{Q.}{}{}\label{subdivision:section-reset}\end{problem}
+\chapter{Subsection level}
+\section{One}
+\subsection{One}
+\begin{problem}{Q.}{}{}\label{subdivision:subsection1}\end{problem}
+\subsection{Two}
+\begin{problem}{Q.}{}{}\label{subdivision:subsection-reset}\end{problem}
+\START
+\TYPE{Chapter fallback: \getrefnumber{subdivision:chapter}}
+\TYPE{Same section: \getrefnumber{subdivision:section1}, \getrefnumber{subdivision:section2}}
+\TYPE{Section reset: \getrefnumber{subdivision:section-reset}}
+\TYPE{Subsection reset: \getrefnumber{subdivision:subsection1}, \getrefnumber{subdivision:subsection-reset}}
+\SMTestRecords
+\OMIT
+\end{document}

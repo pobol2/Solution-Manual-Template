@@ -1,0 +1,13 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{Missing reference}
+\START
+\begingroup
+  \let\SMTestBold\textbf
+  \def\textbf#1{\TYPE{Missing reference text: #1}\SMTestBold{#1}}
+  \probref{99}{42}
+\endgroup
+\OMIT
+\end{document}

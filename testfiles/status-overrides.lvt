@@ -1,0 +1,14 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{Status overrides}
+\begin{problem}[done]{Question.\SMTestSaveMarker{Forced done}}{}{}\end{problem}
+\begin{problem}[not done]{Question.\SMTestSaveMarker{Forced not done}}{Partial solution.}{}\end{problem}
+\begin{problem}{Question.\SMTestSaveMarker{Automatic solution}}{Solution.}{}\end{problem}
+\begin{problem}{Question.\SMTestSaveMarker{Automatic empty solution}}{}{}\end{problem}
+\START
+\SMTestMarkers
+\SMTestRecords
+\OMIT
+\end{document}

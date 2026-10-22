@@ -1,0 +1,13 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{Blank arguments}
+\begin{problem}{}{}{}[]\end{problem}
+% An answer or verification alone must not mark a solution complete.
+\begin{problem}{Question.}{}{Answer.}[Check.]\end{problem}
+\START
+\SMTestResponses
+\SMTestRecords
+\OMIT
+\end{document}

@@ -1,0 +1,13 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{completion tracking=false}
+\begin{document}
+\chapter{Tracking disabled}
+\begin{problem}[not done]{Q.\SMTestSaveMarker{Forced not done}}{Solution.}{}\end{problem}
+\begin{problem}[done]{Q.\SMTestSaveMarker{Forced done}}{}{}\end{problem}
+\START
+\SMTestMarkers
+\SMTestRecords
+\OMIT
+\end{document}

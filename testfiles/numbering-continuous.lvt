@@ -1,0 +1,18 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{problem numbering=continuous}
+\begin{document}
+\chapter{First}
+\section{One}
+\begin{problem}{Q.}{}{}\label{continuous:first}\end{problem}
+\section{Two}
+\begin{problem}{Q.}{}{}\label{continuous:second}\end{problem}
+\chapter{Second}
+\begin{problem}{Q.}{}{}\end{problem}
+\START
+\SMTestNumber{Across chapters}
+\TYPE{Earlier references: \getrefnumber{continuous:first}, \getrefnumber{continuous:second}}
+\SMTestRecords
+\OMIT
+\end{document}

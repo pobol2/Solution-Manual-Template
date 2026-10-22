@@ -1,0 +1,29 @@
+\input regression-test.tex
+\documentclass{SolutionFigure}
+\begin{document}
+\begin{tikzpicture}
+  \node[diagram node] (a) {Start};
+  \node[decision node, right=of a] (b) {Test};
+  \draw[diagram arrow] (a) -- (b);
+  \draw[vector] (0,-1) -- (1,-1);
+  \fill[region] (0,-2) rectangle (1,-1.5);
+  \node[annotation] at (2,-1) {Note};
+\end{tikzpicture}
+\begin{tikzpicture}
+  \begin{groupplot}[group style={group size=2 by 1}, subplot grid]
+    \nextgroupplot[title=Linear]\addplot {x};
+    \nextgroupplot[title=Quadratic]\addplot {x^2};
+  \end{groupplot}
+\end{tikzpicture}
+\START
+\makeatletter
+\extractcolorspec{ThemeColor}\SMTestTheme
+\extractcolorspec{FigureAccent}\SMTestAccent
+\extractcolorspec{FigureFill}\SMTestFill
+\TYPE{Theme: \SMTestTheme}
+\TYPE{Accent: \SMTestAccent}
+\TYPE{Fill: \SMTestFill}
+\TYPE{PGFPlots compatibility: \pgfkeysvalueof{/pgfplots/compat/current}}
+\makeatother
+\OMIT
+\end{document}

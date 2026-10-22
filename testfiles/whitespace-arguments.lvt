@@ -1,0 +1,26 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{Whitespace arguments}
+% Include spaces and paragraph breaks in all long arguments.
+\begin{problem}{   }{   }{   }[   ]\end{problem}
+\begin{problem}{
+
+}{
+
+}{
+
+}[
+
+]\end{problem}
+\begin{subproblem}{   }{
+
+}{   }[
+
+]\end{subproblem}
+\START
+\SMTestResponses
+\SMTestRecords
+\OMIT
+\end{document}

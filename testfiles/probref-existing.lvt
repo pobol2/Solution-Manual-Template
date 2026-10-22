@@ -1,0 +1,19 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{References}
+\begin{problem}{Q.}{Solution.}{}\end{problem}
+\START
+\begingroup
+  % The wrapper observes the actual text and destination chosen by probref.
+  \let\SMTestHyperlink\hyperlink
+  \let~\space
+  \def\hyperlink#1#2{%
+    \TYPE{Target: #1}\TYPE{Text: #2}%
+    \SMTestHyperlink{#1}{#2}}
+  \probref{1}{1}
+  \probref[Custom text]{1}{1}
+\endgroup
+\OMIT
+\end{document}

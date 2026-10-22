@@ -1,0 +1,41 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{problem numbering=subdivision}
+\begin{document}
+\textbooknumber{IV}
+\chapter{Textbook chapter}
+\textbooknumber{12}
+\section{Textbook section}
+\subsection{Inherited number}
+\begin{problem}{Q.}{}{}\label{textbook:inherited}\end{problem}
+\textbooknumber{12b}
+\subsection{Textbook subsection}
+\begin{problem}{Q.}{}{}\label{textbook:override}\end{problem}
+\subsection{Automatic subsection}
+\begin{problem}{Q.}{}{}\label{textbook:restored-subsection}\end{problem}
+\section{Automatic section}
+\subsection{Automatic subsection}
+\begin{problem}{Q.}{}{}\label{textbook:restored-section}\end{problem}
+\chapter{Automatic chapter}
+\textbooknumber{\S 9}
+\section{Section sign}
+\begin{problem}{Q.}{}{}\end{problem}
+\START
+\TYPE{Inherited: \getrefnumber{textbook:inherited}}
+\TYPE{Override: \getrefnumber{textbook:override}}
+\TYPE{Restored subsection: \getrefnumber{textbook:restored-subsection}}
+\TYPE{Restored section: \getrefnumber{textbook:restored-section}}
+\TYPE{Restored chapter: \thechapter}
+\begingroup
+  % Capture link text without font/node details; still use real aux targets.
+  \let~\space
+  \def\hyperlink#1#2{%
+    \begingroup
+      \def\S{[section sign]}\let\protect\empty
+      \TYPE{Textbook link: #2}%
+    \endgroup}%
+  \probref{\S 9}{1}
+\endgroup
+\OMIT
+\end{document}

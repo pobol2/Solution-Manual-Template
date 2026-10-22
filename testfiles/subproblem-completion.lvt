@@ -1,0 +1,26 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{Parts}
+% Empty parent solution, all parts complete.
+\begin{problem}{Question.\SMTestSaveMarker{All parts complete}}{}{}\end{problem}
+\begin{subproblem}{First part.}{Solution.}{}\label{part:a}\end{subproblem}
+\begin{subproblem}[done]{Second part.}{}{}\label{part:b}\end{subproblem}
+% A complete parent solution does not override an unfinished part.
+\begin{problem}{Question.\SMTestSaveMarker{Unfinished parts}}{Parent solution.}{}\end{problem}
+\begin{subproblem}{First part.}{Solution.}{}\end{subproblem}
+\begin{subproblem}[not done]{Second part.}{Partial solution.}{}\end{subproblem}
+\begin{subproblem}{Third part.}{}{}\end{subproblem}
+% Forced not done wins even when all parts are done.
+\begin{problem}[not done]{Question.}{}{}\end{problem}
+\begin{subproblem}[done]{Part.}{}{}\end{subproblem}
+% Forced done on a parent still requires all parts to be done.
+\begin{problem}[done]{Question.}{}{}\end{problem}
+\begin{subproblem}{Part.}{}{}\end{subproblem}
+\START
+\SMTestMarkers
+\TYPE{Part references: \getrefnumber{part:a}, \getrefnumber{part:b}}
+\SMTestRecords
+\OMIT
+\end{document}

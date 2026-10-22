@@ -1,0 +1,20 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+-------- completion-report-completion.md (start) ---------
+(completion-report-completion.md)
+<!-- Generated from completion-report.tex by SolutionManual.cls. Do not edit: build the manual to refresh it. -->[nl]
+[nl]
+**Completion: 2/4 (50%)**[nl]
+[nl]
+| | Done | Not done |[nl]
+| :-- | :-: | :-- |[nl]
+| **All problems** | 2/4 | |[nl]
+| (outside chapters) | 1/1 |  |[nl]
+| **Chapter 1. Algebra \| basics** | 1/3 |  |[nl]
+| &emsp;1.1 One | 1/3 |  |[nl]
+| &emsp;&emsp;1.1.1 Parts | 1/2 | Problem 1 (b) |[nl]
+| &emsp;&emsp;1.1.2 Unfinished | 0/1 | Problem 3 |[nl]
+-------- completion-report-completion.md (end) -----------
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

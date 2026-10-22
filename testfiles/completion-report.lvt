@@ -1,0 +1,21 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\begin{problem}{Outside chapters.}{Solution.}{}\end{problem}
+\chapter{Algebra | basics}
+\section{One}
+\subsection{Parts}
+\begin{problem}{Q.}{}{}\end{problem}
+\begin{subproblem}[done]{Part.}{}{}\end{subproblem}
+\begin{subproblem}{Part.}{}{}\end{subproblem}
+\begin{problem}{Q.}{Solution.}{}\end{problem}
+\subsection{Unfinished}
+\begin{problem}[not done]{Q.}{Partial solution.}{}\end{problem}
+\chapter{Empty chapter}
+% After the class's end-document hook writes and closes the real report.
+\AddToHook{enddocument/afterlastpage}{%
+  \START
+  \SHOWFILE{\jobname-completion.md}%
+  \OMIT}
+\end{document}

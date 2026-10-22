@@ -89,6 +89,11 @@ specialized extensions like these belong in each manual's own files
 (`mycommands.sty`, `myfigures.sty`, companion Lua files), not in
 `solution-manual/`.
 
+## Contributing
+
+See [Contributing](docs/contributing.md) for running the class regression tests
+with `l3build` and updating their saved results.
+
 ## Changelog
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the changes in each version.

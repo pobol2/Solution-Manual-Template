@@ -1,0 +1,17 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\chapter{Mixed levels}
+\begin{problem}{Chapter problem.}{}{}\end{problem}
+\section{Section}
+\START
+% Expected error: capture its class, message and help while allowing the run
+% to finish. Other errors retain their usual nonzero exit status.
+\begingroup
+  \def\ClassError#1#2#3{%
+    \TYPE{Class error (#1): #2}\TYPE{Help: #3}}
+  \begin{problem}{Section problem.}{}{}\end{problem}
+\endgroup
+\OMIT
+\end{document}

@@ -1,0 +1,14 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Forced done: no marker
+Forced not done: not done marker
+Automatic solution: no marker
+Automatic empty solution: not done marker
+Problem 1: number=1; done=1; unfinished parts=[]
+Problem 2: number=2; done=0; unfinished parts=[]
+Problem 3: number=3; done=1; unfinished parts=[]
+Problem 4: number=4; done=0; unfinished parts=[]
+Total: 2/4
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

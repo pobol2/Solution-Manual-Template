@@ -11,6 +11,23 @@ permissions:
   contents: read
 
 jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run class regression tests
+        uses: xu-cheng/texlive-action@v3
+        with:
+          texlive_version: 2026
+          run: l3build check
+      - name: Upload regression diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: regression-diagnostics
+          path: build/l3build/test/
+          if-no-files-found: ignore
+
   versions:
     runs-on: ubuntu-latest
     steps:
