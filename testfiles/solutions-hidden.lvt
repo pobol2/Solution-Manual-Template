@@ -1,0 +1,6 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{solutions=hidden}
+\def\SMTestShowExports{}
+\input sm-solutions-test.tex

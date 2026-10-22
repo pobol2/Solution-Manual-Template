@@ -32,6 +32,15 @@ unfinished problems under each heading, e.g. "Not done: Problem 2 (b, c)".
 Place it after `\tableofcontents`, or at the end of the manual, where it is
 complete after a single compilation.
 
+With `solutions=hidden` or `solutions=answers only`, the PDF omits all
+"Not done" markers (including in the contents) and `\completionoverview`.
+Set `completion markers=true` to display them, or `completion markers=false`
+to suppress them even in `shown` mode. Completion tracking must still be on.
+The `show solution` option for a worked example does not enable markers.
+Completion status continues to use the source solution, so hiding a solution
+does not mark it unfinished. The Markdown report and JSON export retain the
+same records and statuses; JSON page ranges follow the edition's printed pages.
+
 ## Markdown report
 
 The build also writes `COMPLETION.md` in the project root, from the same data:

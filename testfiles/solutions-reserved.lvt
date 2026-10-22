@@ -1,0 +1,13 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+\START
+\begingroup
+  \def\ClassError#1#2#3{%
+    \TYPE{Class error (#1): #2}\TYPE{Help: #3}}
+  \SolutionManualSetup{solutions=answers at end}
+\endgroup
+\OMIT
+Reserved option test.
+\end{document}

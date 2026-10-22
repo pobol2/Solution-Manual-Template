@@ -1,0 +1,43 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\newcount\SMTestNotDoneLabels
+\newcount\SMTestOverviews
+\makeatletter
+\let\SMTestNotDoneLabel\SM@notdonelabel
+\def\SM@notdonelabel{%
+  \global\advance\SMTestNotDoneLabels by 1\SMTestNotDoneLabel}
+\AddToHook{cmd/SM@ovline/before}{\global\advance\SMTestOverviews by 1}
+\newcommand\SMTestCompletionDisplay[2]{%
+  \begingroup
+    \SolutionManualSetup{#2}%
+    \SM@setmarker{0}%
+    \SMTestSaveMarker{#1}%
+    \SMTestNotDoneLabels=0
+    \SM@tocmark{1}\par
+    \TYPE{#1 contents markers: \the\SMTestNotDoneLabels}%
+    \SMTestOverviews=0
+    \edef\SMTestBeforePage{\thepage}%
+    \OMIT
+    \completionoverview
+    \TIMO
+    \TYPE{#1 overview rows: \the\SMTestOverviews}%
+    \ifnum\SMTestOverviews=0
+      \TYPE{#1 overview pages: \SMTestBeforePage -> \thepage}%
+    \fi
+  \endgroup}
+\makeatother
+\begin{document}
+\chapter{Completion display}
+\begin{problem}{Unfinished question.}{}{}\end{problem}
+\START
+\SMTestCompletionDisplay{Default shown}{}
+\SMTestCompletionDisplay{Hidden}{solutions=hidden}
+\SMTestCompletionDisplay{Answers only}{solutions=answers only}
+\SMTestCompletionDisplay{Hidden with markers}{completion markers=true, solutions=hidden}
+\SMTestCompletionDisplay{Answers with markers}{solutions=answers only, completion markers=true}
+\SMTestCompletionDisplay{Shown without markers}{completion markers=false, solutions=shown}
+\SMTestMarkers
+\SMTestRecords
+\OMIT
+\end{document}

@@ -1,0 +1,63 @@
+% The same source exercises each edition, including source-based completion.
+\SolutionManualSetup{problem on new page=true}
+\newcount\SMTestQuestions
+\newcount\SMTestSolutionBodies
+\newcount\SMTestAnswerBodies
+\newcount\SMTestVerificationBodies
+\newcommand\SMTestQuestion[1]{%
+  \global\advance\SMTestQuestions by 1
+  Question.\SMTestSaveMarker{#1}}
+\newcommand\SMTestSolution{%
+  \global\advance\SMTestSolutionBodies by 1 Worked solution.}
+\newcommand\SMTestAnswer{%
+  \global\advance\SMTestAnswerBodies by 1 Final answer.}
+\newcommand\SMTestVerification{%
+  \global\advance\SMTestVerificationBodies by 1 Check.}
+\begin{document}
+\chapter{Editions}
+\begin{problem}[title={With parts}]
+{\SMTestQuestion{Parent}\label{edition:parent}}
+{\SMTestSolution}{\SMTestAnswer}[\SMTestVerification]\end{problem}
+\begin{subproblem}[show solution]
+{\SMTestQuestion{Worked part}\label{edition:part}}
+{\SMTestSolution}{\SMTestAnswer}[\SMTestVerification]\end{subproblem}
+% The override must reset for the next part. An answer alone is unfinished.
+\begin{subproblem}
+{\SMTestQuestion{Unfinished part}}
+{}{\SMTestAnswer}[\SMTestVerification]\end{subproblem}
+\begin{problem}[show solution]
+{\SMTestQuestion{Worked example}}
+{\SMTestSolution}{\SMTestAnswer}[\SMTestVerification]\end{problem}
+\begin{problem}[done, show solution]
+{\SMTestQuestion{Forced done}}{ }{ }[ ]\end{problem}
+% The override must reset for the next problem.
+\begin{problem}
+{\SMTestQuestion{Ordinary problem}\label{edition:last}}
+{\SMTestSolution}{\SMTestAnswer}[\SMTestVerification]\end{problem}
+\START
+\TYPE{Questions: \the\SMTestQuestions}
+\SMTestResponses
+\TYPE{Bodies executed: solutions=\the\SMTestSolutionBodies;
+  answers=\the\SMTestAnswerBodies; verifications=\the\SMTestVerificationBodies}
+\SMTestMarkers
+\TYPE{References: \getrefnumber{edition:parent},
+  \getrefnumber{edition:part}, \getrefnumber{edition:last}}
+\TYPE{Problem pages: \getpagerefnumber{edition:parent},
+  \getpagerefnumber{edition:last}}
+\begingroup
+  \let\SMTestHyperlink\hyperlink
+  \let~\space
+  \def\hyperlink#1#2{%
+    \TYPE{Target: #1}\TYPE{Text: #2}\SMTestHyperlink{#1}{#2}}
+  \ref{edition:parent}, \ref{edition:part}, \probref{1}{1}.
+\endgroup
+\SMTestRecords
+\OMIT
+\ifdefined\SMTestShowExports
+  \AddToHook{enddocument/afteraux}{%
+    \TIMO
+    \SHOWFILE{\jobname-completion.md}%
+    \SHOWFILE{\jobname-problems.json}%
+    \OMIT}
+\fi
+\end{document}

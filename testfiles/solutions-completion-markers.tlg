@@ -1,0 +1,28 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Default shown contents markers: 1
+Default shown overview rows: 2
+Hidden contents markers: 0
+Hidden overview rows: 0
+Hidden overview pages: 2-> 2
+Answers only contents markers: 0
+Answers only overview rows: 0
+Answers only overview pages: 2-> 2
+Hidden with markers contents markers: 1
+Hidden with markers overview rows: 2
+Answers with markers contents markers: 1
+Answers with markers overview rows: 2
+Shown without markers contents markers: 0
+Shown without markers overview rows: 0
+Shown without markers overview pages: 4-> 4
+Default shown: not done marker
+Hidden: no marker
+Answers only: no marker
+Hidden with markers: not done marker
+Answers with markers: not done marker
+Shown without markers: no marker
+Problem 1: number=1; done=0; unfinished parts=[]
+Total: 0/1
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

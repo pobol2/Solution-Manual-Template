@@ -1,0 +1,25 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Questions: 6
+Solutions: 2
+Answers: 5
+Verifications: 2
+Bodies executed: solutions=2; answers=5; verifications=2
+Parent: no marker
+Worked part: no marker
+Unfinished part: no marker
+Worked example: no marker
+Forced done: no marker
+Ordinary problem: no marker
+References: 1.1, 1.1(a), 1.4
+Problem pages: 2, 5
+Target: problem-title.1.0.0.1
+Text: Chap. 1 Prob. 1
+Problem 1: number=1; done=0; unfinished parts=[b]
+Problem 2: number=2; done=1; unfinished parts=[]
+Problem 3: number=3; done=1; unfinished parts=[]
+Problem 4: number=4; done=1; unfinished parts=[]
+Total: 3/4
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

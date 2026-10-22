@@ -88,6 +88,11 @@
 
 % Completion tracking (markers, overview and Markdown report)
 \newif\ifSM@completion
+% Response visibility: 0 = shown, 1 = hidden, 2 = answers only.
+\def\SM@solutions{0}
+\newif\ifSM@showsolution
+% Completion display: -1 = automatic (shown mode only), 0 = off, 1 = on.
+\def\SM@completionmarkers{-1}
 
 % \SolutionManualSetup{key=value, ...}, in the preamble (after \documentclass).
 % problem numbering can also be changed in the document, before a chapter.
@@ -125,8 +130,19 @@
     problem numbering/continuous/.code={\SM@setnumbering{0}},
     problem numbering/chapter/.code={\SM@setnumbering{1}},
     problem numbering/subdivision/.code={\SM@setnumbering{2}},
+    solutions/.is choice,
+    solutions/shown/.code={\def\SM@solutions{0}},
+    solutions/hidden/.code={\def\SM@solutions{1}},
+    solutions/answers only/.code={\def\SM@solutions{2}},
+    solutions/answers at end/.code={\ClassError{SolutionManual}{%
+        solutions=answers at end is not implemented yet}{%
+        Use solutions=shown, hidden or answers only.}},
     % Completion tracking
     completion tracking/.is if=SM@completion,
+    completion markers/.is choice,
+    completion markers/true/.code={\def\SM@completionmarkers{1}},
+    completion markers/false/.code={\def\SM@completionmarkers{0}},
+    completion markers/.default=true,
     not done label/.code={\def\SM@notdonelabel{#1}},
     done label/.code={\def\SM@donelabel{#1}},
     completion title/.code={\def\SM@completiontitle{#1}},
@@ -476,15 +492,25 @@
                          title=\scshape \SM@answerlabel{} \theProblemNum~\theSubProblemNum.
                          }
 
-% Solution, answer and verification; omitted when their arguments are blank.
+% Response visibility is decided here, after source-based completion tracking.
+% A local show solution override restores the full response in any mode.
+% Blank arguments are always omitted.
 % #1 = Solution
 % #2 = Answer
 % #3 = Verification
 % #4 = Answer environment (answer or subanswer)
 \newcommand{\SM@response}[4]{%
-    \SM@ifblank{#1}{}{\solution #1\SM@pagewrite{last}\par}%
-    \SM@ifblank{#2}{}{\begin{#4}#2\SM@pagewrite{last}\end{#4}}%
-    \SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\SM@pagewrite{last}\par}%
+    \ifSM@showsolution\def\SM@responsemode{0}%
+    \else\let\SM@responsemode\SM@solutions\fi
+    \ifnum\SM@responsemode=0
+        \let\SM@printworked\@firstofone
+    \else\let\SM@printworked\@gobble\fi
+    \ifnum\SM@responsemode=1
+        \let\SM@printanswer\@gobble
+    \else\let\SM@printanswer\@firstofone\fi
+    \SM@printworked{\SM@ifblank{#1}{}{\solution #1\SM@pagewrite{last}\par}}%
+    \SM@printanswer{\SM@ifblank{#2}{}{\begin{#4}#2\SM@pagewrite{last}\end{#4}}}%
+    \SM@printworked{\SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\SM@pagewrite{last}\par}}%
 }
 
 % Running header: the last problem started on the page (mark class SMproblem;
@@ -495,7 +521,7 @@
     \hyperlink{#1}{\scshape \ifblank{#2}{}{#2\quad}\SM@problemlabel~#3.}}
 
 % Wrapper for problems
-% #1 = Options: done / not done (status override), title={...}
+% #1 = Options: done / not done (status override), title={...}, show solution
 % #2 = Question
 % #3 = Solution (optional: leave empty)
 % #4 = Answer (optional: leave empty)
@@ -533,7 +559,7 @@
 }{\ifhmode\SM@pagewrite{last}\fi\par}
 
 % Wrapper for subproblems, after a problem
-% #1 = Options: done / not done (status override), title={...}
+% #1 = Options: done / not done (status override), title={...}, show solution
 % #2 = Question
 % #3 = Solution (optional: leave empty)
 % #4 = Answer (optional: leave empty)
@@ -606,16 +632,19 @@
 
 \newcommand*{\SM@notdonemarker}{\hfill{\normalfont\footnotesize\itshape \SM@notdonelabel}}
 
-% Options: status sets \SM@forced to 0, 1 or 2; title is independent of it.
+% Options: status sets \SM@forced to 0, 1 or 2; title and visibility are
+% independent of it. Reset all options for each problem or part.
 \pgfqkeys{/SolutionManual/status}{
     done/.code={\def\SM@forced{1}},
     not done/.code={\def\SM@forced{2}},
     title/.store in=\SM@title,
+    show solution/.code={\SM@showsolutiontrue},
     .unknown/.code={\ClassError{SolutionManual}{Unknown status
-        `\pgfkeyscurrentname'}{Use done, not done or title={...}.}},
+        `\pgfkeyscurrentname'}{Use done, not done, title={...} or show solution.}},
 }
 \newcommand{\SM@readstatus}[1]{%
     \def\SM@forced{0}\let\SM@title\@empty
+    \SM@showsolutionfalse
     \pgfqkeys{/SolutionManual/status}{#1}}
 
 % \@tempa = own status (1 = done) from the solution #1 and \SM@forced
@@ -623,10 +652,22 @@
     \SM@ifblank{#1}{\def\@tempa{0}}{\def\@tempa{1}}%
     \ifcase\SM@forced\or\def\@tempa{1}\or\def\@tempa{0}\fi}
 
-% \SM@marker: the not-done marker if #1 is 0 and tracking is on
+% PDF completion display follows the mode unless explicitly overridden.
+% This does not affect tracking, the Markdown report or JSON export.
+\newcommand{\SM@ifcompletionmarkers}[2]{%
+    \ifnum\SM@completionmarkers<0
+        \ifnum\SM@solutions=0 #1\else #2\fi
+    \else
+        \ifnum\SM@completionmarkers=1 #1\else #2\fi
+    \fi}
+
+% \SM@marker: the not-done marker if #1 is 0 and PDF markers are enabled
 \newcommand*{\SM@setmarker}[1]{%
     \let\SM@marker\@empty
-    \ifSM@completion\ifnum#1=\z@ \let\SM@marker\SM@notdonemarker\fi\fi}
+    \ifSM@completion
+        \SM@ifcompletionmarkers{%
+            \ifnum#1=\z@ \let\SM@marker\SM@notdonemarker\fi}{}%
+    \fi}
 \let\SM@marker\@empty
 
 % Delayed writes travel with the content, including breakable boxes. Freeze
@@ -739,11 +780,14 @@
 
 % Contents marker of problem #1 (serial), from the previous run
 \newcommand*{\SM@tocmark}[1]{%
-    \ifSM@completion\ifcsname SM@prev@status@#1\endcsname
-        \ifnum\csname SM@prev@status@#1\endcsname=\z@
-            \hspace{0.5em}{\normalfont\footnotesize\itshape \SM@notdonelabel}%
-        \fi
-    \fi\fi}
+    \ifSM@completion
+        \SM@ifcompletionmarkers{%
+            \ifcsname SM@prev@status@#1\endcsname
+                \ifnum\csname SM@prev@status@#1\endcsname=\z@
+                    \hspace{0.5em}{\normalfont\footnotesize\itshape \SM@notdonelabel}%
+                \fi
+            \fi}{}%
+    \fi}
 
 % Apply #2 (heading handler) and #3 (problem handler) to the records of list #1
 \newcommand{\SM@walk}[3]{%
@@ -757,6 +801,7 @@
 % done/total counts and the unfinished problems: from the previous run at the
 % start of the manual, from this run at its end.
 \newcommand{\completionoverview}{%
+    \SM@ifcompletionmarkers{%
     \ifSM@completion
         \SM@finishproblem
         \ifx\SM@cur@list\@empty\def\SM@ns{prev}\else\def\SM@ns{cur}\fi
@@ -788,7 +833,8 @@
     \else
         \ClassWarning{SolutionManual}{\protect\completionoverview\space needs
             completion tracking=true}%
-    \fi}
+    \fi}{}% Suppressed entirely in student editions, including page breaks.
+}
 \def\SM@cur@ns{cur}
 % #1 = Indent, #2 = Anchor (or empty), #3 = Text, #4 = Heading serial (or all)
 \newcommand{\SM@ovline}[4]{%

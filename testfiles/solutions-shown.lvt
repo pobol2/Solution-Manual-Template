@@ -1,0 +1,5 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+% Exercise the default without setting solutions explicitly.
+\input sm-solutions-test.tex

@@ -64,6 +64,23 @@ keys of `\SolutionManualSetup` customize the headings. Verification does not
 change completion status; that still depends on the solution or the explicit
 `[done]` / `[not done]` status before the question.
 
+Use `\SolutionManualSetup{solutions=hidden}` for questions alone, or
+`solutions=answers only` for questions and final-answer boxes. Both modes omit
+worked solutions and verification, including those of subproblems. The default,
+`solutions=shown`, prints everything as usual. `answers at end` is reserved for
+a later step and currently reports an error.
+
+To include a worked example in either student edition, add `[show solution]`
+or `[done, show solution]` before its question. This restores that problem's
+solution, answer and verification. The same option works on a `subproblem`;
+each problem or part needs its own override. Numbering, question labels,
+`\ref`, `\probref` and the `problem on new page` setting work in every mode.
+
+Completion still follows the source solution and status overrides, even when
+the response is hidden. Student editions suppress completion markers and
+`\completionoverview` unless `completion markers=true` is set; see
+[Completion tracking](completion-tracking.md).
+
 Problems start on a new page (see `problem on new page`); questions can
 span several pages, and an answer box is kept on the page where its solution
 ends. Final-answer boxes stay whole, so their contents must fit on one page.

@@ -34,10 +34,12 @@ Customize the manual from the project files only.
 | `problem on new page`  | `true`                                   |
 | `problem titles in contents` | `true` (include problem titles and titled part entries) |
 | `problem numbering`    | `chapter` (or `subdivision`, `continuous`) |
+| `solutions`            | `shown` (or `hidden`, `answers only`; `answers at end` is reserved and reports an error for now) |
 | `chapter abbreviation` | `Chap.` (`\probref`)                     |
 | `section abbreviation` | `Sec.` (`\probref`)                      |
 | `problem abbreviation` | `Prob.` (`\probref`)                     |
 | `completion tracking`  | `false`                                  |
+| `completion markers`   | enabled in `shown` mode only; set `true` or `false` to override (markers and PDF overview; requires tracking) |
 | `not done label`       | `Not done`                               |
 | `done label`           | `Done` (report column)                   |
 | `completion title`     | `Completion` (overview and report)       |
