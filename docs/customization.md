@@ -79,8 +79,9 @@ Build settings go at the end of the project's `latexmkrc`:
 
 | Variable             | Default                                                   |
 | -------------------- | --------------------------------------------------------- |
-| `$copy_to_root`      | `1` (run the root-copy hook; `0` to skip it, including completion report updates) |
+| `$copy_to_root`      | `1` (run the root-copy hook; `0` skips PDF, report and JSON index copies) |
 | `$completion_report` | `'COMPLETION.md'` (copy of the report; `''` for none)      |
+| `$problems_json`     | `''` (keep the [JSON problem index](completion-tracking.md#json-problem-index) in `build/`; name a file to copy it to the root) |
 | `$completion_readme` | `''` (Markdown file to [insert the report into](completion-tracking.md#report-in-a-readme), e.g. `'README.md'`) |
 
 On Overleaf, the PDF is already in the output folder. Set `$copy_to_root = 0;`

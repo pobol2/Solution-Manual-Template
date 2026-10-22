@@ -435,14 +435,14 @@
 \newtcolorbox{question}{enhanced, breakable,
                       colback=\SM@questionback,
                       colframe=\SM@questionframe,
-                      title=\hypertarget{problem-title.\theHProblemNum}{\scshape \SM@problemlabel{} \theProblemNum}.\SM@titlesuffix\SM@marker
+                      title=\hypertarget{problem-title.\theHProblemNum}{\scshape \SM@problemlabel{} \theProblemNum}.\SM@titlesuffix\SM@marker\SM@pagewrite{first}\SM@pagewrite{last}
                       }
 
 % Define subproblem environment
 \newtcolorbox{subquestion}{enhanced, breakable,
                            colback=\SM@questionback,
                            colframe=\SM@subquestionframe,
-                           title=\theSubProblemNum\SM@titlesuffix\SM@marker
+                           title=\theSubProblemNum\SM@titlesuffix\SM@marker\SM@pagewrite{last}
                           }
 
 % Define solution command
@@ -482,9 +482,9 @@
 % #3 = Verification
 % #4 = Answer environment (answer or subanswer)
 \newcommand{\SM@response}[4]{%
-    \SM@ifblank{#1}{}{\solution #1\par}%
-    \SM@ifblank{#2}{}{\begin{#4}#2\end{#4}}%
-    \SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\par}%
+    \SM@ifblank{#1}{}{\solution #1\SM@pagewrite{last}\par}%
+    \SM@ifblank{#2}{}{\begin{#4}#2\SM@pagewrite{last}\end{#4}}%
+    \SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\SM@pagewrite{last}\par}%
 }
 
 % Running header: the last problem started on the page (mark class SMproblem;
@@ -527,10 +527,10 @@
     \global\SM@afterheadingfalse
     \SM@startproblem{#3}%
     \begin{question}
-        #2
+        #2\SM@pagewrite{last}%
     \end{question}
     \SM@response{#3}{#4}{#5}{answer}%
-}{\par}
+}{\ifhmode\SM@pagewrite{last}\fi\par}
 
 % Wrapper for subproblems, after a problem
 % #1 = Options: done / not done (status override), title={...}
@@ -555,10 +555,10 @@
                 \hspace{0.5em}\dotfill\thepage\par}%
         \fi}%
     \begin{subquestion}
-        #2
+        #2\SM@pagewrite{last}%
     \end{subquestion}
     \SM@response{#3}{#4}{#5}{subanswer}%
-}{\par}
+}{\ifhmode\SM@pagewrite{last}\fi\par}
 
 % Contents indentation of a problem in a chapter (0), section (1) or
 % subsection (2): under the title of its heading
@@ -597,6 +597,7 @@
 %   \SM@do@heading{serial}{level}{number}{title}{anchor}
 %   \SM@do@problem{serial}{chapter}{section}{subsection}{done}{number}
 %                 {anchor}{unfinished parts}
+%   \SM@do@details{serial}{numbering unit heading}{title}{part records}
 % (chapter, section and subsection are heading serials, 0 if none). Records
 % go to the list \SM@cur@list and, through the aux file, to \SM@prev@list in
 % the next run, with done/total counts per heading. The PDF overview, contents
@@ -628,6 +629,15 @@
     \ifSM@completion\ifnum#1=\z@ \let\SM@marker\SM@notdonemarker\fi\fi}
 \let\SM@marker\@empty
 
+% Delayed writes travel with the content, including breakable boxes. Freeze
+% the problem serial now; evaluate the displayed page label at shipout.
+\newcommand*{\SM@pagewrite}[1]{%
+    \ifSM@completion
+        \protected@write\@auxout{}{\string\SM@jsonpage{\SM@p@serial}{#1}{\thepage}}%
+    \fi}
+\newcommand*{\SM@jsonpage}[3]{%
+    \expandafter\gdef\csname SM@json@page@#1@#2\endcsname{#3}}
+
 % Problem being written, recorded at the next problem, heading or the end
 \newif\ifSM@pending
 % #1 = Solution
@@ -636,11 +646,16 @@
     \global\let\SM@p@own\@tempa
     \xdef\SM@p@forced{\SM@forced}%
     \gdef\SM@p@nparts{0}\gdef\SM@p@allparts{1}\gdef\SM@p@parts{}%
+    \gdef\SM@p@partrecords{}%
     \xdef\SM@p@serial{\arabic{SM@problem}}%
     \xdef\SM@p@depth{\SM@depth}% navigation level for parts after the environment
     \xdef\SM@p@ids{{\SM@id@i}{\SM@id@ii}{\SM@id@iii}}%
     \protected@xdef\SM@p@num{\theProblemNum}%
     \xdef\SM@p@href{\@currentHref}%
+    \protected@xdef\SM@p@title{\SM@title}%
+    \xdef\SM@p@unit{\ifnum\SM@numbering=2
+        \csname SM@id@\romannumeral\numexpr\SM@depth+1\endcsname
+        \else\SM@id@i\fi}%
     \global\SM@pendingtrue
     % Subproblems decide: use the final status of the previous run if known
     \ifcsname SM@prev@status@\SM@p@serial\endcsname
@@ -651,6 +666,8 @@
 \newcommand{\SM@startsubproblem}[1]{%
     \SM@ownstatus{#1}%
     \ifSM@pending
+        \protected@xdef\SM@p@partrecords{\unexpanded\expandafter{\SM@p@partrecords}%
+            \noexpand\SM@jsonpart{\theSubProblemNum}{\SM@title}{\@tempa}{\@currentHref}}%
         \xdef\SM@p@nparts{\the\numexpr\SM@p@nparts+1}%
         \ifnum\@tempa=\z@
             \gdef\SM@p@allparts{0}%
@@ -667,7 +684,8 @@
             \let\@tempa\SM@p@own
         \fi
         \SM@record{\SM@do@problem{\SM@p@serial}\SM@p@ids{\@tempa}{\SM@p@num}%
-            {\SM@p@href}{\SM@p@parts}}%
+            {\SM@p@href}{\SM@p@parts}%
+            \SM@do@details{\SM@p@serial}{\SM@p@unit}{\SM@p@title}{\SM@p@partrecords}}%
     \fi}
 \AddToHook{include/end}{\SM@finishproblem}
 
@@ -677,7 +695,7 @@
     \ifSM@completion
         \begingroup
             \let\label\@gobble \let\index\@gobble \let\glossary\@gobble
-            \let\SM@do@heading\relax \let\SM@do@problem\relax
+            \let\SM@do@heading\relax \let\SM@do@problem\relax \let\SM@do@details\relax
             \protected@edef\@tempa{#1}%
             \immediate\write\@auxout{\string\SM@prev{\unexpanded\expandafter{\@tempa}}}%
             \expandafter\SM@rescan\expandafter\@tempa\expandafter{\@tempa}%
@@ -697,9 +715,12 @@
         \def\SM@ns{#1}%
         \let\SM@do@heading\SM@gobblefive
         \let\SM@do@problem\SM@countproblem
+        \let\SM@do@details\@gobblefour
         #2%
     \endgroup}
 \long\def\SM@gobblefive#1#2#3#4#5{}
+% Existing completion consumers ignore JSON-only details in the same list.
+\long\def\SM@do@details#1#2#3#4{}
 \def\SM@countproblem#1#2#3#4#5#6#7#8{%
     \SM@add{all}{#5}%
     \SM@add{#2}{#5}% 0 counts the problems outside chapters
@@ -810,10 +831,18 @@
 % project root: see latexmkrc). Empty without completion tracking.
 \newwrite\SM@mdout
 \ExplSyntaxOn
-\text_declare_purify_equivalent:Nn \S { ^^c2^^a7 }
-\text_declare_purify_equivalent:Nn \textsection { ^^c2^^a7 }
+\sys_if_engine_pdftex:TF
+  {
+    \text_declare_purify_equivalent:Nn \S { ^^c2^^a7 }
+    \text_declare_purify_equivalent:Nn \textsection { ^^c2^^a7 }
+  }
+  {
+    \text_declare_purify_equivalent:Nn \S { ^^a7 }
+    \text_declare_purify_equivalent:Nn \textsection { ^^a7 }
+  }
 \text_declare_purify_equivalent:Nn \protect { }
 \text_declare_purify_equivalent:Nn \texorpdfstring { \use_ii:nn }
+\text_declare_purify_equivalent:Nn \textbackslash { \c_backslash_str }
 % \SM@purify\cs{text}: \cs = the text as a Markdown string (math kept as $...$
 % without the space that a written control word would leave before the $, and
 % | escaped for tables)
@@ -882,6 +911,117 @@
         \SM@purify\SM@md@a{\SM@problemlabel\space#6\ifblank{#8}{}{ (#8)}}%
         \xdef\SM@md@todo{\SM@md@todo\ifx\SM@md@todo\@empty\else, \fi\SM@md@a}%
     \fi}
+
+% ---- JSON problem index ---- %
+% Walk the same completion records, with extra title/part metadata. Page
+% writes are read back from this run's aux file before exporting the index.
+\ExplSyntaxOn
+\iow_new:N \g__SM_json_iow
+\prop_new:N \l__SM_json_units_prop
+\prop_new:N \l__SM_json_headings_prop
+\tl_new:N \l__SM_json_anchor_tl
+\tl_new:N \l__SM_json_number_tl
+\tl_new:N \l__SM_json_status_tl
+\str_new:N \l__SM_json_string_str
+\str_new:N \l__SM_json_unit_str
+\str_new:N \l__SM_json_heading_str
+\bool_new:N \l__SM_json_first_bool
+\bool_new:N \l__SM_json_firstpart_bool
+\cs_generate_variant:Nn \str_replace_all:Nnn { Nee }
+% Plain text, then JSON escaping (not Markdown table escaping).
+\cs_new_protected:Npn \SM@jsonstring #1#2
+  {
+    \tl_set:Ne #1 { \text_purify:n {#2} }
+    \str_set:Ne #1 { \tl_to_str:N #1 }
+    \str_replace_all:Nee #1 { \c_backslash_str }
+      { \c_backslash_str \c_backslash_str }
+    \str_replace_all:Nee #1 { " } { \c_backslash_str " }
+    \int_step_inline:nnn { 0 } { 31 }
+      {
+        \str_replace_all:Nee #1 { \char_generate:nn {##1} {12} }
+          { \c_backslash_str u00 \int_compare:nNnT {##1} < {16} {0}
+            \int_to_Hex:n {##1} }
+      }
+  }
+\cs_new_protected:Npn \SM@jsonline #1
+  { \iow_now:Ne \g__SM_json_iow {#1} }
+\cs_new_protected:Npn \SM@json@heading #1#2#3#4#5
+  {
+    \SM@jsonstring \l__SM_json_string_str {#3}
+    \prop_put:NnV \l__SM_json_units_prop {#1} \l__SM_json_string_str
+    \SM@jsonstring \l__SM_json_string_str {#4}
+    \prop_put:NnV \l__SM_json_headings_prop {#1} \l__SM_json_string_str
+  }
+\cs_new_protected:Npn \SM@json@problem #1#2#3#4#5#6#7#8
+  {
+    \tl_set:Nn \l__SM_json_anchor_tl {#7}
+    \tl_set:Nn \l__SM_json_number_tl {#6}
+    \tl_set:Nn \l__SM_json_status_tl {#5}
+  }
+\cs_new_protected:Npn \SM@jsonfield #1#2#3
+  {
+    \SM@jsonstring \l__SM_json_string_str {#2}
+    \SM@jsonline { ~~"#1":~"\l__SM_json_string_str"#3 }
+  }
+\cs_new_protected:Npn \SM@jsonpages #1#2
+  {
+    \cs_if_exist:cTF { SM@json@page@#1@#2 }
+      { \SM@jsonfield {#2_page} { \use:c { SM@json@page@#1@#2 } } {,} }
+      { \SM@jsonline { ~~"#2_page":~null, } }
+  }
+\cs_new_protected:Npn \SM@json@details #1#2#3#4
+  {
+    \bool_if:NTF \l__SM_json_first_bool
+      { \bool_set_false:N \l__SM_json_first_bool } { \SM@jsonline {,} }
+    \SM@jsonline { \c_left_brace_str }
+    \SM@jsonfield {anchor} {\l__SM_json_anchor_tl} {,}
+    \SM@jsonfield {number} {\l__SM_json_number_tl} {,}
+    \prop_get:NnNTF \l__SM_json_units_prop {#2} \l__SM_json_unit_str
+      { } { \str_clear:N \l__SM_json_unit_str }
+    \prop_get:NnNTF \l__SM_json_headings_prop {#2} \l__SM_json_heading_str
+      { } { \str_clear:N \l__SM_json_heading_str }
+    % These two values were already escaped when the heading was visited.
+    \SM@jsonline { ~~"unit":~"\l__SM_json_unit_str", }
+    \SM@jsonline { ~~"heading_title":~"\l__SM_json_heading_str", }
+    \SM@jsonfield {title} {#3} {,}
+    \SM@jsonfield {status}
+      { \int_compare:nNnTF {\l__SM_json_status_tl} = {1} {done} {not~done} } {,}
+    \SM@jsonpages {#1} {first}
+    \SM@jsonpages {#1} {last}
+    \SM@jsonline { ~~"parts":~[ }
+    \bool_set_true:N \l__SM_json_firstpart_bool
+    #4
+    \SM@jsonline { ] }
+    \SM@jsonline { \c_right_brace_str }
+  }
+\cs_new_protected:Npn \SM@jsonpart #1#2#3#4
+  {
+    \bool_if:NTF \l__SM_json_firstpart_bool
+      { \bool_set_false:N \l__SM_json_firstpart_bool } { \SM@jsonline {,} }
+    \SM@jsonline { \c_left_brace_str }
+    \SM@jsonfield {anchor} {#4} {,}
+    \SM@jsonfield {number} {#1} {,}
+    \SM@jsonfield {title} {#2} {,}
+    \SM@jsonfield {status}
+      { \int_compare:nNnTF {#3} = {1} {done} {not~done} } { }
+    \SM@jsonline { \c_right_brace_str }
+  }
+\cs_new_protected:Npn \SM@writejson
+  {
+    \group_begin:
+      \iow_open:Nn \g__SM_json_iow { \jobname-problems.json }
+      \SM@jsonline { \c_left_brace_str "problems":~[ }
+      \bool_set_true:N \l__SM_json_first_bool
+      \prop_clear:N \l__SM_json_units_prop
+      \prop_clear:N \l__SM_json_headings_prop
+      \cs_set_eq:NN \SM@do@details \SM@json@details
+      \SM@walk \SM@cur@list \SM@json@heading \SM@json@problem
+      \SM@jsonline { ] \c_right_brace_str }
+      \iow_close:N \g__SM_json_iow
+    \group_end:
+  }
+\ExplSyntaxOff
+\AddToHook{enddocument/afteraux}{\ifSM@completion\SM@writejson\fi}
 
 \AtEndDocument{%
     \SM@finishproblem

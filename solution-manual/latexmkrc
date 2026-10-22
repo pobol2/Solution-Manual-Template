@@ -52,6 +52,10 @@ $aux_dir  = 'build';
 # to '' in the project's latexmkrc to keep the report in build/ only).
 $completion_report = 'COMPLETION.md' unless defined $completion_report;
 
+# JSON problem index: always generated with completion tracking, optionally
+# copied to this project-root file ('' keeps it in the build folder only).
+$problems_json = '' unless defined $problems_json;
+
 # The report can also be put inside a Markdown file of the project (e.g.
 # 'README.md'), between the lines
 #   <!-- completion report: begin -->
@@ -60,8 +64,8 @@ $completion_report = 'COMPLETION.md' unless defined $completion_report;
 $completion_readme = '' unless defined $completion_readme;
 
 # After a successful build, copy the final PDF to the project root, and the
-# completion report when it is not empty and has changed. Set $copy_to_root
-# to 0 to skip this hook (including completion report updates), for example
+# completion report and optional JSON index when they have changed. Set
+# $copy_to_root to 0 to skip this hook (including report/index updates), e.g.
 # on Overleaf, where the PDF is already in the output folder.
 $copy_to_root = 1 unless defined $copy_to_root;
 $success_cmd = 'internal copy_pdf_to_root %D';
@@ -77,6 +81,12 @@ sub copy_pdf_to_root {
     }
     sm_insert_report($report, $completion_readme)
         if $completion_readme ne '' && -s $report;
+    (my $json = $pdf) =~ s/\.pdf$/-problems.json/;
+    if ($problems_json ne '' && -s $json
+        && compare($json, $problems_json) != 0) {
+        copy($json, $problems_json)
+            or warn "Could not copy $json to $problems_json: $!\n";
+    }
     return 0;
 }
 

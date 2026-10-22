@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `false` for plain problem entries and no part entries in the contents,
   while retaining titles in headings and bookmarks.
 - Regression tests and showcase examples for problem and part titles.
+- UTF-8 `build/<jobname>-problems.json` with completion tracking: problem
+  anchors, displayed numbers and numbering units, heading and problem titles,
+  statuses, current page ranges and parts. The optional `$problems_json`
+  latexmk setting copies it to the project root (default `''`: no copy).
 
 ### Fixed
 

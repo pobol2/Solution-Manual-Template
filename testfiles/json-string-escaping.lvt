@@ -1,0 +1,22 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\begin{document}
+\null
+\START
+\makeatletter
+\ExplSyntaxOn
+\SM@jsonstring \l_tmpa_str
+  {
+    " \textbackslash
+    \char_generate:nn {0} {12}
+    \char_generate:nn {9} {12}
+    \char_generate:nn {10} {12}
+    \char_generate:nn {13} {12}
+    \char_generate:nn {31} {12}
+    café
+  }
+\TYPE{JSON~string:~\l_tmpa_str}
+\ExplSyntaxOff
+\makeatother
+\OMIT
+\end{document}

@@ -1,0 +1,30 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{problem numbering=subdivision}
+\makeatletter
+\AtBeginDocument{%
+  \immediate\write\@auxout{\string\gdef\string\SMTestSecondRun{}}}
+\makeatother
+\begin{document}
+\begin{problem}{Outside chapters.}{Solution.}{}\end{problem}
+\chapter{Oscillations}
+\textbooknumber{\S 9}
+\section{Énergie "and" \textbackslash{} motion}
+\begin{problem}[title={B "pendulum" \textbackslash{} café}]
+% Pagination changes on pass two: exporting the previous run's pages would
+% give the wrong last_page in the saved result.
+{Question.}{First page.\ifdefined\SMTestSecondRun\newpage Second page.\fi}{}\end{problem}
+\begin{subproblem}[done, title={Approximation}]{Part (a).}{}{}\end{subproblem}
+\newpage
+\begin{subproblem}[not done]{Part (b).}{Partial solution.}{}\end{subproblem}
+\begin{problem}[done]{Untitled question.}{}{}\end{problem}
+\clearpage
+\pagenumbering{roman}
+\chapter{Last chapter}
+\begin{problem}{Final question.}{}{}\end{problem}
+\AddToHook{enddocument/afteraux}{%
+  \START
+  \SHOWFILE{\jobname-problems.json}%
+  \OMIT}
+\end{document}

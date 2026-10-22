@@ -50,6 +50,65 @@ copied to the root when it has changed. To keep it in `build/` only, add
 to rename it. Turning completion tracking off leaves the last `COMPLETION.md`
 in place: delete it if it is no longer wanted.
 
+## JSON problem index
+
+With completion tracking on, the class also writes
+`build/<jobname>-problems.json` (`build/main-problems.json` for `main.tex`).
+It uses the same problem records and completion rules as the Markdown report.
+The file is UTF-8 JSON with a `problems` array, in document order:
+
+```json
+{
+  "problems": [
+    {
+      "anchor": "ProblemNum.1.1.0.1",
+      "number": "1",
+      "unit": "§9",
+      "heading_title": "Oscillations",
+      "title": "Period of a simple pendulum",
+      "status": "not done",
+      "first_page": "4",
+      "last_page": "6",
+      "parts": [
+        {
+          "anchor": "SubProblemNum.1.1.0.1.1",
+          "number": "(a)",
+          "title": "Small-angle approximation",
+          "status": "done"
+        }
+      ]
+    }
+  ]
+}
+```
+
+`number` is the displayed problem number. `unit` is the displayed numbering
+unit used by `\probref`: the chapter in chapter/continuous mode, or the section
+or subsection in subdivision mode. `heading_title` is that unit's title;
+both are empty outside chapters. `title` is the optional problem or part
+title, or an empty string. Text is purified as for the Markdown report, with
+JSON escaping for quotes, backslashes and control characters; non-ASCII
+characters stay UTF-8. Status is always `"done"` or `"not done"`.
+
+Page labels are strings, so Roman numerals work too. The range includes the
+problem's solution, answer, verification and parts. Page markers travel with
+the typeset content; the index is written after the final page and auxiliary
+data have been processed, using the current compilation's pages. A problem
+with no parts has `"parts": []`; a manual with no problems has
+`"problems": []`.
+
+The JSON stays in `build/` by default. To copy it to the project root after
+a successful build, add this to the project's `latexmkrc`:
+
+```perl
+$problems_json = 'PROBLEMS.json';  # '' (default) means no root copy
+```
+
+Like `COMPLETION.md`, it is copied only when its contents change, and
+`$copy_to_root = 0;` disables the copy. Turning tracking off stops JSON
+generation and leaves existing files in place; remove them if no longer
+wanted.
+
 ## Report in a README
 
 The build can also put the report inside a Markdown file, such as the

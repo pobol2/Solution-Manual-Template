@@ -1,0 +1,10 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\begin{document}
+No problems yet.
+\AddToHook{enddocument/afteraux}{%
+  \START
+  \SHOWFILE{\jobname-problems.json}%
+  \OMIT}
+\end{document}
