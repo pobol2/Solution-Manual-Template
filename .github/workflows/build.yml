@@ -1,5 +1,5 @@
 # Builds the manual and its figures with the project's latexmkrc, uploads
-# main.pdf and checks that the committed COMPLETION.md is up to date.
+# main.pdf and checks the template's committed COMPLETION.md is up to date.
 name: Build
 
 on:
@@ -15,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      # Remove the committed previews so the manual, figures and report are
+      # all generated from source.
+      - name: Remove generated files
+        run: rm -f main.pdf COMPLETION.md Figures/*.pdf
 
       # TeX Live image with pdfLaTeX, LuaLaTeX, latexmk and Perl. latexmk runs
       # from the repository root, so it reads ./latexmkrc (and through it
@@ -32,7 +37,28 @@ jobs:
           path: main.pdf
           if-no-files-found: error
 
+      # Projects can turn off completion tracking without failing the build.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: completion-report
+          path: COMPLETION.md
+          if-no-files-found: ignore
+
+  report:
+    needs: build
+    # Projects created from this template can enable the check by replacing
+    # the repository below with their own owner/name, or removing this if.
+    if: github.repository == 'pobol2/Solution-Manual-Template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: completion-report
+          path: generated-report
+
       # main.pdf changes on every build (dates, IDs), so only the report is
       # compared with the committed version.
       - name: Check that COMPLETION.md is up to date
-        run: git diff --exit-code COMPLETION.md
+        run: diff -u COMPLETION.md generated-report/COMPLETION.md
