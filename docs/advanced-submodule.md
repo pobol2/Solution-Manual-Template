@@ -1,5 +1,9 @@
 # Using the framework in another project
 
+This is the advanced path for using the framework as a Git submodule. For the
+standard self-contained copy, follow the README's
+[Use this template quick start](../README.md#quick-start).
+
 [Back to README](../README.md)
 
 The [`solution-manual/`](../solution-manual/) folder is the shared part of the
@@ -20,10 +24,9 @@ Git cannot use a subfolder of a repository as a submodule, so a project adds
 the whole template repository and points to the framework folder inside it:
 
 ```sh
-git submodule add YOUR_TEMPLATE_REPOSITORY_URL template
+git submodule add https://github.com/pobol2/Solution-Manual-Template.git template
 ```
 
-Replace `YOUR_TEMPLATE_REPOSITORY_URL` with the GitHub URL of this repository.
 This records a specific template commit; updates are adopted deliberately.
 
 The project then has, in its root:
@@ -74,10 +77,12 @@ If it has already been cloned, run:
 git submodule update --init --recursive
 ```
 
-To adopt the template's latest tracked branch version:
+To pin the template to a release tag, fetch the tags and check out the chosen
+version (for example, `v1.2.0`):
 
 ```sh
-git submodule update --remote template
+git -C template fetch --tags
+git -C template checkout v1.2.0
 ```
 
 Compile and review the manual, then commit the updated submodule reference in

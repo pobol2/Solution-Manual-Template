@@ -16,6 +16,9 @@ The root is a minimal starter. The previews below come from the separate
 
 ## Quick start
 
+The standard setup is **Use this template**, which creates a self-contained
+copy of the framework in your repository.
+
 Prerequisites:
 
 - **Linux:** TeX Live with pdfLaTeX, LuaLaTeX and `latexmk`, plus Perl.
@@ -37,9 +40,19 @@ Prerequisites:
 5. Run `latexmk` from the project root.
 6. Open `main.pdf`.
 
+To adopt future framework releases, see [Updating your copy](#updating-your-copy).
+
 For VS Code, install the LaTeX Workshop extension. See
 [Compiling](docs/customization.md#compiling) for editor builds and output
 locations.
+
+## Updating your copy
+
+Download `solution-manual-vX.Y.Z.zip` from the
+[latest GitHub release](https://github.com/pobol2/Solution-Manual-Template/releases/latest),
+extract it, and replace your project's `solution-manual/` folder with the
+extracted `solution-manual/` folder. Run `latexmk` from the project root and
+read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 
 ## Which files do I edit?
 
@@ -60,8 +73,7 @@ locations.
 
 The [showcase project](examples/showcase/) contains the full set of examples.
 See [Troubleshooting](docs/troubleshooting.md) for build problems and
-[Using the framework in another project](docs/advanced-submodule.md) for submodules
-and migration.
+[advanced submodule guide](docs/advanced-submodule.md) for submodules and migration.
 
 ## Example project
 
