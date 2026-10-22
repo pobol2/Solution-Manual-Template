@@ -9,17 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- An **Open in Overleaf** button and setup and troubleshooting documentation
-  covering precompiled figures, free-plan compile timeouts and opening
-  `main.tex` before Recompile.
+- A minimal starter in the repository root and a separate full feature
+  demonstration in `examples/showcase/`.
+- A `docs/` guide covering writing problems, numbering and references,
+  figures, completion tracking, customization and advanced submodule use.
+- Troubleshooting for missing classes and packages, figure builds, compiler
+  selection, Perl, completion reports, verification brackets and Overleaf.
+- Overleaf support with an **Open in Overleaf** badge, setup instructions,
+  precompiled figure PDFs and guidance for free-plan compile timeouts and
+  opening `main.tex` before Recompile.
 - `$copy_to_root` build setting (default `1`); set it to `0` to skip the
   post-build root-copy hook on Overleaf, including completion report updates.
+- CI checks that both class versions match the top changelog version.
+- A release workflow for `v*` tags that checks versions, builds both manuals
+  cleanly and publishes notes from the matching changelog section, with
+  `main.pdf` (starter), `showcase.pdf`, `solution-manual-<tag>.zip` (framework
+  only), `overleaf-starter.zip` and `overleaf-showcase.zip`. The Overleaf
+  archives include the framework, precompiled figures and a standalone
+  `latexmkrc` with `$copy_to_root = 0`.
 
 ### Changed
 
-- The README presents **Use this template** as the standard self-contained
-  setup, with release ZIP update instructions; the advanced submodule guide
-  uses the repository URL and shows pinning a release tag.
+- The README quick start presents **Use this template** as the standard
+  self-contained setup, with release ZIP update instructions and a link to
+  the Overleaf guide. Submodules are an advanced path, with the repository
+  URL and an example of pinning a release tag.
+- CI builds the starter and showcase separately, uploads both PDF previews
+  and checks the starter's completion report.
+- Both class declarations now use version `v1.2.0` and the release date.
 - `SolutionFigure.cls` stops when run without LuaLaTeX and explains how to
   compile the manual with `latexmk`, including the Overleaf open-file workflow.
 

@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check release tag and class versions
+        run: python3 .github/scripts/release.py check --tag "$RELEASE_TAG"
+
+      - name: Remove generated files
+        run: |
+          rm -rf build examples/showcase/build
+          rm -f main.pdf COMPLETION.md Figures/*.pdf
+          rm -f examples/showcase/main.pdf examples/showcase/COMPLETION.md examples/showcase/Figures/*.pdf
+
+      - name: Build starter
+        uses: xu-cheng/latex-action@4.1.0
+        with:
+          root_file: main.tex
+          texlive_version: 2026
+          # Missing figure PDFs must be discovered before latexmk builds them.
+          args: -file-line-error -interaction=nonstopmode
+
+      - name: Build showcase
+        uses: xu-cheng/latex-action@4.1.0
+        with:
+          root_file: main.tex
+          working_directory: examples/showcase
+          texlive_version: 2026
+          args: -file-line-error -interaction=nonstopmode
+
+      - name: Package release assets and changelog notes
+        run: python3 .github/scripts/release.py package "$RELEASE_TAG"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "$RELEASE_TAG" --verify-tag \
+            --title "$RELEASE_TAG" --notes-file dist/release-notes.md \
+            dist/main.pdf dist/showcase.pdf \
+            "dist/solution-manual-$RELEASE_TAG.zip" \
+            dist/overleaf-starter.zip dist/overleaf-showcase.zip

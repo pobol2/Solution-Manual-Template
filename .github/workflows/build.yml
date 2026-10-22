@@ -1,5 +1,5 @@
 # Builds the starter and showcase with each project's latexmkrc, uploads
-# both PDFs and checks the template's committed COMPLETION.md is up to date.
+# both PDFs and checks class versions and the committed COMPLETION.md.
 name: Build
 
 on:
@@ -11,7 +11,15 @@ permissions:
   contents: read
 
 jobs:
+  versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check class versions against the changelog
+        run: python3 .github/scripts/release.py check
+
   build:
+    needs: versions
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,7 +36,9 @@ jobs:
       # all generated from source.
       - name: Remove generated files
         working-directory: ${{ matrix.directory }}
-        run: rm -f main.pdf COMPLETION.md Figures/*.pdf
+        run: |
+          rm -rf build
+          rm -f main.pdf COMPLETION.md Figures/*.pdf
 
       # TeX Live image with pdfLaTeX, LuaLaTeX, latexmk and Perl. latexmk runs
       # from each project directory, so it reads that project's latexmkrc

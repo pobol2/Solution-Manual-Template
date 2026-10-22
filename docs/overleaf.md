@@ -7,10 +7,14 @@
 Download `overleaf-starter.zip` from the
 [latest GitHub release](https://github.com/pobol2/Solution-Manual-Template/releases/latest)
 and upload it as a new Overleaf project, or use the
-[**Open in Overleaf**](https://www.overleaf.com/docs?snip_uri=https%3A%2F%2Fgithub.com%2Fpobol2%2FSolution-Manual-Template%2Freleases%2Flatest%2Fdownload%2Foverleaf-starter.zip)
+[**Open in Overleaf**](https://www.overleaf.com/docs?snip_uri=https://github.com/pobol2/Solution-Manual-Template/releases/latest/download/overleaf-starter.zip)
 button in the README.
 Set **Compiler** to **pdfLaTeX** and **Main document** to `main.tex` in the
 project settings. Open `main.tex`, then click **Recompile**.
+
+For the full feature demonstration, upload `overleaf-showcase.zip` from the
+same release instead. Both archives include `solution-manual/` and build as
+self-contained projects with `main.tex` at the root.
 
 The archive includes precompiled `Figures/*.pdf`: compiling all the figures
 with LuaLaTeX can exceed the free plan's compile time limit. Keep these PDFs
@@ -35,8 +39,9 @@ details.
 
 ## Build settings
 
-Overleaf already keeps the finished PDF in its output folder. To skip the
-post-build root-copy hook, add this at the end of the project's `latexmkrc`:
+Overleaf already keeps the finished PDF in its output folder. Both release
+archives set this at the end of the project's `latexmkrc` to skip the
+post-build root-copy hook:
 
 ```perl
 $copy_to_root = 0;
