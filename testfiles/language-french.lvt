@@ -1,0 +1,38 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+% language= replaces the keys before it; the keys after it override it.
+\SolutionManualSetup{problem label={Exercice}, language=french,
+  section abbreviation={Sec.}}
+\begin{document}
+\chapter{Cinématique}
+\begin{problem}[title={Chute libre}]{Question.}{Solution.}{Réponse.}\end{problem}
+\begin{problem}{Question.}{}{}\end{problem}
+\START
+\makeatletter
+\TYPE{Language: \SM@language}
+\TYPE{Title page: \SM@titleprefix; \SM@authorlabel; \SM@bylabel}
+\TYPE{Footer: \SM@pagelabel; \SM@pageoflabel}
+\TYPE{Names: \contentsname; \chaptername}
+\TYPE{Problems: \SM@problemlabel; \SM@solutionlabel; \SM@answerlabel;
+  \SM@verificationlabel; \SM@solutionstitle; \SM@sollinklabel}
+\TYPE{Abbreviations: \SM@chapabbrev; \SM@secabbrev; \SM@probabbrev}
+\TYPE{Completion: \SM@notdonelabel; \SM@donelabel; \SM@completiontitle;
+  \SM@totallabel; \SM@outsidelabel; \SM@colon}
+\begingroup
+  \month=1 \TYPE{January: \SM@monthname}%
+  \month=8 \TYPE{August: \SM@monthname}%
+  \month=12 \TYPE{December: \SM@monthname}%
+\endgroup
+\pgfmathprintnumberto{1234.5}\SMTestNumberText
+\TYPE{Number: \meaning\SMTestNumberText}
+\SolutionManualSetup{month names={a, b}}
+\SolutionManualSetup{language=klingon}
+\makeatother
+\OMIT
+\AddToHook{enddocument/afteraux}{%
+  \TIMO
+  \SHOWFILE{\jobname-completion.md}%
+  \SHOWFILE{\jobname-problems.json}%
+  \OMIT}
+\end{document}

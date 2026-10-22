@@ -1,0 +1,22 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\usepackage[english,french]{babel}
+\SolutionManualSetup{language=french, contents label={Sommaire}}
+\begin{document}
+\START
+\makeatletter
+% babel set its own names when it selected French at \begin{document}
+\TYPE{French: \contentsname; \chaptername}
+\selectlanguage{english}
+\TYPE{English: \contentsname; \chaptername}
+\selectlanguage{french}
+% "Solution~:" keeps one space before the colon: babel-french adds none
+\setbox0=\hbox{\SM@noautospace\SM@solutionlabel}
+\setbox2=\hbox{Solution}\dimen0=\wd2
+\setbox2=\hbox{\NoAutoSpacing\string:}\advance\dimen0\wd2
+\advance\dimen0\fontdimen2\font
+\TYPE{One space before the colon: \ifdim\wd0=\dimen0 yes\else no\fi}
+\makeatother
+\OMIT
+Texte.
+\end{document}

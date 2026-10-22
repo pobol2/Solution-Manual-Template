@@ -15,6 +15,7 @@ never edit the framework folder.
 | ---------------------- | ----------------------------------------------------------- |
 | `SolutionManual.cls`   | Class of the manual (pdfLaTeX)                              |
 | `SolutionFigure.cls`   | Class of the standalone TikZ/PGFPlots figures (LuaLaTeX)    |
+| `SolutionManual-<language>.def` | Texts of each [language](customization.md#languages) (`english`, `french`) |
 | `latexmkrc`            | Build rules, loaded by the project's `latexmkrc`            |
 | `vscode-settings.json` | LaTeX Workshop settings, to copy to `.vscode/settings.json` |
 

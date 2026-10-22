@@ -1,0 +1,23 @@
+% Class options (font size, ...) are passed to the report class.
+\documentclass[12pt]{SolutionManual}
+
+\usepackage{mypackages} % packages of this manual (babel français)
+
+% The language is set in mytheme.sty, for the figures too. Set it first:
+% these keys override its texts (see ../../docs/customization.md).
+\SolutionManualSetup{
+    author={Votre nom},
+    title={Mécanique classique},
+    % problem label={Exercice},
+    completion tracking=true,       % marqueurs « À faire », progression, COMPLETION.md
+}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\completionoverview % needs completion tracking
+
+\input{Chapters/1-Cinematique}
+
+\end{document}

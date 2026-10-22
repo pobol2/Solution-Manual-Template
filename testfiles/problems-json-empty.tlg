@@ -2,7 +2,32 @@ This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 -------- problems-json-empty-problems.json (start) ---------
 (problems-json-empty-problems.json)
-{"problems": [[nl]
+{"language": "english",[nl]
+"labels": {[nl]
+ "title_prefix": "Solutions to",[nl]
+ "author_label": "Author",[nl]
+ "by_label": "by",[nl]
+ "page_label": "Page",[nl]
+ "page_of_label": "of",[nl]
+ "contents_label": "Table of Contents",[nl]
+ "chapter_label": "Chapter",[nl]
+ "problem_label": "Problem",[nl]
+ "solution_label": "Solution:",[nl]
+ "answer_label": "Answer to Problem",[nl]
+ "verification_label": "Verification:",[nl]
+ "solutions_title": "Solutions",[nl]
+ "solution_link_label": "Solution p.",[nl]
+ "chapter_abbreviation": "Chap.",[nl]
+ "section_abbreviation": "Sec.",[nl]
+ "problem_abbreviation": "Prob.",[nl]
+ "not_done_label": "Not done",[nl]
+ "done_label": "Done",[nl]
+ "completion_title": "Completion",[nl]
+ "completion_total_label": "All problems",[nl]
+ "outside_chapters_label": "(outside chapters)",[nl]
+ "colon": ":"[nl]
+},[nl]
+"problems": [[nl]
 ]}[nl]
 -------- problems-json-empty-problems.json (end) -----------
 ***************

@@ -1,0 +1,18 @@
+\input regression-test.tex
+\documentclass{SolutionFigure}
+% As in a project's mytheme.sty: figures ignore the keys of the manual.
+\SolutionManualSetup{language=french, problem label={Exercice},
+  footer={\mainTitle}}
+\begin{document}
+\tikz\node{0};
+\START
+\pgfmathprintnumberto{1234.5}\SMTestNumberText
+\TYPE{French: \meaning\SMTestNumberText}
+\OMIT
+\SolutionManualSetup{language=english}
+\TIMO
+\pgfmathprintnumberto{1234.5}\SMTestNumberText
+\TYPE{English: \meaning\SMTestNumberText}
+\SolutionManualSetup{language=klingon}
+\OMIT
+\end{document}

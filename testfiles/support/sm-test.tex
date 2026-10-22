@@ -9,8 +9,9 @@
 \AddToHook{env/answer/begin}{\global\advance\SMTestAnswers by 1}
 \AddToHook{env/subanswer/begin}{\global\advance\SMTestAnswers by 1}
 \let\SMTestVerificationLabel\SM@verificationlabel
-\def\SM@verificationlabel{%
-  \global\advance\SMTestVerifications by 1\SMTestVerificationLabel}
+% Protected, so that the JSON export of the label drops the counting
+\protected\def\SMTestCountVerification{\global\advance\SMTestVerifications by 1 }
+\def\SM@verificationlabel{\SMTestCountVerification\SMTestVerificationLabel}
 \newcommand\SMTestResponses{%
   \TYPE{Solutions: \the\SMTestSolutions}%
   \TYPE{Answers: \the\SMTestAnswers}%

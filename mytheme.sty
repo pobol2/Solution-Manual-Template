@@ -1,9 +1,13 @@
-% Theme colors shared by the manual and its figures. Loaded by SolutionManual.cls
-% and SolutionFigure.cls; a change here rebuilds the manual and every figure.
-% Use only xcolor commands here (it is read before \SolutionManualSetup exists).
+% Theme shared by the manual and its figures. Loaded by SolutionManual.cls and
+% SolutionFigure.cls; a change here rebuilds the manual and every figure.
+% Use only xcolor commands and \SolutionManualSetup{language=...} here.
 \ProvidesPackage{mytheme}
 
 % Titles, links and answers of the manual; FigureAccent of the figures
 \colorlet{ThemeColor}{red!50!black}
+
+% Texts of the manual and number format of the figures: english (default) or
+% french (docs/customization.md#languages). Keys in main.tex override its texts.
+% \SolutionManualSetup{language=french}
 
 \endinput

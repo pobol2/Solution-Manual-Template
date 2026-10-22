@@ -163,3 +163,18 @@ for example when using a half-open interval:
 Place the opening verification bracket on the same line as the answer's
 closing brace, or the next line, with no blank line between them. See
 [Writing problems](writing-problems.md).
+
+## babel-french asks to load listings after babel
+
+**Symptom:** with `\usepackage[french]{babel}` in `mypackages.sty`, the log
+shows a babel-french warning: `Please load the "listings" package AFTER
+babel/french`.
+
+**Cause:** `SolutionManual.cls` loads `tcolorbox` with its `most` libraries,
+which include `listings`, before `mypackages.sty` loads babel.
+
+**Fix:** none is needed for the class, its labels or the
+[French example](../examples/french/). If the manual shows code with
+`listings` (or `tcblisting`) and the punctuation of the code gets French
+spacing, see the `listings` section of the babel-french documentation
+(`texdoc babel-french`).

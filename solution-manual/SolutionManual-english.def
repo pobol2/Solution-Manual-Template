@@ -1,0 +1,43 @@
+% SPDX-License-Identifier: MIT
+% Copyright (c) 2026 P.O. Bolduc. See ../LICENSE.
+%
+% English texts of the solution manual (the default): language=english.
+% Read by SolutionManual.cls, and by SolutionFigure.cls for the number format.
+% To add a language, copy this file to SolutionManual-<language>.def (UTF-8)
+% and translate every value: see docs/customization.md.
+\ProvidesFile{SolutionManual-english.def}[2026/10/22 v1.3.0 English texts for solution manuals]
+
+\SolutionManualSetup{
+    % Title page and footer
+    title prefix={Solutions to},
+    author label={Author},
+    by label={by},
+    month names={January, February, March, April, May, June, July, August,
+        September, October, November, December},
+    page label={Page},
+    page of label={of},
+    % Contents and headings
+    contents label={Table of Contents},
+    chapter label={Chapter},
+    % Problems
+    problem label={Problem},
+    solution label={Solution:},
+    answer label={Answer to Problem},
+    verification label={Verification:},
+    solutions title={Solutions},
+    solution link label={Solution p.},
+    chapter abbreviation={Chap.},
+    section abbreviation={Sec.},
+    problem abbreviation={Prob.},
+    % Completion tracking
+    not done label={Not done},
+    done label={Done},
+    completion title={Completion},
+    completion total label={All problems},
+    outside chapters label={(outside chapters)},
+    colon={:},
+    % Numbers (\pgfmathprintnumber, PGFPlots ticks): 1,234.5
+    number format={use period, 1000 sep={,}},
+}
+
+\endinput

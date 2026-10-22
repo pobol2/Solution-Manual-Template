@@ -1,0 +1,17 @@
+% !TEX root = ../main.tex
+% Height of the falling object (Problem 1.1). The tick labels use the number
+% format of language=french (mytheme.sty): 0,5, 1,5, ...
+\documentclass[12pt]{SolutionFigure} % same font size as main.tex
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Temps $t$ (s)}, ylabel={Hauteur $y$ (m)},
+        xmin=0, xmax=2.25, ymin=0, ymax=22,
+        xtick={0, 0.5, 1, 1.5, 2},
+    ]
+        \addplot+[domain=0:2.02] {20 - 4.9*x^2};
+        \addplot[plot points] coordinates {(2.02, 0)};
+    \end{axis}
+\end{tikzpicture}
+\end{document}

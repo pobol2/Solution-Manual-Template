@@ -14,15 +14,21 @@ Customize the manual from the project files only.
 | `author`               | empty                                    |
 | `title`                | empty                                    |
 | `subtitle`             | empty (the line is then omitted)         |
+| `language`             | `english` (or `french`): sets every text below; put it first (see [Languages](#languages)) |
 | `title prefix`         | `Solutions to`                           |
 | `date`                 | month and year of the build, e.g. `October 2026` (`date=\today` for the full date, as before 1.1.0) |
+| `month names`          | `January, ..., December` (the 12 names of the default `date`) |
 | `author label`         | `Author`                                 |
+| `by label`             | `by` (before the author in the default footer) |
+| `page label`           | `Page` (footer: "Page 3 of 12")          |
+| `page of label`        | `of` (footer: "Page 3 of 12")            |
 | `contents label`       | `Table of Contents`                      |
+| `chapter label`        | `Chapter` (chapter headings, running header, report) |
 | `problem label`        | `Problem`                                |
 | `solution label`       | `Solution:`                              |
 | `answer label`         | `Answer to Problem`                      |
 | `verification label`   | `Verification:`                          |
-| `footer`               | title prefix, title and `by` author      |
+| `footer`               | title prefix, title, `by label` and author |
 | `theme color`          | `ThemeColor` of `mytheme.sty` (titles, links, answers; manual only) |
 | `question background`  | `gray!5!white`                           |
 | `question frame`       | `gray!50!black`                          |
@@ -46,9 +52,11 @@ Customize the manual from the project files only.
 | `done label`           | `Done` (report column)                   |
 | `completion title`     | `Completion` (overview and report)       |
 | `completion total label` | `All problems`                         |
+| `outside chapters label` | `(outside chapters)` (report row of the problems before the first chapter) |
+| `colon`                | `:` (after `not done label` in the overview and `completion title` in the report) |
+| `number format`        | `use period, 1000 sep={,}` (any `/pgf/number format` options: `\pgfmathprintnumber` and PGFPlots ticks) |
 
-Colors accept any `xcolor` expression. Other texts come from standard LaTeX
-commands: `\chaptername`.
+Colors accept any `xcolor` expression.
 
 **Problem titles** are set per problem or part, for example
 `\begin{problem}[done, title={Period of a simple pendulum}]`.
@@ -65,7 +73,8 @@ See [Writing problems](writing-problems.md) for the full syntax.
 works.
 
 **Theme color**: set it once in the optional `mytheme.sty`, which both classes
-load, so the manual and the figures stay matched:
+load, so the manual and the figures stay matched (the [language](#languages)
+can be set there too):
 
 ```tex
 \colorlet{ThemeColor}{blue!50!black}
@@ -76,6 +85,60 @@ color is `red!50!black`. The `theme color` key above changes the manual only.
 
 **Packages and commands** go in `mypackages.sty` and `mycommands.sty`, which
 `main.tex` loads.
+
+## Languages
+
+`language` sets every text of the table above (and the figures' number format)
+from `solution-manual/SolutionManual-<language>.def`: `english` (the default)
+or `french`. Set it in `mytheme.sty`, so that the figures follow it too:
+
+```tex
+% mytheme.sty
+\SolutionManualSetup{language=french}
+```
+
+or first in `\SolutionManualSetup` of `main.tex` (manual only). The keys after
+`language` override its texts, and the keys before it are replaced, so put it
+first:
+
+```tex
+\SolutionManualSetup{
+    language=french,          % first
+    problem label={Exercice}, % instead of "Problème"
+}
+```
+
+| Key                    | `french`                                 |
+| ---------------------- | ---------------------------------------- |
+| `title prefix`         | `Solutions de`                           |
+| `month names`          | `janvier, ..., décembre` (`octobre 2026`) |
+| `author label`, `by label` | `Auteur`, `par`                      |
+| `page label`, `page of label` | `Page`, `sur`                     |
+| `contents label`, `chapter label` | `Table des matières`, `Chapitre` |
+| `problem label`        | `Problème`                               |
+| `solution label`, `verification label` | `Solution~:`, `Vérification~:` |
+| `answer label`         | `Réponse au problème`                    |
+| `solutions title`, `solution link label` | `Solutions`, `Solution p.` |
+| abbreviations          | `Chap.`, `Sect.`, `Prob.`                |
+| `not done label`, `done label` | `À faire`, `Fait`                |
+| `completion title`, `completion total label` | `Progression`, `Tous les problèmes` |
+| `outside chapters label`, `colon` | `(hors chapitres)`, `~:`      |
+| `number format`        | `use comma, 1000 sep={\,}` (`1 234,5`)   |
+
+In a figure, `\SolutionManualSetup` uses `language` and `number format` only,
+and ignores the other keys, so `mytheme.sty` can be shared.
+
+**With babel.** The class works with or without `babel` (in `mypackages.sty`).
+babel sets `\contentsname` and `\chaptername` each time it selects a language;
+the class sets them back to `contents label` and `chapter label` afterwards, so
+these keys always apply, whatever the babel language. Labels are printed as
+written: babel-french adds no second space before their `:` (write it `~:`,
+a non-breaking space). See the [French example](../examples/french/).
+
+**Another language.** Copy `SolutionManual-english.def` to
+`SolutionManual-<language>.def` in `solution-manual/`, keep its
+`\ProvidesFile` line with the new file name, and translate every value (UTF-8).
+`language=<language>` then loads it; the class does not change.
 
 ## Build settings
 
@@ -139,7 +202,9 @@ latexmk
 Its [`latexmkrc`](../examples/showcase/latexmkrc) sets
 `$framework_dir = '../../solution-manual';`; all its outputs stay inside
 `examples/showcase/`. The README images are rendered from this project's PDF.
-CI builds both projects and uploads `starter.pdf` and `showcase.pdf` artifacts.
+The [French example](../examples/french/) is built the same way, from
+`examples/french/`. CI builds the three projects and uploads `starter.pdf`,
+`showcase.pdf` and `french.pdf` artifacts.
 The separate report job checks the starter's `COMPLETION.md` only in the
 template repository; its workflow comment explains how to enable it elsewhere.
 

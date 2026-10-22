@@ -44,3 +44,8 @@ a failure. Logs, normalized results and `.diff` files are under
 `build/l3build/test/`. `l3build clean` removes the test build files without
 removing the manual's other `build/` outputs. CI runs the same `l3build check`
 command and uploads diagnostics on failure.
+
+A new language is a `solution-manual/SolutionManual-<language>.def` file (see
+[Languages](customization.md#languages)); its `\ProvidesFile` version must
+match the classes' version, which CI checks. Add a test like
+`testfiles/language-french.lvt` for it.

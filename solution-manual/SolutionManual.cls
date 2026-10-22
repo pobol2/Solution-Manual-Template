@@ -37,38 +37,56 @@
 \def\firstTitle{}
 \def\mainTitle{}
 
-% Texts
-\newcommand*{\SM@titleprefix}{Solutions to}
-\newcommand*{\SM@authorlabel}{Author}
+% Texts: every label is set by the language file SolutionManual-<language>.def
+% (language=..., english by default), with the keys below.
+\newcommand*{\SM@language}{}
+\newcommand*{\SM@titleprefix}{}
+\newcommand*{\SM@authorlabel}{}
+\newcommand*{\SM@bylabel}{}
+\newcommand*{\SM@monthnames}{}
+\newcommand*{\SM@pagelabel}{}
+\newcommand*{\SM@pageoflabel}{}
+\newcommand*{\SM@contentslabel}{}
+\newcommand*{\SM@chapterlabel}{}
+\newcommand*{\SM@problemlabel}{}
+\newcommand*{\SM@solutionlabel}{}
+\newcommand*{\SM@answerlabel}{}
+\newcommand*{\SM@verificationlabel}{}
+\newcommand*{\SM@solutionstitle}{}
+\newcommand*{\SM@sollinklabel}{}
+\newcommand*{\SM@chapabbrev}{}
+\newcommand*{\SM@secabbrev}{}
+\newcommand*{\SM@probabbrev}{}
+\newcommand*{\SM@notdonelabel}{}
+\newcommand*{\SM@donelabel}{}
+\newcommand*{\SM@completiontitle}{}
+\newcommand*{\SM@totallabel}{}
+\newcommand*{\SM@outsidelabel}{}
+\newcommand*{\SM@colon}{}
 % Month and year of the build, e.g. "October 2026" (date=\today for the day)
-\newcommand*{\SM@date}{%
-    \ifcase\month\or January\or February\or March\or April\or May\or June\or
-    July\or August\or September\or October\or November\or December\fi
-    ~\the\year}
-\newcommand*{\SM@contentslabel}{Table of Contents}
-\newcommand*{\SM@problemlabel}{Problem}
-\newcommand*{\SM@solutionlabel}{Solution:}
-\newcommand*{\SM@answerlabel}{Answer to Problem}
-\newcommand*{\SM@verificationlabel}{Verification:}
-\newcommand*{\SM@solutionstitle}{Solutions}
-\newcommand*{\SM@sollinklabel}{Solution p.}
+\newcommand*{\SM@date}{\SM@monthname~\the\year}
 \newcommand*{\SM@footer}{%
     \SM@titleprefix~\mainTitle
-    \SM@ifnotblank{\authorName}{~by \authorName}}
-\newcommand*{\SM@notdonelabel}{Not done}
-\newcommand*{\SM@donelabel}{Done}
-\newcommand*{\SM@completiontitle}{Completion}
-\newcommand*{\SM@totallabel}{All problems}
-\newcommand*{\SM@chapabbrev}{Chap.}
-\newcommand*{\SM@secabbrev}{Sec.}
-\newcommand*{\SM@probabbrev}{Prob.}
+    \SM@ifnotblank{\authorName}{~\SM@bylabel\space\authorName}}
+
+\ExplSyntaxOn
+% Name of the current month, from the month names
+\cs_new:Npn \SM@monthname { \clist_item:Nn \SM@monthnames { \month } }
+% #1 = Comma-separated list of the 12 month names
+\cs_new_protected:Npn \SM@setmonthnames #1
+  {
+    \int_compare:nNnTF { \clist_count:n {#1} } = { 12 }
+      { \clist_set:Nn \SM@monthnames {#1} } % items without their spaces
+      {
+        \ClassError { SolutionManual } { month~names~needs~12~names }
+          { Give~the~months~from~January~to~December,~separated~by~commas. }
+      }
+  }
+\ExplSyntaxOff
 
 % Colors: ThemeColor is a named color; the boxes use color expressions, which
 % are evaluated where they are used (so they follow later ThemeColor changes).
 \colorlet{ThemeColor}{red!50!black}
-% The project's mytheme.sty, if it exists, sets ThemeColor for the manual and
-% its figures (SolutionFigure.cls loads it too)
-\IfFileExists{mytheme.sty}{\RequirePackage{mytheme}}{}
 \newcommand*{\SM@questionback}{gray!5!white}
 \newcommand*{\SM@questionframe}{gray!50!black}
 \newcommand*{\SM@subquestionframe}{gray!75!black}
@@ -106,9 +124,15 @@
     subtitle/.code={\def\firstTitle{#1}},
     title prefix/.code={\def\SM@titleprefix{#1}},
     date/.code={\def\SM@date{#1}},
-    % Texts
+    % Texts: language sets them all, so the keys after it override it
+    language/.code={\SM@loadlanguage{#1}},
     author label/.code={\def\SM@authorlabel{#1}},
+    by label/.code={\def\SM@bylabel{#1}},
+    month names/.code={\SM@setmonthnames{#1}},
+    page label/.code={\def\SM@pagelabel{#1}},
+    page of label/.code={\def\SM@pageoflabel{#1}},
     contents label/.code={\def\SM@contentslabel{#1}},
+    chapter label/.code={\def\SM@chapterlabel{#1}},
     problem label/.code={\def\SM@problemlabel{#1}},
     solution label/.code={\def\SM@solutionlabel{#1}},
     answer label/.code={\def\SM@answerlabel{#1}},
@@ -118,6 +142,8 @@
     chapter abbreviation/.code={\def\SM@chapabbrev{#1}},
     section abbreviation/.code={\def\SM@secabbrev{#1}},
     problem abbreviation/.code={\def\SM@probabbrev{#1}},
+    colon/.code={\def\SM@colon{#1}},
+    number format/.code={\pgfqkeys{/pgf/number format}{#1}},
     footer/.code={\def\SM@footer{#1}},
     % Colors
     theme color/.code={\colorlet{ThemeColor}{#1}},
@@ -150,8 +176,25 @@
     done label/.code={\def\SM@donelabel{#1}},
     completion title/.code={\def\SM@completiontitle{#1}},
     completion total label/.code={\def\SM@totallabel{#1}},
+    outside chapters label/.code={\def\SM@outsidelabel{#1}},
 }
 \newcommand{\SolutionManualSetup}[1]{\pgfqkeys{/SolutionManual}{#1}}
+
+% language=<name>: SolutionManual-<name>.def (in this folder) sets every label
+% with \SolutionManualSetup, so a language is added without changing the class
+\newcommand*{\SM@loadlanguage}[1]{%
+    \IfFileExists{SolutionManual-#1.def}{%
+        \def\SM@language{#1}%
+        \input{SolutionManual-#1.def}%
+    }{%
+        \ClassError{SolutionManual}{Unknown language `#1'}{There is no file
+            SolutionManual-#1.def next to SolutionManual.cls.}%
+    }}
+\SolutionManualSetup{language=english}
+
+% The project's mytheme.sty, if it exists, sets ThemeColor and the language
+% for the manual and its figures (SolutionFigure.cls loads it too)
+\IfFileExists{mytheme.sty}{\RequirePackage{mytheme}}{}
 
 % Editions (see docs/editions.md): latexmk defines \SolutionManualSolutions
 % before the class, e.g. as {hidden} or {answers\space only}. That mode is set
@@ -192,11 +235,25 @@
     margin=25mm,
 }
 
+% ============ Standard names ============ %
+% Contents title (and running-header text) and chapter name. babel sets them
+% each time it selects a language (\captionsfrench, ... at \begin{document}
+% too), so the class labels are set again after it.
+\newcommand*{\SM@captions}{%
+    \renewcommand*{\contentsname}{\SM@contentslabel}%
+    \renewcommand*{\chaptername}{\SM@chapterlabel}}
+\SM@captions
+\AddToHook{package/babel/after}{%
+    \AddBabelHook{SolutionManual}{afterextras}{\SM@captions}}
+
+% babel-french adds a space before ":" (and ;!?): print labels without it,
+% since they contain their own (solution label={Solution~:}, ...)
+\newcommand*{\SM@noautospace}{\ifdefined\NoAutoSpacing\NoAutoSpacing\fi}
+
 % ============ Table of contents ============ %
 % Keep the name free of paragraph formatting: tocloft also uses it in running
 % headers, where a paragraph inside a hyperlink breaks multi-page contents.
 \renewcommand{\cfttoctitlefont}{\hfill\scshape\huge} % centered title
-\renewcommand{\contentsname}{\SM@contentslabel} % title and running-header text
 \renewcommand{\cftaftertoctitle}{\hfill\mbox{}\par\nobreak\noindent\rule{\textwidth}{0.8pt}} % horizontal line
 
 \renewcommand{\cftchapfont}{\bfseries \scshape} % chapter font
@@ -492,7 +549,7 @@
   % displays so a chain of short paragraphs and equations can still paginate.
   \postdisplaypenalty=10000\relax
   \predisplaypenalty=1000\relax
-  {\scshape \SM@solutionlabel}
+  {\scshape \SM@noautospace\SM@solutionlabel}
   }
 
 % Keep answer boxes with the preceding solution text. If space runs out,
@@ -545,7 +602,7 @@
 \newcommand{\SM@printresponse}[4]{%
     \SM@printworked{\SM@ifblank{#1}{}{\solution #1\SM@pagewrite{last}\par}}%
     \SM@printanswer{\SM@ifblank{#2}{}{\begin{#4}#2\SM@pagewrite{last}\end{#4}}}%
-    \SM@printworked{\SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\SM@pagewrite{last}\par}}%
+    \SM@printworked{\SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@noautospace\SM@verificationlabel} #3\SM@pagewrite{last}\par}}%
 }
 
 % Running header: the last problem started on the page (mark class SMproblem;
@@ -1098,7 +1155,7 @@
         \else
             \par\SM@ovopentrue
             \small\leftskip=\SM@ovindent\relax\rightskip=4em\@plus1fil
-            \parindent=\z@\leavevmode{\itshape\SM@notdonelabel:}
+            \parindent=\z@\leavevmode{\itshape\SM@noautospace\SM@notdonelabel\SM@colon}
         \fi
         \hyperlink{#7}{\SM@problemlabel~#6}\ifblank{#8}{}{~(#8)}%
     \fi}
@@ -1144,27 +1201,28 @@
         \SM@purify\SM@md@b{\SM@totallabel}%
         \SM@purify\SM@md@c{\SM@donelabel}%
         \SM@purify\SM@md@d{\SM@notdonelabel}%
+        \SM@purify\SM@md@e{\SM@outsidelabel}%
+        \SM@purify\SM@md@f{\SM@colon}%
         \SM@mdline{<!-- Generated from \jobname.tex by SolutionManual.cls. Do not edit: build the manual to refresh it. -->}%
         \SM@mdline{}%
         \ifnum\SM@count{total}{all}>\z@
             \SM@percent{\SM@count{done}{all}}{\SM@count{total}{all}}%
-            \SM@mdline{**\SM@md@a: \SM@count{done}{all}/\SM@count{total}{all}
+            \SM@mdline{**\SM@md@a\SM@md@f\space\SM@count{done}{all}/\SM@count{total}{all}
                 (\the\count@\@percentchar)**}%
             \SM@mdline{}%
             \SM@mdline{| | \SM@md@c\space| \SM@md@d\space|}%
             \SM@mdline{| :-- | :-: | :-- |}%
             \SM@mdline{| **\SM@md@b** | \SM@count{done}{all}/\SM@count{total}{all} | |}%
             \ifnum\SM@count{total}{0}>\z@
-                \xdef\SM@md@row{| \SM@md@outside\space| \SM@count{done}{0}/\SM@count{total}{0} |}%
+                \xdef\SM@md@row{| \SM@md@e\space| \SM@count{done}{0}/\SM@count{total}{0} |}%
                 \gdef\SM@md@todo{}%
             \fi
             \SM@walk\SM@cur@list\SM@md@heading\SM@md@problem
             \SM@md@flush
         \else
-            \SM@mdline{**\SM@md@a: 0/0**}%
+            \SM@mdline{**\SM@md@a\SM@md@f\space 0/0**}%
         \fi
     \endgroup}
-\newcommand*{\SM@md@outside}{(outside chapters)}
 \newcommand*{\SM@md@flush}{%
     \ifx\SM@md@row\@empty\else\SM@mdline{\SM@md@row\space\SM@md@todo\space|}\fi
     \global\let\SM@md@row\@empty}
@@ -1283,11 +1341,43 @@
       { \int_compare:nNnTF {#3} = {1} {done} {not~done} } { }
     \SM@jsonline { \c_right_brace_str }
   }
+% The language and the labels used (named as their setup keys), for the
+% programs that show the problems
+\cs_new_protected:Npn \SM@jsonlabels
+  {
+    \SM@jsonstring \l__SM_json_string_str { \SM@language }
+    \SM@jsonline { \c_left_brace_str "language":~"\l__SM_json_string_str", }
+    \SM@jsonline { "labels":~\c_left_brace_str }
+    \SM@jsonfield {title_prefix} { \SM@titleprefix } {,}
+    \SM@jsonfield {author_label} { \SM@authorlabel } {,}
+    \SM@jsonfield {by_label} { \SM@bylabel } {,}
+    \SM@jsonfield {page_label} { \SM@pagelabel } {,}
+    \SM@jsonfield {page_of_label} { \SM@pageoflabel } {,}
+    \SM@jsonfield {contents_label} { \SM@contentslabel } {,}
+    \SM@jsonfield {chapter_label} { \SM@chapterlabel } {,}
+    \SM@jsonfield {problem_label} { \SM@problemlabel } {,}
+    \SM@jsonfield {solution_label} { \SM@solutionlabel } {,}
+    \SM@jsonfield {answer_label} { \SM@answerlabel } {,}
+    \SM@jsonfield {verification_label} { \SM@verificationlabel } {,}
+    \SM@jsonfield {solutions_title} { \SM@solutionstitle } {,}
+    \SM@jsonfield {solution_link_label} { \SM@sollinklabel } {,}
+    \SM@jsonfield {chapter_abbreviation} { \SM@chapabbrev } {,}
+    \SM@jsonfield {section_abbreviation} { \SM@secabbrev } {,}
+    \SM@jsonfield {problem_abbreviation} { \SM@probabbrev } {,}
+    \SM@jsonfield {not_done_label} { \SM@notdonelabel } {,}
+    \SM@jsonfield {done_label} { \SM@donelabel } {,}
+    \SM@jsonfield {completion_title} { \SM@completiontitle } {,}
+    \SM@jsonfield {completion_total_label} { \SM@totallabel } {,}
+    \SM@jsonfield {outside_chapters_label} { \SM@outsidelabel } {,}
+    \SM@jsonfield {colon} { \SM@colon } { }
+    \SM@jsonline { \c_right_brace_str , }
+  }
 \cs_new_protected:Npn \SM@writejson
   {
     \group_begin:
       \iow_open:Nn \g__SM_json_iow { \jobname-problems.json }
-      \SM@jsonline { \c_left_brace_str "problems":~[ }
+      \SM@jsonlabels
+      \SM@jsonline { "problems":~[ }
       \bool_set_true:N \l__SM_json_first_bool
       \prop_clear:N \l__SM_json_units_prop
       \prop_clear:N \l__SM_json_headings_prop
@@ -1343,16 +1433,19 @@
 \fancyhf{} % clear existing header/footer entries
 \setlength{\headheight}{15pt}
 
+% "Page 3 of 12"
+\newcommand*{\SM@pagecount}{\SM@pagelabel\ \thepage\ \SM@pageoflabel\ \pageref{LastPage}}
+
 % Only footer for chapter page
 \fancypagestyle{plain}{%
 \fancyhf{}%
 \renewcommand{\headrulewidth}{0.0pt}%
 \fancyfoot[L]{\footnotesize \scshape \SM@footer}
-\fancyfoot[R]{\footnotesize \scshape Page \thepage\ of \pageref{LastPage}}}
+\fancyfoot[R]{\footnotesize \scshape \SM@pagecount}}
 
 % Header and footer for other pages
 \fancyfoot[L]{\footnotesize \scshape \SM@footer}
-\fancyfoot[R]{\footnotesize \scshape Page \thepage\ of \pageref{LastPage}}
+\fancyfoot[R]{\footnotesize \scshape \SM@pagecount}
 % The solutions part follows the last chapter but shows its own title alone
 \fancyhead[L]{%
     \ifnum\ifSM@insolutions 0\else\value{chapter}\fi>0\relax

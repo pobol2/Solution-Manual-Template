@@ -44,9 +44,25 @@
 \pgfplotsset{compat=1.18}
 \usepgfplotslibrary{groupplots}
 
+% ============ Language ============ %
+% \SolutionManualSetup{language=french} in mytheme.sty sets the language of
+% the manual and its figures. Figures read the same SolutionManual-<language>.def
+% for its number format (decimal comma, ...) and ignore the other keys.
+\pgfqkeys{/SolutionFigure}{
+    language/.code={%
+        \IfFileExists{SolutionManual-#1.def}{\input{SolutionManual-#1.def}}{%
+            \ClassError{SolutionFigure}{Unknown language `#1'}{There is no
+                file SolutionManual-#1.def next to SolutionFigure.cls.}}},
+    number format/.code={\pgfqkeys{/pgf/number format}{#1}},
+    .unknown/.code={}, % keys of the manual only
+}
+\newcommand{\SolutionManualSetup}[1]{\pgfqkeys{/SolutionFigure}{#1}}
+\SolutionManualSetup{language=english}
+
 % ============ Colors ============ %
 \colorlet{ThemeColor}{red!50!black}   % same default as SolutionManual.cls
-\IfFileExists{mytheme.sty}{\RequirePackage{mytheme}}{} % theme of the manual
+% Theme and language of the manual
+\IfFileExists{mytheme.sty}{\RequirePackage{mytheme}}{}
 \colorlet{FigureAccent}{ThemeColor}   % highlighted elements
 \colorlet{FigureGuide}{black!50}      % axes, construction lines and grids
 % FigureFill (shaded regions) is FigureAccent!12, defined after myfigures.sty

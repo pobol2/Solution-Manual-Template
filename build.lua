@@ -1,8 +1,8 @@
 -- Regression tests for the shared classes, isolated from project customizations.
 module = "solution-manual"
 sourcefiledir = "solution-manual"
-sourcefiles = {"*.cls"}
-installfiles = {"*.cls"}
+sourcefiles = {"*.cls", "*.def"}
+installfiles = {"*.cls", "*.def"}
 unpackfiles = {}
 typesetfiles = {}
 -- The default cleanfiles includes *.pdf: preserve the committed previews.

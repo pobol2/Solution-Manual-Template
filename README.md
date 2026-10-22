@@ -76,8 +76,10 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 - [Completion tracking](docs/completion-tracking.md), with unfinished markers, an overview and a Markdown report.
 - [Editions](docs/editions.md): exercise and answer books of the same sources, built with the manual.
 - [Customization](docs/customization.md) of titles, labels, layout, colors and project commands.
+- [Languages](docs/customization.md#languages): English or French texts with `language=french`, with or without babel.
 
-The [showcase project](examples/showcase/) contains the full set of examples.
+The [showcase project](examples/showcase/) contains the full set of examples,
+and the [French example](examples/french/) a small manual in French.
 See [Troubleshooting](docs/troubleshooting.md) for build problems and
 [advanced submodule guide](docs/advanced-submodule.md) for submodules and migration.
 

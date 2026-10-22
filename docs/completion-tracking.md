@@ -65,10 +65,19 @@ in place: delete it if it is no longer wanted.
 With completion tracking on, the class also writes
 `build/<jobname>-problems.json` (`build/main-problems.json` for `main.tex`).
 It uses the same problem records and completion rules as the Markdown report.
-The file is UTF-8 JSON with a `problems` array, in document order:
+The file is UTF-8 JSON with the `language` and `labels` of the manual, and a
+`problems` array, in document order:
 
 ```json
 {
+  "language": "english",
+  "labels": {
+    "title_prefix": "Solutions to",
+    "problem_label": "Problem",
+    "not_done_label": "Not done",
+    "done_label": "Done",
+    ...
+  },
   "problems": [
     {
       "anchor": "ProblemNum.1.1.0.1",
@@ -91,6 +100,18 @@ The file is UTF-8 JSON with a `problems` array, in document order:
   ]
 }
 ```
+
+`language` is the value of the [`language`](customization.md#languages) key.
+`labels` holds every text label in use, after the keys that override the
+language: each one is named after its setup key, with `_` for spaces
+(`title_prefix`, `author_label`, `by_label`, `page_label`, `page_of_label`,
+`contents_label`, `chapter_label`, `problem_label`, `solution_label`,
+`answer_label`, `verification_label`, `solutions_title`,
+`solution_link_label`, `chapter_abbreviation`, `section_abbreviation`,
+`problem_abbreviation`, `not_done_label`, `done_label`, `completion_title`,
+`completion_total_label`, `outside_chapters_label` and `colon`). A
+non-breaking space `~` becomes a plain space (`"Solution :"`). Show `status`
+with `done_label` or `not_done_label`.
 
 `number` is the displayed problem number. `unit` is the displayed numbering
 unit used by `\probref`: the chapter in chapter/continuous mode, or the section

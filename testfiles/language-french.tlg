@@ -1,0 +1,94 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Language: french
+Title page: Solutions de; Auteur; par
+Footer: Page; sur
+Names: Table des mati^^e8res; Chapitre
+Problems: Probl^^e8me; Solution~:; R^^e9ponse au probl^^e8me; V^^e9rification~:; Solutions; Solution p.
+Abbreviations: Chap.; Sec.; Prob.
+Completion: ^^c0 faire; Fait; Progression; Tous les probl^^e8mes; (hors chapitres); ~:
+January: janvier
+August: ao^^fbt
+December: d^^e9cembre
+Number: macro:->\pgfutilensuremath {1\,234{,}5}
+! Class SolutionManual Error: month names needs 12 names.
+See the SolutionManual class documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+l. ...\SolutionManualSetup{month names={a, b}}
+Give the months from January to December, separated by commas.
+! Class SolutionManual Error: Unknown language `klingon'.
+See the SolutionManual class documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+l. ...\SolutionManualSetup{language=klingon}
+There is no file SolutionManual-klingon.def next to SolutionManual.cls.
+-------- language-french-completion.md (start) ---------
+(language-french-completion.md)
+<!-- Generated from language-french.tex by SolutionManual.cls. Do not edit: build the manual to refresh it. -->[nl]
+[nl]
+**Progression : 1/2 (50%)**[nl]
+[nl]
+| | Fait | ^^c0 faire |[nl]
+| :-- | :-: | :-- |[nl]
+| **Tous les probl^^e8mes** | 1/2 | |[nl]
+| **Chapitre 1. Cin^^e9matique** | 1/2 | Probl^^e8me 2 |[nl]
+-------- language-french-completion.md (end) -----------
+-------- language-french-problems.json (start) ---------
+(language-french-problems.json)
+{"language": "french",[nl]
+"labels": {[nl]
+ "title_prefix": "Solutions de",[nl]
+ "author_label": "Auteur",[nl]
+ "by_label": "par",[nl]
+ "page_label": "Page",[nl]
+ "page_of_label": "sur",[nl]
+ "contents_label": "Table des mati^^e8res",[nl]
+ "chapter_label": "Chapitre",[nl]
+ "problem_label": "Probl^^e8me",[nl]
+ "solution_label": "Solution :",[nl]
+ "answer_label": "R^^e9ponse au probl^^e8me",[nl]
+ "verification_label": "V^^e9rification :",[nl]
+ "solutions_title": "Solutions",[nl]
+ "solution_link_label": "Solution p.",[nl]
+ "chapter_abbreviation": "Chap.",[nl]
+ "section_abbreviation": "Sec.",[nl]
+ "problem_abbreviation": "Prob.",[nl]
+ "not_done_label": "^^c0 faire",[nl]
+ "done_label": "Fait",[nl]
+ "completion_title": "Progression",[nl]
+ "completion_total_label": "Tous les probl^^e8mes",[nl]
+ "outside_chapters_label": "(hors chapitres)",[nl]
+ "colon": " :"[nl]
+},[nl]
+"problems": [[nl]
+{[nl]
+ "anchor": "ProblemNum.1.0.0.1",[nl]
+ "number": "1",[nl]
+ "unit": "1",[nl]
+ "heading_title": "Cin^^e9matique",[nl]
+ "title": "Chute libre",[nl]
+ "status": "done",[nl]
+ "first_page": "1",[nl]
+ "last_page": "1",[nl]
+ "parts": [[nl]
+][nl]
+}[nl]
+,[nl]
+{[nl]
+ "anchor": "ProblemNum.1.0.0.2",[nl]
+ "number": "2",[nl]
+ "unit": "1",[nl]
+ "heading_title": "Cin^^e9matique",[nl]
+ "title": "",[nl]
+ "status": "not done",[nl]
+ "first_page": "1",[nl]
+ "last_page": "1",[nl]
+ "parts": [[nl]
+][nl]
+}[nl]
+]}[nl]
+-------- language-french-problems.json (end) -----------
+***************
+Compilation 1 of test file completed with exit status 1
+Compilation 2 of test file completed with exit status 1

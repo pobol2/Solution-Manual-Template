@@ -3,6 +3,7 @@
 *.tex text eol=lf
 *.cls text eol=lf
 *.sty text eol=lf
+*.def text eol=lf
 *.md text eol=lf
 *.json text eol=lf
 latexmkrc text eol=lf

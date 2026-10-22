@@ -16,10 +16,14 @@ def check_versions(root, tag=None):
     if heading is None:
         raise ValueError("CHANGELOG.md has no version section")
     version = heading[1]
-    for name in ("SolutionManual", "SolutionFigure"):
-        path = root / "solution-manual" / f"{name}.cls"
+    framework = root / "solution-manual"
+    # The classes, and the language files they read (\ProvidesFile)
+    files = [("Class", framework / f"{name}.cls") for name in ("SolutionManual", "SolutionFigure")]
+    files += [("File", path) for path in sorted(framework.glob("SolutionManual-*.def"))]
+    for command, path in files:
+        name = path.stem if command == "Class" else path.name
         metadata = re.search(
-            rf"^\\ProvidesClass\{{{name}\}}\[\d{{4}}/\d{{2}}/\d{{2}}\s+(v[^\s\]]+)",
+            rf"^\\Provides{command}\{{{re.escape(name)}\}}\[\d{{4}}/\d{{2}}/\d{{2}}\s+(v[^\s\]]+)",
             path.read_text(encoding="utf-8"),
             re.MULTILINE,
         )
@@ -34,7 +38,7 @@ def check_versions(root, tag=None):
                      flags=re.MULTILINE)[0].strip()
     if not notes:
         raise ValueError(f"CHANGELOG.md has no notes for {version}")
-    print(f"Both class versions match CHANGELOG.md: v{version}")
+    print(f"Class and language file versions match CHANGELOG.md: v{version}")
     return notes + "\n"
 
 
@@ -94,7 +98,7 @@ def package_release(root, tag, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    check = commands.add_parser("check", help="compare both class versions to the changelog")
+    check = commands.add_parser("check", help="compare the class and language file versions to the changelog")
     check.add_argument("--tag", help="also require this release tag to match")
     package = commands.add_parser("package", help="package the clean builds and release notes")
     package.add_argument("tag")

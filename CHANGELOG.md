@@ -23,8 +23,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   overrides `solutions=...` in `main.tex`; figures are shared and only the
   manual's completion report is copied to the root. The showcase builds
   `exercises.pdf` and `answers.pdf`, uploaded by CI as artifacts.
+- `language=english|french` setup key (default `english`). Each language is
+  a file `solution-manual/SolutionManual-<language>.def` that sets every
+  label with `\SolutionManualSetup`, so a language can be added without
+  changing the class. Keys given after `language` override it. In
+  `mytheme.sty`, it also sets the number format of the figures (decimal
+  comma in French); `SolutionFigure.cls` ignores the other keys there.
+- New text keys, so that every text can be translated: `month names`,
+  `by label`, `page label`, `page of label` (footer), `chapter label`,
+  `outside chapters label` (report) and `colon` (overview and report), and
+  `number format` (`/pgf/number format` options).
+- The JSON problem index starts with the `language` and the `labels` in use.
+- A French example project in `examples/french/` (two problems, one figure,
+  babel), built by CI and uploaded as `french.pdf`.
 
 ### Changed
+
+- With babel, `contents label` and the new `chapter label` now take
+  precedence over babel's `\contentsname` and `\chaptername`, which the class
+  sets back after each language selection: before, babel's names replaced
+  `contents label`. Set both keys for a babel language without a language
+  file (e.g. `contents label={Inhaltsverzeichnis}, chapter label={Kapitel}`).
+  Labels are printed without babel-french's automatic space before `:`.
+- `mytheme.sty` is loaded after `\SolutionManualSetup` is defined, so it can
+  set the language.
 
 - The shared `latexmkrc` runs pdfLaTeX with `%P` instead of `%S`, so that
   pre-TeX code can be given; builds without it are unchanged.

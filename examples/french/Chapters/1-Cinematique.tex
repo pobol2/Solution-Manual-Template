@@ -1,0 +1,42 @@
+% !TEX root = ../main.tex
+\chapter{Cinématique}
+
+% A solved problem with a verification and a figure (decimal commas in the
+% axis ticks come from language=french in mytheme.sty).
+\begin{problem}[title={Chute libre}]
+{
+Un objet est lâché sans vitesse initiale d'une hauteur $h = 20\,\mathrm{m}$.
+En négligeant la résistance de l'air, combien de temps dure sa chute ?
+On prend $g = 9,8\,\mathrm{m/s^2}$.
+}
+{
+La hauteur de l'objet au temps $t$ est $y(t) = h - \frac{1}{2} g t^2$. Il
+touche le sol quand $y(t) = 0$, soit
+\begin{equation}
+    t = \sqrt{\frac{2h}{g}} = \sqrt{\frac{2 \cdot 20}{9,8}}\,\mathrm{s}
+      \approx 2,02\,\mathrm{s}.
+\end{equation}
+}
+{
+$t \approx 2,0\,\mathrm{s}$.
+}
+[
+$\frac{1}{2} \cdot 9,8 \cdot 2,02^2 \approx 20,0\,\mathrm{m}$ : on retrouve
+la hauteur de départ, et la courbe de la figure~\ref{fig:chute} coupe l'axe
+du temps à $t \approx 2,02\,\mathrm{s}$.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Chute.pdf}
+    \caption{Hauteur de l'objet en fonction du temps.}
+    \label{fig:chute}
+\end{figure}
+]
+\end{problem}
+
+% Leave the solution empty: the problem is marked « À faire ».
+\begin{problem}[title={Freinage}]
+{
+Une voiture roulant à $90\,\mathrm{km/h}$ freine avec une décélération
+constante de $5,0\,\mathrm{m/s^2}$. Quelle est sa distance de freinage ?
+}{}{}
+\end{problem}

@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 P.O. Bolduc. See ../../LICENSE.
+#
+# Project build settings. The build rules are shared by every solution manual
+# and live in the framework folder; outputs stay in this project
+# (build/, Figures/*.pdf and the final PDF in this folder).
+
+# Shared framework folder, relative to this example project.
+$framework_dir = '../../solution-manual';
+
+use File::Spec;
+my $shared = File::Spec->rel2abs("$framework_dir/latexmkrc");
+do $shared or die "Could not load $shared: ", ($@ || $!), "\n";

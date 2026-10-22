@@ -1,6 +1,6 @@
-# Builds the starter and showcase with each project's latexmkrc, uploads
-# both PDFs and the showcase editions, and checks class versions and the
-# committed COMPLETION.md.
+# Builds the starter, showcase and French example with each project's
+# latexmkrc, uploads their PDFs and the showcase editions, and checks class
+# versions and the committed COMPLETION.md.
 name: Build
 
 on:
@@ -49,6 +49,8 @@ jobs:
             directory: .
           - project: showcase
             directory: examples/showcase
+          - project: french
+            directory: examples/french
     steps:
       - uses: actions/checkout@v7
 
