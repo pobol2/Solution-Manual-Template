@@ -5,7 +5,7 @@
 % Read by SolutionManual.cls, and by SolutionFigure.cls for the number format.
 % To add a language, copy this file to SolutionManual-<language>.def (UTF-8)
 % and translate every value: see docs/customization.md.
-\ProvidesFile{SolutionManual-english.def}[2026/10/22 v1.3.0 English texts for solution manuals]
+\ProvidesFile{SolutionManual-english.def}[2026/10/22 v1.4.0 English texts for solution manuals]
 
 \SolutionManualSetup{
     % Title page and footer

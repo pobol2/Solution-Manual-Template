@@ -14,8 +14,8 @@ problem and its exercise and answer editions, published by GitHub Actions.
 
 <p align="center">
   <img src="images/title.png" width="32%" alt="The title page">
-  <img src="images/contents.png" width="32%" alt="The table of contents, with problems marked not done">
-  <img src="images/showcase.png" width="32%" alt="A problem in parts with a TikZ and PGFPlots figure, answer boxes, a verification and a part not done">
+  <img src="images/contents.png" width="32%" alt="The table of contents, with problem and part titles and unfinished markers">
+  <img src="images/showcase.png" width="32%" alt="A titled problem and parts with a TikZ and PGFPlots figure, answer boxes, a verification and an unfinished marker">
 </p>
 
 ## Quick start
@@ -74,14 +74,15 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 
 ## Features
 
-- [Problems and parts](docs/writing-problems.md) with solutions, answer boxes and optional verification.
+- [Problems and parts](docs/writing-problems.md) with optional titles, solutions, answer boxes and verification.
+- [Solution modes](docs/writing-problems.md): full solutions, questions only, final answers, or solutions collected at the end, with links back to the questions.
 - [Chapters, sections and numbering](docs/numbering-and-references.md), with textbook numbers and cross-references.
 - [Standalone figures](docs/figures.md) with TikZ, PGFPlots and CSV data, rebuilt when their sources change.
 - [Completion tracking](docs/completion-tracking.md), with unfinished markers, an overview and a Markdown report.
 - [Editions](docs/editions.md): exercise and answer books of the same sources, built with the manual.
 - [Website](docs/website.md): a static site with a catalogue of the problems and a page and a PDF per solved problem, for GitHub Pages or any host.
 - [Customization](docs/customization.md) of titles, labels, layout, colors and project commands.
-- [Languages](docs/customization.md#languages): English or French texts with `language=french`, with or without babel.
+- [Language presets](docs/customization.md#languages): English by default, French with `language=french`, with or without babel; add a language file to translate the labels.
 
 The [showcase project](examples/showcase/) contains the full set of examples,
 and the [French example](examples/french/) a small manual in French.

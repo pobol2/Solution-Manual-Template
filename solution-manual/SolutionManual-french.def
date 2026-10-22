@@ -5,7 +5,7 @@
 % Read by SolutionManual.cls, and by SolutionFigure.cls for the number format.
 % A space before ":" is written ~ (non-breaking); the class keeps babel-french
 % from adding a second one.
-\ProvidesFile{SolutionManual-french.def}[2026/10/22 v1.3.0 French texts for solution manuals]
+\ProvidesFile{SolutionManual-french.def}[2026/10/22 v1.4.0 French texts for solution manuals]
 
 \SolutionManualSetup{
     % Title page and footer

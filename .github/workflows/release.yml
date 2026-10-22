@@ -21,9 +21,11 @@ jobs:
 
       - name: Remove generated files
         run: |
-          rm -rf build examples/showcase/build
+          rm -rf build examples/showcase/build examples/french/build
           rm -f main.pdf COMPLETION.md Figures/*.pdf
           rm -f examples/showcase/main.pdf examples/showcase/COMPLETION.md examples/showcase/Figures/*.pdf
+          rm -f examples/showcase/exercises.pdf examples/showcase/answers.pdf
+          rm -f examples/french/main.pdf examples/french/COMPLETION.md examples/french/Figures/*.pdf
 
       - name: Build starter
         uses: xu-cheng/latex-action@4.1.0
@@ -41,6 +43,14 @@ jobs:
           texlive_version: 2026
           args: -file-line-error -interaction=nonstopmode
 
+      - name: Build French example
+        uses: xu-cheng/latex-action@4.1.0
+        with:
+          root_file: main.tex
+          working_directory: examples/french
+          texlive_version: 2026
+          args: -file-line-error -interaction=nonstopmode
+
       - name: Package release assets and changelog notes
         run: python3 .github/scripts/release.py package "$RELEASE_TAG"
 
@@ -52,5 +62,6 @@ jobs:
           gh release create "$RELEASE_TAG" --verify-tag \
             --title "$RELEASE_TAG" --notes-file dist/release-notes.md \
             dist/main.pdf dist/showcase.pdf \
+            dist/showcase-exercises.pdf dist/showcase-answers.pdf dist/french.pdf \
             "dist/solution-manual-$RELEASE_TAG.zip" \
             dist/overleaf-starter.zip dist/overleaf-showcase.zip

@@ -52,18 +52,28 @@ def add_folder(archive, source, destination):
 def package_release(root, tag, output):
     notes = check_versions(root, tag)
     projects = {"starter": root, "showcase": root / "examples/showcase"}
+    pdf_assets = {
+        "main.pdf": root / "main.pdf",
+        "showcase.pdf": projects["showcase"] / "main.pdf",
+        "showcase-exercises.pdf": projects["showcase"] / "exercises.pdf",
+        "showcase-answers.pdf": projects["showcase"] / "answers.pdf",
+        "french.pdf": root / "examples/french/main.pdf",
+    }
     # Fail before packaging if a clean build did not produce all expected PDFs.
+    for pdf in pdf_assets.values():
+        if not pdf.is_file():
+            raise ValueError(f"Missing built PDF: {pdf}")
     for project in projects.values():
-        for pdf in [project / "main.pdf", *(
+        for pdf in (
             source.with_suffix(".pdf") for source in (project / "Figures").rglob("*.tex")
-        )]:
+        ):
             if not pdf.is_file():
                 raise ValueError(f"Missing built PDF: {pdf}")
 
     output.mkdir(parents=True, exist_ok=True)
     (output / "release-notes.md").write_text(notes, encoding="utf-8")
-    shutil.copyfile(root / "main.pdf", output / "main.pdf")
-    shutil.copyfile(projects["showcase"] / "main.pdf", output / "showcase.pdf")
+    for name, source in pdf_assets.items():
+        shutil.copyfile(source, output / name)
     with ZipFile(output / f"solution-manual-{tag}.zip", "w", ZIP_DEFLATED) as archive:
         add_folder(archive, root / "solution-manual", "solution-manual")
         # Keep the license inside the framework-only archive.

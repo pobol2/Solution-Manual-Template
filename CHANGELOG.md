@@ -7,8 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-22
+
 ### Added
 
+- Solution modes: `solutions=shown` (default) prints the complete manual,
+  `solutions=hidden` prints questions only, and `solutions=answers only`
+  prints questions and final-answer boxes. Student editions omit worked
+  solutions, verifications and completion markers; `completion markers=true`
+  restores the markers and overview. `[show solution]` on a problem or part
+  keeps its worked response in place in any mode, for worked examples.
 - `solutions=answers at end`: the chapters show the questions, and the
   solutions, answer boxes and verifications are printed by the new
   `\printsolutions` command (or at the end of the document) in a starred
@@ -36,6 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The JSON problem index starts with the `language` and the `labels` in use.
 - A French example project in `examples/french/` (two problems, one figure,
   babel), built by CI and uploaded as `french.pdf`.
+- Release assets now include `showcase-exercises.pdf`,
+  `showcase-answers.pdf` and `french.pdf`, built from the example projects.
 - Website builder, `solution-manual/site/build.py` (moved from
   Mechanics-Landau-Solution and generalized; Python 3.11+ and `pypdf`, pinned
   in `solution-manual/site/requirements.txt`). Run from a project root after
@@ -49,11 +59,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   by problem ID. The build checks the settings, the index against the PDF,
   titles and descriptions, the problem PDFs, every link and anchor, and the
   sitemap, and refuses a manual that is not in `shown` mode. See
-  `docs/website.md`. The starter, the showcase and the French example have a site,
-  built and checked by CI and uploaded as `starter-site`, `showcase-site` and
-  `french-site`; the starter's `site/site.toml` is there to edit. `editions = [...]` in `site.toml`
-  links editions from the homepage, each described by its solutions mode,
-  and checked against the manual.
+  `docs/website.md`. The starter, the showcase and the French example have a
+  site, built and checked by CI and uploaded as `starter-site`,
+  `showcase-site` and `french-site`; the starter's `site/site.toml` is there to
+  edit. `editions = [...]` in `site.toml` links editions from the homepage,
+  each described by its solutions mode and checked against the manual.
 - `.github/workflows/website.yml`: builds the manual and its website, and
   publishes it on GitHub Pages on each push to the default branch (pull
   requests and other branches: build and check only), with the figure PDFs
@@ -82,7 +92,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Labels are printed without babel-french's automatic space before `:`.
 - `mytheme.sty` is loaded after `\SolutionManualSetup` is defined, so it can
   set the language.
-
 - The shared `latexmkrc` runs pdfLaTeX with `%P` instead of `%S`, so that
   pre-TeX code can be given; builds without it are unchanged.
 - Showcase: two questions no longer refer to a figure and an equation that
@@ -182,6 +191,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Continuous integration that builds the example manual and checks
   `COMPLETION.md`.
 
+[Unreleased]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.0.0...v1.1.0
