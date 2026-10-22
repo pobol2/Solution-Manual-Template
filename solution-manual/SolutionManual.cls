@@ -959,13 +959,17 @@
 \let\SM@marker\@empty
 
 % Delayed writes travel with the content, including breakable boxes. Freeze
-% the problem serial now; evaluate the displayed page label at shipout.
+% the problem serial now; evaluate the displayed page label and the absolute
+% page number (the page of the PDF) at shipout.
 \newcommand*{\SM@pagewrite}[1]{%
     \ifSM@completion
-        \protected@write\@auxout{}{\string\SM@jsonpage{\SM@p@serial}{#1}{\thepage}}%
+        \protected@write\@auxout{}{\string\SM@jsonpage{\SM@p@serial}{#1}{\thepage}%
+            \string\SM@jsonpdfpage{\SM@p@serial}{#1}{\noexpand\the\ReadonlyShipoutCounter}}%
     \fi}
 \newcommand*{\SM@jsonpage}[3]{%
     \expandafter\gdef\csname SM@json@page@#1@#2\endcsname{#3}}
+\newcommand*{\SM@jsonpdfpage}[3]{%
+    \expandafter\gdef\csname SM@json@pdfpage@#1@#2\endcsname{#3}}
 
 % Problem being written, recorded at the next problem, heading or the end
 \newif\ifSM@pending
@@ -985,6 +989,12 @@
     \xdef\SM@p@unit{\ifnum\SM@numbering=2
         \csname SM@id@\romannumeral\numexpr\SM@depth+1\endcsname
         \else\SM@id@i\fi}%
+    % Reference prefix ("2.", "\S 12.", empty in continuous numbering), for
+    % the reference and ID of the JSON index, written at the end of this run
+    \ifSM@completion
+        \expandafter\protected@xdef\csname SM@json@prefix@\SM@p@serial\endcsname
+            {\p@ProblemNum}%
+    \fi
     \global\SM@pendingtrue
     % Subproblems decide: use the final status of the previous run if known
     \ifcsname SM@prev@status@\SM@p@serial\endcsname
@@ -1248,20 +1258,31 @@
     \fi}
 
 % ---- JSON problem index ---- %
-% Walk the same completion records, with extra title/part metadata. Page
-% writes are read back from this run's aux file before exporting the index.
+% Walk the same completion records, with extra title/part metadata: the
+% headings first, then the problems. Page writes are read back from this run's
+% aux file before exporting the index.
 \ExplSyntaxOn
 \iow_new:N \g__SM_json_iow
-\prop_new:N \l__SM_json_units_prop
-\prop_new:N \l__SM_json_headings_prop
+% Global: filled by the walk of the headings, which is in a group
+\prop_new:N \g__SM_json_units_prop
+\prop_new:N \g__SM_json_headings_prop
+\prop_new:N \g__SM_json_ids_prop
 \tl_new:N \l__SM_json_anchor_tl
 \tl_new:N \l__SM_json_number_tl
 \tl_new:N \l__SM_json_status_tl
+\tl_new:N \l__SM_json_serials_tl
+\tl_new:N \l__SM_json_reference_tl
+\tl_new:N \l__SM_json_model_tl
+\tl_new:N \l__SM_json_spec_tl
+\tl_new:N \l__SM_json_color_tl
 \str_new:N \l__SM_json_string_str
 \str_new:N \l__SM_json_unit_str
 \str_new:N \l__SM_json_heading_str
+\str_new:N \l__SM_json_id_str
+\str_new:N \l__SM_json_problem_str
 \bool_new:N \l__SM_json_first_bool
 \bool_new:N \l__SM_json_firstpart_bool
+\bool_new:N \l__SM_json_sign_bool
 \cs_generate_variant:Nn \str_replace_all:Nnn { Nee }
 % Plain text, then JSON escaping (not Markdown table escaping).
 \cs_new_protected:Npn \SM@jsonstring #1#2
@@ -1278,42 +1299,123 @@
             \int_to_Hex:n {##1} }
       }
   }
+% \SM@jsonslug\str{text}: the text as part of an ID, in lower case, with s for
+% the section sign and - for each run of other characters (§12.1 gives s12-1,
+% (a) gives a). \l__SM_json_sign_bool tells whether it had a section sign.
+\cs_new_protected:Npn \SM@jsonslug #1#2
+  {
+    \tl_set:Ne #1 { \text_purify:n {#2} }
+    \str_set:Ne #1 { \str_lowercase:f { \tl_to_str:N #1 } }
+    \exp_args:NnV \regex_match:nnTF { \x{A7} } #1
+      { \bool_set_true:N \l__SM_json_sign_bool }
+      { \bool_set_false:N \l__SM_json_sign_bool }
+    \regex_replace_all:nnN { \x{C2}? \x{A7} } { s } #1
+    \regex_replace_all:nnN { [^a-z0-9]+ } { - } #1
+    \regex_replace_all:nnN { \A -+ | -+ \Z } { } #1
+    \str_set:Ne #1 { \tl_to_str:N #1 }
+  }
 \cs_new_protected:Npn \SM@jsonline #1
   { \iow_now:Ne \g__SM_json_iow {#1} }
-\cs_new_protected:Npn \SM@json@heading #1#2#3#4#5
+% Comma before every item of an array but the first
+\cs_new_protected:Npn \SM@jsonitem #1
   {
-    \SM@jsonstring \l__SM_json_string_str {#3}
-    \prop_put:NnV \l__SM_json_units_prop {#1} \l__SM_json_string_str
-    \SM@jsonstring \l__SM_json_string_str {#4}
-    \prop_put:NnV \l__SM_json_headings_prop {#1} \l__SM_json_string_str
-  }
-\cs_new_protected:Npn \SM@json@problem #1#2#3#4#5#6#7#8
-  {
-    \tl_set:Nn \l__SM_json_anchor_tl {#7}
-    \tl_set:Nn \l__SM_json_number_tl {#6}
-    \tl_set:Nn \l__SM_json_status_tl {#5}
+    \bool_if:NTF #1
+      { \bool_set_false:N #1 } { \SM@jsonline {,} }
   }
 \cs_new_protected:Npn \SM@jsonfield #1#2#3
   {
     \SM@jsonstring \l__SM_json_string_str {#2}
     \SM@jsonline { ~~"#1":~"\l__SM_json_string_str"#3 }
   }
+% Field #1: the heading serial #2, or null for 0 (no heading)
+\cs_new_protected:Npn \SM@jsonserial #1#2
+  {
+    \SM@jsonline { ~~"#1":~\int_compare:nNnTF {#2} = { 0 } { null } {#2}, }
+  }
+% Chapter, section and subsection of a problem
+\cs_new_protected:Npn \SM@jsonserials #1#2#3
+  {
+    \SM@jsonserial {chapter} {#1}
+    \SM@jsonserial {section} {#2}
+    \SM@jsonserial {subsection} {#3}
+  }
+% Headings: their numbers and titles, for the problems; their IDs, from the
+% number (c<number> for a chapter, unless it has a section sign)
+\cs_new_protected:Npn \SM@json@heading #1#2#3#4#5
+  {
+    \SM@jsonstring \l__SM_json_unit_str {#3}
+    \prop_gput:NnV \g__SM_json_units_prop {#1} \l__SM_json_unit_str
+    \SM@jsonstring \l__SM_json_heading_str {#4}
+    \prop_gput:NnV \g__SM_json_headings_prop {#1} \l__SM_json_heading_str
+    \SM@jsonslug \l__SM_json_id_str {#3}
+    \bool_lazy_or:nnF { \int_compare_p:nNn {#2} > { 1 } } { \l__SM_json_sign_bool }
+      { \str_put_left:Nn \l__SM_json_id_str { c } }
+    \prop_gput:NnV \g__SM_json_ids_prop {#1} \l__SM_json_id_str
+    \SM@jsonitem \l__SM_json_first_bool
+    \SM@jsonline { \c_left_brace_str }
+    \SM@jsonline { ~~"serial":~#1, }
+    \SM@jsonline { ~~"id":~"\l__SM_json_id_str", }
+    \SM@jsonline { ~~"level":~"\int_case:nn {#2}
+        { {1} {chapter} {2} {section} {3} {subsection} }", }
+    \SM@jsonline { ~~"number":~"\l__SM_json_unit_str", }
+    \SM@jsonline { ~~"title":~"\l__SM_json_heading_str", }
+    \SM@jsonfield {anchor} {#5} { }
+    \SM@jsonline { \c_right_brace_str }
+  }
+\cs_new_protected:Npn \SM@json@problem #1#2#3#4#5#6#7#8
+  {
+    \tl_set:Nn \l__SM_json_anchor_tl {#7}
+    \tl_set:Nn \l__SM_json_number_tl {#6}
+    \tl_set:Nn \l__SM_json_status_tl {#5}
+    \tl_set:Nn \l__SM_json_serials_tl { {#2} {#3} {#4} }
+  }
+% #1 = Problem serial, #2 = first or last
 \cs_new_protected:Npn \SM@jsonpages #1#2
   {
     \cs_if_exist:cTF { SM@json@page@#1@#2 }
       { \SM@jsonfield {#2_page} { \use:c { SM@json@page@#1@#2 } } {,} }
       { \SM@jsonline { ~~"#2_page":~null, } }
   }
+\cs_new_protected:Npn \SM@jsonpdfpages #1#2
+  {
+    \SM@jsonline { ~~"#2_pdf_page":~\cs_if_exist:cTF { SM@json@pdfpage@#1@#2 }
+        { \use:c { SM@json@pdfpage@#1@#2 } } { null }, }
+  }
+% Problem ID: the ID of its numbering unit, -p and its number (s9-p3, c2-p3,
+% 3-1-p2), or p and its number in continuous numbering or outside chapters
+% (p47). #1 = Problem serial, #2 = Heading serial of its numbering unit.
+\cs_new_protected:Npn \SM@jsonproblemid #1#2
+  {
+    \SM@jsonslug \l__SM_json_problem_str { \l__SM_json_number_tl }
+    \str_put_left:Nn \l__SM_json_problem_str { p }
+    \prop_get:NnNT \g__SM_json_ids_prop {#2} \l__SM_json_id_str
+      {
+        \cs_if_exist:cT { SM@json@prefix@#1 }
+          {
+            \exp_args:Nv \tl_if_blank:nF { SM@json@prefix@#1 }
+              {
+                \str_set:Ne \l__SM_json_problem_str
+                  { \l__SM_json_id_str - \l__SM_json_problem_str }
+              }
+          }
+      }
+  }
 \cs_new_protected:Npn \SM@json@details #1#2#3#4
   {
-    \bool_if:NTF \l__SM_json_first_bool
-      { \bool_set_false:N \l__SM_json_first_bool } { \SM@jsonline {,} }
+    \SM@jsonitem \l__SM_json_first_bool
     \SM@jsonline { \c_left_brace_str }
+    \SM@jsonproblemid {#1} {#2}
+    \SM@jsonline { ~~"id":~"\l__SM_json_problem_str", }
     \SM@jsonfield {anchor} {\l__SM_json_anchor_tl} {,}
     \SM@jsonfield {number} {\l__SM_json_number_tl} {,}
-    \prop_get:NnNTF \l__SM_json_units_prop {#2} \l__SM_json_unit_str
+    \cs_if_exist:cTF { SM@json@prefix@#1 }
+      { \tl_set_eq:Nc \l__SM_json_reference_tl { SM@json@prefix@#1 } }
+      { \tl_clear:N \l__SM_json_reference_tl }
+    \tl_put_right:NV \l__SM_json_reference_tl \l__SM_json_number_tl
+    \SM@jsonfield {reference} { \l__SM_json_reference_tl } {,}
+    \prop_get:NnNTF \g__SM_json_units_prop {#2} \l__SM_json_unit_str
       { } { \str_clear:N \l__SM_json_unit_str }
-    \prop_get:NnNTF \l__SM_json_headings_prop {#2} \l__SM_json_heading_str
+    \prop_get:NnNTF \g__SM_json_headings_prop {#2} \l__SM_json_heading_str
       { } { \str_clear:N \l__SM_json_heading_str }
     % These two values were already escaped when the heading was visited.
     \SM@jsonline { ~~"unit":~"\l__SM_json_unit_str", }
@@ -1321,19 +1423,24 @@
     \SM@jsonfield {title} {#3} {,}
     \SM@jsonfield {status}
       { \int_compare:nNnTF {\l__SM_json_status_tl} = {1} {done} {not~done} } {,}
+    \exp_after:wN \SM@jsonserials \l__SM_json_serials_tl
     \SM@jsonpages {#1} {first}
     \SM@jsonpages {#1} {last}
+    \SM@jsonpdfpages {#1} {first}
+    \SM@jsonpdfpages {#1} {last}
     \SM@jsonline { ~~"parts":~[ }
     \bool_set_true:N \l__SM_json_firstpart_bool
     #4
     \SM@jsonline { ] }
     \SM@jsonline { \c_right_brace_str }
   }
+% Part ID: the problem ID and the part number (s9-p3a)
 \cs_new_protected:Npn \SM@jsonpart #1#2#3#4
   {
-    \bool_if:NTF \l__SM_json_firstpart_bool
-      { \bool_set_false:N \l__SM_json_firstpart_bool } { \SM@jsonline {,} }
+    \SM@jsonitem \l__SM_json_firstpart_bool
     \SM@jsonline { \c_left_brace_str }
+    \SM@jsonslug \l__SM_json_id_str {#1}
+    \SM@jsonline { ~~"id":~"\l__SM_json_problem_str\l__SM_json_id_str", }
     \SM@jsonfield {anchor} {#4} {,}
     \SM@jsonfield {number} {#1} {,}
     \SM@jsonfield {title} {#2} {,}
@@ -1372,17 +1479,49 @@
     \SM@jsonfield {colon} { \SM@colon } { }
     \SM@jsonline { \c_right_brace_str , }
   }
+% Solutions mode, theme color (#RRGGBB) and page layout (paper size and
+% margins of the text area, in PDF points), for the programs that cut the PDF
+% or show the problems in the manual's colors
+\cs_new_protected:Npn \SM@jsonlayout
+  {
+    \SM@jsonline { "solutions":~"\int_case:nn { \SM@solutions }
+        { {0} {shown} {1} {hidden} {2} {answers~only} {3} {answers~at~end} }", }
+    \extractcolorspecs { ThemeColor } \l__SM_json_model_tl \l__SM_json_spec_tl
+    \exp_args:NVV \convertcolorspec \l__SM_json_model_tl \l__SM_json_spec_tl
+      { HTML } \l__SM_json_color_tl
+    \SM@jsonline { "theme_color":~"\c_hash_str \l__SM_json_color_tl", }
+    \SM@jsonline { "layout":~\c_left_brace_str }
+    \SM@jsonline { ~~"paper_width":~\dim_to_decimal_in_bp:n { \paperwidth }, }
+    \SM@jsonline { ~~"paper_height":~\dim_to_decimal_in_bp:n { \paperheight }, }
+    \SM@jsonline { ~~"margin_top":~\dim_to_decimal_in_bp:n
+        { 1in + \voffset + \topmargin + \headheight + \headsep }, }
+    \SM@jsonline { ~~"margin_bottom":~\dim_to_decimal_in_bp:n
+        { \paperheight - 1in - \voffset - \topmargin - \headheight - \headsep
+          - \textheight }, }
+    \SM@jsonline { ~~"margin_left":~\dim_to_decimal_in_bp:n
+        { 1in + \hoffset + \oddsidemargin }, }
+    \SM@jsonline { ~~"margin_right":~\dim_to_decimal_in_bp:n
+        { \paperwidth - 1in - \hoffset - \oddsidemargin - \textwidth } }
+    \SM@jsonline { \c_right_brace_str , }
+  }
 \cs_new_protected:Npn \SM@writejson
   {
     \group_begin:
       \iow_open:Nn \g__SM_json_iow { \jobname-problems.json }
       \SM@jsonlabels
+      \SM@jsonlayout
+      \prop_gclear:N \g__SM_json_units_prop
+      \prop_gclear:N \g__SM_json_headings_prop
+      \prop_gclear:N \g__SM_json_ids_prop
+      \SM@jsonline { "headings":~[ }
+      \bool_set_true:N \l__SM_json_first_bool
+      \cs_set_eq:NN \SM@do@details \use_none:nnnn
+      \SM@walk \SM@cur@list \SM@json@heading \use_none:nnnnnnnn
+      \SM@jsonline { ], }
       \SM@jsonline { "problems":~[ }
       \bool_set_true:N \l__SM_json_first_bool
-      \prop_clear:N \l__SM_json_units_prop
-      \prop_clear:N \l__SM_json_headings_prop
       \cs_set_eq:NN \SM@do@details \SM@json@details
-      \SM@walk \SM@cur@list \SM@json@heading \SM@json@problem
+      \SM@walk \SM@cur@list \use_none:nnnnn \SM@json@problem
       \SM@jsonline { ] \c_right_brace_str }
       \iow_close:N \g__SM_json_iow
     \group_end:

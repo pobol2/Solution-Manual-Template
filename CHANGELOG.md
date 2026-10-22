@@ -36,6 +36,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The JSON problem index starts with the `language` and the `labels` in use.
 - A French example project in `examples/french/` (two problems, one figure,
   babel), built by CI and uploaded as `french.pdf`.
+- Website builder, `solution-manual/site/build.py` (moved from
+  Mechanics-Landau-Solution and generalized; Python 3.11+ and `pypdf`, pinned
+  in `solution-manual/site/requirements.txt`). Run from a project root after
+  `latexmk`, it makes a static site from the JSON problem index and
+  `main.pdf`: a catalogue by chapter, section and subsection, a page and a
+  PDF per solved problem, the full manual, `catalogue.json` and a sitemap, in
+  the manual's language (English or French) and theme color. Settings are in
+  the project's `site/site.toml` (title, short name, author, description,
+  base URL, repository, license; optional book metadata, Google site
+  verification, `publish_unsolved`), and `site/problems.toml` can give titles
+  by problem ID. The build checks the settings, the index against the PDF,
+  titles and descriptions, the problem PDFs, every link and anchor, and the
+  sitemap, and refuses a manual that is not in `shown` mode. See
+  `docs/website.md`. The showcase and French example have a site, built and
+  checked by CI and uploaded as `showcase-site` and `french-site`.
+- The JSON problem index also has the `solutions` mode, the `theme_color`,
+  the page `layout` (paper size and margins, in PDF points) and the
+  `headings` (serial, ID, level, number, title, anchor). Each problem also
+  has a stable `id` (`s9-p3` for §9 Problem 3, `c2-p3` in chapter 2, `3-1-p2`
+  in section 3.1, `p47` in continuous numbering), its `reference` (`2.3`,
+  `§9.3`), the serials of its `chapter`, `section` and `subsection`, and its
+  `first_pdf_page` and `last_pdf_page` in the PDF; each part has an `id`
+  (`s9-p3a`).
 
 ### Changed
 

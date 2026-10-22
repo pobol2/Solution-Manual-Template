@@ -66,7 +66,7 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 | Edit regularly | [`main.tex`](main.tex), [`Chapters/`](Chapters/), [`Figures/`](Figures/) | Titles, chapter inputs, problems and figure sources. |
 | Customize optionally | [`mytheme.sty`](mytheme.sty), [`mycommands.sty`](mycommands.sty), [`mypackages.sty`](mypackages.sty), [`myfigures.sty`](myfigures.sty) | Theme colors, commands, packages and figure styles. |
 | Framework, never edit | [`solution-manual/`](solution-manual/) | Shared classes and build rules; customize through the project files above. |
-| Generated | `build/`, `Figures/*.pdf`, `main.pdf`, `COMPLETION.md`, [edition](docs/editions.md) PDFs | Build outputs; run `latexmk` to regenerate them. |
+| Generated | `build/`, `Figures/*.pdf`, `main.pdf`, `COMPLETION.md`, [edition](docs/editions.md) PDFs, `_site/` ([website](docs/website.md)) | Build outputs; run `latexmk` (and the website builder) to regenerate them. |
 
 ## Features
 
@@ -75,6 +75,7 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 - [Standalone figures](docs/figures.md) with TikZ, PGFPlots and CSV data, rebuilt when their sources change.
 - [Completion tracking](docs/completion-tracking.md), with unfinished markers, an overview and a Markdown report.
 - [Editions](docs/editions.md): exercise and answer books of the same sources, built with the manual.
+- [Website](docs/website.md): a static site with a catalogue of the problems and a page and a PDF per solved problem, for GitHub Pages or any host.
 - [Customization](docs/customization.md) of titles, labels, layout, colors and project commands.
 - [Languages](docs/customization.md#languages): English or French texts with `language=french`, with or without babel.
 

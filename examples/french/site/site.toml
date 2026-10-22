@@ -1,0 +1,16 @@
+# Settings of the website of this manual (../../docs/website.md). Build it
+# from this folder, after latexmk:
+#   python ../../solution-manual/site/build.py
+# and open _site/index.html. Its texts are in French, the language of the
+# manual (language=french in mytheme.sty).
+
+title = "Solutions de Mécanique classique"
+short_name = "Mécanique classique"
+author = "Votre nom"
+description = "Solutions détaillées des problèmes de mécanique classique, chapitre par chapitre : {done} sur {total} pour l’instant."
+base_url = "https://example.com/mecanique/"
+repository = "https://github.com/pobol2/Solution-Manual-Template"
+license = "https://creativecommons.org/licenses/by/4.0/"
+
+# The statements of the unsolved problems are published too, as PDFs
+publish_unsolved = true

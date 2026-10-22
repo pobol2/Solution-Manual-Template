@@ -44,7 +44,8 @@ def check_versions(root, tag=None):
 
 def add_folder(archive, source, destination):
     for path in sorted(source.rglob("*")):
-        if path.is_file():
+        # Python caches of the website builder are local files
+        if path.is_file() and "__pycache__" not in path.parts:
             archive.write(path, f"{destination}/{path.relative_to(source).as_posix()}")
 
 

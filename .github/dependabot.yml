@@ -1,7 +1,11 @@
-# Check for GitHub Actions updates every month.
+# Check for GitHub Actions and website builder (pypdf) updates every month.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: pip
+    directory: /solution-manual/site
     schedule:
       interval: monthly

@@ -1,6 +1,7 @@
 # Builds the starter, showcase and French example with each project's
-# latexmkrc, uploads their PDFs and the showcase editions, and checks class
-# versions and the committed COMPLETION.md.
+# latexmkrc, uploads their PDFs and the showcase editions, builds and checks
+# the websites of the showcase and French example, and checks class versions
+# and the committed COMPLETION.md.
 name: Build
 
 on:
@@ -49,8 +50,10 @@ jobs:
             directory: .
           - project: showcase
             directory: examples/showcase
+            site: true
           - project: french
             directory: examples/french
+            site: true
     steps:
       - uses: actions/checkout@v7
 
@@ -93,6 +96,30 @@ jobs:
         with:
           name: showcase-answers.pdf
           path: ${{ matrix.directory }}/answers.pdf
+          if-no-files-found: error
+
+      # The website of the project (site/site.toml), from the manual just
+      # built. build.py checks its pages, PDFs, links and sitemap, and fails
+      # on any error (docs/website.md).
+      - uses: actions/setup-python@v6
+        if: matrix.site
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: solution-manual/site/requirements.txt
+
+      - name: Build and check the website
+        if: matrix.site
+        working-directory: ${{ matrix.directory }}
+        run: |
+          python -m pip install -r ../../solution-manual/site/requirements.txt
+          python ../../solution-manual/site/build.py --out _site
+
+      - uses: actions/upload-artifact@v7
+        if: matrix.site
+        with:
+          name: ${{ matrix.project }}-site
+          path: ${{ matrix.directory }}/_site
           if-no-files-found: error
 
       # Projects can turn off completion tracking without failing the build.

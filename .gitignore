@@ -36,3 +36,7 @@ desktop.ini
 
 # Standalone figure PDFs are generated from Figures/*.tex.
 **/Figures/*.pdf
+
+# Websites built by solution-manual/site/build.py (docs/website.md).
+_site/
+__pycache__/

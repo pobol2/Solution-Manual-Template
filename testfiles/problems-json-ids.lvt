@@ -1,0 +1,37 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+% Stable IDs of the JSON index for each structure: chapters (c1-p1), textbook
+% numbers (s9-p1, s12-p1), numbered sections and subsections (3-1-p1,
+% 4-1-1-p1), other chapter numbers (civ-p1) and continuous numbering (p1)
+\begin{document}
+\chapter{Chapter numbering}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\begin{problem}{Q.}{}{}\end{problem}
+\begin{subproblem}{Q.}{S.}{}\end{subproblem}
+\textbooknumber{\S 9}
+\chapter{Textbook chapter}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\SolutionManualSetup{problem numbering=subdivision}
+\chapter{Sections}
+\section{Numbered}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\textbooknumber{\S 12}
+\section{Textbook}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\chapter{Subsections}
+\section{Group}
+\subsection{Deep}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\textbooknumber{IV}
+\chapter{Roman}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\SolutionManualSetup{problem numbering=continuous}
+\chapter{Continuous}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\begin{problem}{Q.}{S.}{}\end{problem}
+\AddToHook{enddocument/afteraux}{%
+  \START
+  \SHOWFILE{\jobname-problems.json}%
+  \OMIT}
+\end{document}

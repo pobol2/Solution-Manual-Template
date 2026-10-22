@@ -1,0 +1,26 @@
+# Settings of the website of this manual (../../docs/website.md). Build it
+# from this folder, after latexmk:
+#   python ../../solution-manual/site/build.py
+# and open _site/index.html.
+
+title = "Solutions to Main Title of the Book"
+short_name = "Showcase"           # in page titles, after the problem
+author = "Your Name"
+# Homepage description, 25 to 160 characters; {done} and {total} are counts
+description = "Worked solutions to the problems of Main Title of the Book, chapter by chapter: {done} of {total} solved so far."
+base_url = "https://example.com/showcase/"
+repository = "https://github.com/pobol2/Solution-Manual-Template"
+license = "https://creativecommons.org/licenses/by/4.0/"
+
+# Optional
+publish_unsolved = false          # true: PDFs of the unsolved problems too
+# google_site_verification = "..."  # Google Search Console, HTML tag method
+
+# Optional: the book of the problems (structured data, homepage, footer)
+[book]
+authors = ["A. Author", "B. Author"]
+title = "Main Title of the Book"
+edition = "Second edition"
+year = 2026
+publisher = "Publisher"
+# isbn = "978-..."
