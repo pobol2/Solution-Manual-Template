@@ -32,4 +32,4 @@ desktop.ini
 .DS_Store
 
 # Standalone figure PDFs are generated from Figures/*.tex.
-Figures/*.pdf
+**/Figures/*.pdf

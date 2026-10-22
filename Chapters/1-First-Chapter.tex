@@ -1,0 +1,40 @@
+% !TEX root = ../main.tex
+\chapter{First Chapter}
+
+% A solved problem: write the question, worked solution and final answer.
+\begin{problem}
+{Solve $2x + 1 = 5$.}
+{Subtracting $1$ gives $2x = 4$, so dividing by $2$ gives $x = 2$.}
+{$x = 2$.}
+\end{problem}
+
+% Leave the solution empty to mark a problem as not done.
+\begin{problem}
+{Solve $3x - 2 = 7$.}{}{}
+\end{problem}
+
+% A problem in two parts: leave the parent's solution and answer empty.
+\begin{problem}
+{Consider the function $f(x) = x + 1$.}{}{}
+\end{problem}
+
+% Each part has its own question, solution and answer.
+\begin{subproblem}
+{Find $f(0)$.}
+{Substituting $x = 0$ gives $f(0) = 0 + 1$.}
+{$f(0) = 1$.}
+\end{subproblem}
+
+\begin{subproblem}
+{Find $f(1)$.}
+{Substituting $x = 1$ gives $f(1) = 1 + 1$.}
+{$f(1) = 2$.}
+\end{subproblem}
+
+% Include a standalone figure; latexmk builds its PDF from Figures/Example.tex.
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figures/Example.pdf}
+    \caption{The line $y = x + 1$.}
+    \label{fig:example}
+\end{figure}

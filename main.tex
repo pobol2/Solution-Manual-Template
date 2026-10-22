@@ -4,14 +4,14 @@
 \usepackage{mypackages} % packages of this manual
 \usepackage{mycommands} % commands of this manual
 
-% Titles, author and appearance (every key is listed in README.md). Other keys
+% Titles, author and appearance (every key is in docs/customization.md). Other keys
 % can refer to the title and author as \mainTitle, \firstTitle (subtitle) and
 % \authorName, e.g. footer={Solution to \mainTitle~by \authorName}. Setting
 % them with \def\authorName{...}, \def\mainTitle{...}, ... still works.
 \SolutionManualSetup{
     author={Your Name},
-    title={Main Title of the Book},
-    subtitle={Subtitle or Series},  % leave empty, or remove, for a single title
+    title={Your Book Title},
+    % subtitle={Subtitle or Series}, % optional second title
     % title prefix={Solutions to},
     % theme color=red!50!black,     % manual only: set it in mytheme.sty for the figures too
     % layout={margin=25mm},         % any geometry options
@@ -27,9 +27,6 @@
 \completionoverview % needs completion tracking
 
 % One file per chapter
-\input{Chapters/1-Basics}
-\input{Chapters/2-Figures}
-\input{Chapters/3-Sections}
-\input{Chapters/4-Showcase}
+\input{Chapters/1-First-Chapter}
 
 \end{document}

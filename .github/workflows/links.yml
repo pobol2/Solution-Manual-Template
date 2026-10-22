@@ -1,0 +1,25 @@
+# Checks local documentation links and heading anchors without network requests.
+name: Links
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check documentation links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --offline --include-fragments --no-progress
+            README.md CHANGELOG.md 'docs/**/*.md'
+            solution-manual/README.md 'examples/**/README.md'
+          fail: true

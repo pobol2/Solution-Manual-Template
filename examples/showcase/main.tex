@@ -1,0 +1,35 @@
+% Class options (font size, ...) are passed to the report class.
+\documentclass[12pt]{SolutionManual}
+
+\usepackage{mypackages} % packages of this manual
+\usepackage{mycommands} % commands of this manual
+
+% Titles, author and appearance (see ../../docs/customization.md). Other keys
+% can refer to the title and author as \mainTitle, \firstTitle (subtitle) and
+% \authorName, e.g. footer={Solution to \mainTitle~by \authorName}. Setting
+% them with \def\authorName{...}, \def\mainTitle{...}, ... still works.
+\SolutionManualSetup{
+    author={Your Name},
+    title={Main Title of the Book},
+    subtitle={Subtitle or Series},  % leave empty, or remove, for a single title
+    % title prefix={Solutions to},
+    % theme color=red!50!black,     % manual only: set it in mytheme.sty for the figures too
+    % layout={margin=25mm},         % any geometry options
+    % problem on new page=false,
+    % problem numbering=subdivision, % chapter (default), subdivision or continuous
+    completion tracking=true,       % "Not done" markers, overview, COMPLETION.md
+}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\completionoverview % needs completion tracking
+
+% One file per chapter
+\input{Chapters/1-Basics}
+\input{Chapters/2-Figures}
+\input{Chapters/3-Sections}
+\input{Chapters/4-Showcase}
+
+\end{document}

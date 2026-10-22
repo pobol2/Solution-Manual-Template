@@ -1,0 +1,14 @@
+% !TEX root = ../main.tex
+% A small standalone figure, using the shared axis and curve styles.
+\documentclass[12pt]{SolutionFigure}
+
+\begin{document}
+\begin{tikzpicture}
+    \draw[axis] (-0.3, 0) -- (2.6, 0) node[axis label, right] {$x$};
+    \draw[axis] (0, -0.3) -- (0, 3.3) node[axis label, above] {$y$};
+    \draw[curve] (0, 1) -- (2, 3) node[right] {$y = x + 1$};
+    \node[point, label=left:$1$] at (0, 1) {};
+    \node[point] at (1, 2) {};
+    \draw[guide] (1, 0) node[axis label, below] {$1$} -- (1, 2);
+\end{tikzpicture}
+\end{document}
