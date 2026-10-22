@@ -1,0 +1,22 @@
+\input regression-test.tex
+% Pre-TeX code of an edition (see docs/editions.md), with \space for spaces
+\def\SolutionManualSolutions{answers\space only}
+\documentclass{SolutionManual}
+\input sm-test.tex
+\makeatletter
+\START
+\TYPE{Edition mode: \SM@solutions}
+% A setting of the document is ignored, with an information message.
+\SolutionManualSetup{solutions=shown}
+\TYPE{After solutions=shown: \SM@solutions}
+\SolutionManualSetup{solutions=answers at end, problem label={Exercise}}
+\TYPE{After solutions=answers at end: \SM@solutions; label: \SM@problemlabel}
+\OMIT
+\makeatother
+\begin{document}
+\chapter{Edition}
+\begin{problem}{Question.}{Solution.}{Answer.}\end{problem}
+\TIMO
+\SMTestResponses
+\OMIT
+\end{document}

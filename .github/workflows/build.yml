@@ -1,5 +1,6 @@
 # Builds the starter and showcase with each project's latexmkrc, uploads
-# both PDFs and checks class versions and the committed COMPLETION.md.
+# both PDFs and the showcase editions, and checks class versions and the
+# committed COMPLETION.md.
 name: Build
 
 on:
@@ -57,12 +58,13 @@ jobs:
         working-directory: ${{ matrix.directory }}
         run: |
           rm -rf build
-          rm -f main.pdf COMPLETION.md Figures/*.pdf
+          rm -f main.pdf exercises.pdf answers.pdf COMPLETION.md Figures/*.pdf
 
       # TeX Live image with pdfLaTeX, LuaLaTeX, latexmk and Perl. latexmk runs
       # from each project directory, so it reads that project's latexmkrc
       # (and through it solution-manual/latexmkrc), which also copies main.pdf
-      # and COMPLETION.md to the project directory.
+      # and COMPLETION.md to the project directory and builds the project's
+      # editions (docs/editions.md).
       - uses: xu-cheng/latex-action@4.1.0
         with:
           root_file: main.tex
@@ -74,6 +76,21 @@ jobs:
         with:
           name: ${{ matrix.project }}.pdf
           path: ${{ matrix.directory }}/main.pdf
+          if-no-files-found: error
+
+      # A failed edition only warns in latexmk; a missing PDF fails here.
+      - uses: actions/upload-artifact@v7
+        if: matrix.project == 'showcase'
+        with:
+          name: showcase-exercises.pdf
+          path: ${{ matrix.directory }}/exercises.pdf
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v7
+        if: matrix.project == 'showcase'
+        with:
+          name: showcase-answers.pdf
+          path: ${{ matrix.directory }}/answers.pdf
           if-no-files-found: error
 
       # Projects can turn off completion tracking without failing the build.

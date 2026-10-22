@@ -1,5 +1,8 @@
 # All compilation files go in build/; the final PDF is copied to the root.
 build/
+# Showcase editions (built locally and as CI artifacts, not committed).
+/examples/showcase/exercises.pdf
+/examples/showcase/answers.pdf
 
 # Safety net for compilation outside latexmk.
 *.aux

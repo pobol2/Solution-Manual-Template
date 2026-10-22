@@ -153,6 +153,18 @@
 }
 \newcommand{\SolutionManualSetup}[1]{\pgfqkeys{/SolutionManual}{#1}}
 
+% Editions (see docs/editions.md): latexmk defines \SolutionManualSolutions
+% before the class, e.g. as {hidden} or {answers\space only}. That mode is set
+% now, and a later solutions=... in the document is ignored.
+\ifdefined\SolutionManualSolutions
+    \edef\SM@editionsolutions{\SolutionManualSolutions}
+    \edef\@tempa{\noexpand\pgfqkeys{/SolutionManual}{solutions=\SM@editionsolutions}}
+    \@tempa
+    \pgfqkeys{/SolutionManual}{solutions/.code={\ClassInfo{SolutionManual}{%
+        solutions=#1 ignored: this edition uses\MessageBreak
+        solutions=\SM@editionsolutions}}}
+\fi
+
 % \SM@ifnotblank{\macro}{code}: code unless the macro is empty or blank
 \newcommand{\SM@ifnotblank}[2]{\expandafter\ifblank\expandafter{#1}{}{#2}}
 

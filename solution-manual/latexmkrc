@@ -41,7 +41,8 @@ ensure_path('TEXINPUTS', sm_native_path(abs_path($framework_dir)));
 # editor), so a terminal build and a VS Code build are identical, SyncTeX
 # included.
 $pdf_mode = 1;
-set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error %O %S');
+# %P is the source file, after the -pretex code if any (see %editions)
+set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error %O %P');
 
 # Put every compilation file (aux, log, toc, synctex, pdf, ...) in build/
 $out_dir  = 'build';
@@ -63,16 +64,44 @@ $problems_json = '' unless defined $problems_json;
 # ('' for none; both options can be used together).
 $completion_readme = '' unless defined $completion_readme;
 
+# Editions: other PDFs of the same sources in another solutions mode, built
+# after each successful build of the manual, e.g.
+#   %editions = ( exercises => 'hidden', answers => 'answers only' );
+# builds build/exercises.pdf and build/answers.pdf, copied to the project root
+# like main.pdf. The mode overrides any solutions=... of main.tex. Figures are
+# shared; the completion report and JSON index are copied from main only.
+%editions = () unless %editions;   # e.g. ( exercises => 'hidden', answers => 'answers only' )
+
+# Name of the edition being built by sm_build_editions ('' for the manual).
+# Its job gets the mode from SM_EDITION_SOLUTIONS and sets it with pre-TeX
+# code, which defines \SolutionManualSolutions before the class (latexmk's
+# -pretex option, set here: TeX code on a command line can lose its
+# backslashes and braces, e.g. with the MSYS Perl of Git Bash). A space of the
+# mode is written \space, for the same reason.
+my $sm_edition = defined $ENV{SM_EDITION} ? $ENV{SM_EDITION} : '';
+if ($sm_edition ne '' && defined $ENV{SM_EDITION_SOLUTIONS}) {
+    (my $mode = $ENV{SM_EDITION_SOLUTIONS}) =~ s/ /\\space /g;
+    $pre_tex_code = "\\def\\SolutionManualSolutions{$mode}";
+}
+
 # After a successful build, copy the final PDF to the project root, and the
-# completion report and optional JSON index when they have changed. Set
-# $copy_to_root to 0 to skip this hook (including report/index updates), e.g.
-# on Overleaf, where the PDF is already in the output folder.
+# completion report and optional JSON index when they have changed, then
+# build the editions. Set $copy_to_root to 0 to skip the copies (including
+# report/index updates), e.g. on Overleaf, where the PDF is already in the
+# output folder.
 $copy_to_root = 1 unless defined $copy_to_root;
-$success_cmd = 'internal copy_pdf_to_root %D';
+$success_cmd = 'internal sm_after_build %D %T';
+sub sm_after_build {
+    my ($pdf, $tex) = @_;
+    copy_pdf_to_root($pdf);
+    sm_build_editions($tex) if $sm_edition eq '';
+    return 0;
+}
 sub copy_pdf_to_root {
     return 0 unless $copy_to_root;
     my $pdf = shift;
     copy($pdf, basename($pdf)) or warn "Could not copy $pdf to root: $!\n";
+    return 0 if $sm_edition ne '';
     (my $report = $pdf) =~ s/\.pdf$/-completion.md/;
     if ($completion_report ne '' && -s $report
         && compare($report, $completion_report) != 0) {
@@ -88,6 +117,50 @@ sub copy_pdf_to_root {
             or warn "Could not copy $json to $problems_json: $!\n";
     }
     return 0;
+}
+
+# One latexmk job per edition, in the same project and build folder, with
+# -jobname=<name> and the pre-TeX code above. SM_EDITION also tells the job's
+# latexmkrc not to build the editions again. A failed edition gives a warning.
+# latexmk does not see a change of pre-TeX code, so build/<name>-solutions.txt
+# keeps the mode of the last successful build. A new mode removes the job's
+# build/<name>.fdb_latexmk, which recompiles the edition (not the figures).
+sub sm_build_editions {
+    my $tex = shift;
+    for my $name (sort keys %editions) {
+        my $mode = $editions{$name};
+        unless ($name =~ /^[A-Za-z0-9_-]+$/) {
+            warn "Edition '$name' skipped: use letters, digits, - and _ in its name\n";
+            next;
+        }
+        (my $base = basename($tex)) =~ s/\.tex$//;
+        if ($name eq $base) {
+            warn "Edition '$name' skipped: it would replace $base.pdf\n";
+            next;
+        }
+        my $stamp = "$aux_dir/$name-solutions.txt";
+        my $last = '';
+        if (open(my $in, '<', $stamp)) {
+            $last = <$in>;
+            $last = '' unless defined $last;
+            chomp $last;
+            close($in);
+        }
+        unlink("$aux_dir/$name.fdb_latexmk") if $last ne $mode;
+        print "Latexmk: building edition '$name' (solutions=$mode)\n";
+        local $ENV{SM_EDITION} = $name;
+        local $ENV{SM_EDITION_SOLUTIONS} = $mode;
+        my $ret = system('latexmk', "-jobname=$name", $tex);
+        if ($ret) {
+            warn "Edition '$name' failed: see $out_dir/$name.log\n";
+        }
+        elsif ($last ne $mode) {
+            if (open(my $out, '>', $stamp)) {
+                print $out "$mode\n";
+                close($out);
+            }
+        }
+    }
 }
 
 # Replace the text between the completion report markers of the Markdown file

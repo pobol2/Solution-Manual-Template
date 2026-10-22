@@ -16,6 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   their solution ("Solution p. N") and each solution links back to its
   question. Problems without a solution or answer are left out. New
   `solutions title` and `solution link label` setup keys.
+- Editions: `%editions` in the project's `latexmkrc` (default `()`) builds
+  other PDFs of the same sources in another solutions mode, e.g.
+  `( exercises => 'hidden', answers => 'answers only' )`, after each
+  successful build of the manual, each with its own job name. The mode
+  overrides `solutions=...` in `main.tex`; figures are shared and only the
+  manual's completion report is copied to the root. The showcase builds
+  `exercises.pdf` and `answers.pdf`, uploaded by CI as artifacts.
+
+### Changed
+
+- The shared `latexmkrc` runs pdfLaTeX with `%P` instead of `%S`, so that
+  pre-TeX code can be given; builds without it are unchanged.
+- Showcase: two questions no longer refer to a figure and an equation that
+  are only in solutions, so they read correctly in the student editions.
 
 ## [1.3.0] - 2026-10-22
 

@@ -66,7 +66,7 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 | Edit regularly | [`main.tex`](main.tex), [`Chapters/`](Chapters/), [`Figures/`](Figures/) | Titles, chapter inputs, problems and figure sources. |
 | Customize optionally | [`mytheme.sty`](mytheme.sty), [`mycommands.sty`](mycommands.sty), [`mypackages.sty`](mypackages.sty), [`myfigures.sty`](myfigures.sty) | Theme colors, commands, packages and figure styles. |
 | Framework, never edit | [`solution-manual/`](solution-manual/) | Shared classes and build rules; customize through the project files above. |
-| Generated | `build/`, `Figures/*.pdf`, `main.pdf`, `COMPLETION.md` | Build outputs; run `latexmk` to regenerate them. |
+| Generated | `build/`, `Figures/*.pdf`, `main.pdf`, `COMPLETION.md`, [edition](docs/editions.md) PDFs | Build outputs; run `latexmk` to regenerate them. |
 
 ## Features
 
@@ -74,6 +74,7 @@ read [`CHANGELOG.md`](CHANGELOG.md) for the changes in the release.
 - [Chapters, sections and numbering](docs/numbering-and-references.md), with textbook numbers and cross-references.
 - [Standalone figures](docs/figures.md) with TikZ, PGFPlots and CSV data, rebuilt when their sources change.
 - [Completion tracking](docs/completion-tracking.md), with unfinished markers, an overview and a Markdown report.
+- [Editions](docs/editions.md): exercise and answer books of the same sources, built with the manual.
 - [Customization](docs/customization.md) of titles, labels, layout, colors and project commands.
 
 The [showcase project](examples/showcase/) contains the full set of examples.

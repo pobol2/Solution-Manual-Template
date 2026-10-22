@@ -19,3 +19,5 @@ do $shared or die "Could not load $shared: ", ($@ || $!), "\n";
 # or a Markdown file to insert the report into, between the lines
 # <!-- completion report: begin --> and <!-- completion report: end -->:
 # $completion_readme = 'README.md';
+# or other PDFs of the manual in another solutions mode (docs/editions.md):
+# %editions = ( exercises => 'hidden', answers => 'answers only' );

@@ -87,6 +87,7 @@ Build settings go at the end of the project's `latexmkrc`:
 | `$completion_report` | `'COMPLETION.md'` (copy of the report; `''` for none)      |
 | `$problems_json`     | `''` (keep the [JSON problem index](completion-tracking.md#json-problem-index) in `build/`; name a file to copy it to the root) |
 | `$completion_readme` | `''` (Markdown file to [insert the report into](completion-tracking.md#report-in-a-readme), e.g. `'README.md'`) |
+| `%editions`          | `()` (other PDFs in another solutions mode, e.g. `( exercises => 'hidden' )`: see [Editions](editions.md)) |
 
 On Overleaf, the PDF is already in the output folder. Set `$copy_to_root = 0;`
 at the end of the project's `latexmkrc` to skip `copy_pdf_to_root`, including
