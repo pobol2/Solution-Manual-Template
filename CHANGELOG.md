@@ -16,7 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `problem titles in contents` setup key (default `true`); set it to
   `false` for plain problem entries and no part entries in the contents,
   while retaining titles in headings and bookmarks.
-- Regression tests and showcase examples for problem and part titles.
+- Showcase examples for problem and part titles.
+- An `l3build` regression suite with saved results for blank arguments,
+  completion states and parts, verification brackets, numbering, textbook
+  numbers, references, mixed-level errors, titles, completion reports and
+  JSON exports, plus a figure-class smoke test. CI runs `l3build check`;
+  `docs/contributing.md` explains how to run and update the tests.
 - UTF-8 `build/<jobname>-problems.json` with completion tracking: problem
   anchors, displayed numbers and numbering units, heading and problem titles,
   statuses, current page ranges and parts. The optional `$problems_json`
