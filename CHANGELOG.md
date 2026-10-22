@@ -5,6 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-10-22
+
+### Added
+
+- An **Open in Overleaf** button and setup and troubleshooting documentation
+  covering precompiled figures, free-plan compile timeouts and opening
+  `main.tex` before Recompile.
+- `$copy_to_root` build setting (default `1`); set it to `0` to skip the
+  post-build root-copy hook on Overleaf, including completion report updates.
+
+### Changed
+
+- The README presents **Use this template** as the standard self-contained
+  setup, with release ZIP update instructions; the advanced submodule guide
+  uses the repository URL and shows pinning a release tag.
+- `SolutionFigure.cls` stops when run without LuaLaTeX and explains how to
+  compile the manual with `latexmk`, including the Overleaf open-file workflow.
+
 ## [1.1.0] - 2026-10-21
 
 ### Changed
@@ -37,5 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Continuous integration that builds the example manual and checks
   `COMPLETION.md`.
 
+[1.2.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/pobol2/Solution-Manual-Template/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/pobol2/Solution-Manual-Template/releases/tag/v1.0.0

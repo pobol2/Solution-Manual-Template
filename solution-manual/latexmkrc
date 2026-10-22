@@ -60,9 +60,13 @@ $completion_report = 'COMPLETION.md' unless defined $completion_report;
 $completion_readme = '' unless defined $completion_readme;
 
 # After a successful build, copy the final PDF to the project root, and the
-# completion report when it is not empty and has changed.
+# completion report when it is not empty and has changed. Set $copy_to_root
+# to 0 to skip this hook (including completion report updates), for example
+# on Overleaf, where the PDF is already in the output folder.
+$copy_to_root = 1 unless defined $copy_to_root;
 $success_cmd = 'internal copy_pdf_to_root %D';
 sub copy_pdf_to_root {
+    return 0 unless $copy_to_root;
     my $pdf = shift;
     copy($pdf, basename($pdf)) or warn "Could not copy $pdf to root: $!\n";
     (my $report = $pdf) =~ s/\.pdf$/-completion.md/;

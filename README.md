@@ -19,6 +19,11 @@ The root is a minimal starter. The previews below come from the separate
 The standard setup is **Use this template**, which creates a self-contained
 copy of the framework in your repository.
 
+For Overleaf, follow [Using Overleaf](docs/overleaf.md) to start with
+precompiled figures.
+
+[![Open in Overleaf](https://img.shields.io/badge/Open%20in-Overleaf-47A141?logo=overleaf&logoColor=white)](https://www.overleaf.com/docs?snip_uri=https%3A%2F%2Fgithub.com%2Fpobol2%2FSolution-Manual-Template%2Freleases%2Flatest%2Fdownload%2Foverleaf-starter.zip)
+
 Prerequisites:
 
 - **Linux:** TeX Live with pdfLaTeX, LuaLaTeX and `latexmk`, plus Perl.

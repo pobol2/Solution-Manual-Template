@@ -26,9 +26,19 @@
 \ProcessOptions\relax
 
 % ============ Preliminary declarations ============ %
-\LoadClass[tikz, border=2pt]{standalone}
 \RequirePackage{iftex}
-\RequireLuaTeX
+\ifLuaTeX\else
+    \ClassError{SolutionFigure}{%
+        This file is a figure of the manual.\MessageBreak
+        Compile main.tex with latexmk.\MessageBreak
+        On Overleaf, open main.tex before Recompile%
+    }{%
+        Figures require LuaLaTeX and are built by latexmk.\MessageBreak
+        Overleaf compiles the open file when it has \string\documentclass.%
+    }
+    \expandafter\@@end
+\fi
+\LoadClass[tikz, border=2pt]{standalone}
 \usetikzlibrary{arrows.meta, calc, angles, quotes, positioning, shapes.geometric}
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.18}

@@ -63,6 +63,34 @@ source for each generated PDF. Do not add `-halt-on-error` to the manual's
 pdfLaTeX pass: it must discover missing figure PDFs before latexmk builds
 them. See [Figures](figures.md) for the expected layout.
 
+## Compile timed out on Overleaf
+
+**Cause:** Compiling all the figures with LuaLaTeX can exceed the free plan's
+compile time limit, even after the manual's first pdfLaTeX pass succeeds.
+
+**Fix:** Start from `overleaf-starter.zip` in the
+[latest GitHub release](https://github.com/pobol2/Solution-Manual-Template/releases/latest)
+or the **Open in Overleaf** button. Keep the included precompiled
+`Figures/*.pdf` in the project. Editing one figure rebuilds only that figure;
+always open `main.tex` before clicking **Recompile**.
+
+If a figure still times out, compile the project locally with `latexmk` and
+upload its `Figures/<name>.pdf` to the same path in Overleaf. Open `main.tex`
+and recompile. See [Using Overleaf](overleaf.md).
+
+## LuaTeX is required to compile this document
+
+**Cause:** A figure source was compiled directly with pdfLaTeX. On Overleaf,
+an open figure containing `\documentclass` is compiled as the document when
+you click **Recompile**, even with `main.tex` set as the main document.
+Older versions of `SolutionFigure.cls` report "LuaTeX is required to compile
+this document"; newer versions explain that the file is a figure of the manual.
+
+**Fix:** Compile `main.tex` with `latexmk` from the project root. On Overleaf,
+keep **Compiler** set to **pdfLaTeX** and **Main document** set to `main.tex`,
+then open `main.tex` before clicking **Recompile**. The build invokes LuaLaTeX
+for the figures automatically. See [Using Overleaf](overleaf.md).
+
 ## VS Code or Overleaf uses XeLaTeX or LuaLaTeX for main.tex
 
 **Cause:** The editor selected another compiler or recipe for the manual.
@@ -108,7 +136,8 @@ an interrupted build or a direct pdfLaTeX run can leave the root copy stale.
 
 **Fix:** Run `latexmk` again from the project root and let it complete all
 passes. If the report still does not update, check that
-`completion tracking=true` and `$completion_report` is not empty. See
+`completion tracking=true`, `$copy_to_root = 1` and `$completion_report` is not
+empty. See
 [Completion tracking](completion-tracking.md) and
 [Build settings](customization.md#build-settings).
 

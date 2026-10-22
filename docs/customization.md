@@ -71,8 +71,14 @@ Build settings go at the end of the project's `latexmkrc`:
 
 | Variable             | Default                                                   |
 | -------------------- | --------------------------------------------------------- |
+| `$copy_to_root`      | `1` (run the root-copy hook; `0` to skip it, including completion report updates) |
 | `$completion_report` | `'COMPLETION.md'` (copy of the report; `''` for none)      |
 | `$completion_readme` | `''` (Markdown file to [insert the report into](completion-tracking.md#report-in-a-readme), e.g. `'README.md'`) |
+
+On Overleaf, the PDF is already in the output folder. Set `$copy_to_root = 0;`
+at the end of the project's `latexmkrc` to skip `copy_pdf_to_root`, including
+copying the completion report and inserting it into a README. See
+[Using Overleaf](overleaf.md) for the setup and figure workflow.
 
 ## Compiling
 
@@ -90,7 +96,8 @@ run the same command with the same options, from `latexmkrc`:
   out of date. A figure is rebuilt when its source, or a file of the project or
   framework that it reads (`SolutionFigure.cls`, `mytheme.sty`, `myfigures.sty`,
   an `\input` data file or CSV), changes; unchanged figures are reused;
-- the finished PDF is copied to the project root, with the completion report
+- with the default `$copy_to_root = 1`, the finished PDF is copied to the
+  project root, with the completion report
   `COMPLETION.md` when [completion tracking](completion-tracking.md) is on (the
   report can also be [inserted into a README](completion-tracking.md#report-in-a-readme)).
 
