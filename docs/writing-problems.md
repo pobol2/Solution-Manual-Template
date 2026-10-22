@@ -67,12 +67,34 @@ change completion status; that still depends on the solution or the explicit
 Use `\SolutionManualSetup{solutions=hidden}` for questions alone, or
 `solutions=answers only` for questions and final-answer boxes. Both modes omit
 worked solutions and verification, including those of subproblems. The default,
-`solutions=shown`, prints everything as usual. `answers at end` is reserved for
-a later step and currently reports an error.
+`solutions=shown`, prints everything as usual.
 
-To include a worked example in either student edition, add `[show solution]`
+`solutions=answers at end` prints the questions in the chapters and moves every
+response (worked solution, answer box and verification) to a starred
+"Solutions" chapter, printed where `\printsolutions` appears, for example
+after the last chapter:
+
+```tex
+\input{Chapters/3-Sections}
+\printsolutions
+\end{document}
+```
+
+Without `\printsolutions`, the solutions are printed at the end of the
+document. The command does nothing in the other modes, so it can stay in
+`main.tex`. The solutions are grouped under the same chapter, section and
+subsection headings as their problems; each starts with "Problem 3.2" (or
+"(a)" for a part), linked back to its question, and each question gets a small
+"Solution p. N" link to its solution after a second compilation. Problems and
+parts without a solution or an answer are left out. `\label` and numbered
+equations inside a solution work as usual: a reference gives the problem or
+equation number and the page of the solution. The `solutions title` and
+`solution link label` keys change the texts. Problems placed after
+`\printsolutions` get their solutions at the end of the document.
+
+To include a worked example in a student edition, add `[show solution]`
 or `[done, show solution]` before its question. This restores that problem's
-solution, answer and verification. The same option works on a `subproblem`;
+solution, answer and verification in place (also with `answers at end`). The same option works on a `subproblem`;
 each problem or part needs its own override. Numbering, question labels,
 `\ref`, `\probref` and the `problem on new page` setting work in every mode.
 

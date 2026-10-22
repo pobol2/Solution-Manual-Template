@@ -1,0 +1,49 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Problem 1: \SM@sollinkbox {1}{4}
+Problem 2: no link
+Problem 3: \SM@sollinkbox {3}{4}
+Part 3(a): \SM@sollinkbox {3.1}{4}
+Part 3(b): no link
+Part 3(c): no link
+Problem 4: \SM@sollinkbox {4}{4}
+Problem 2.1.1: \SM@sollinkbox {5}{4}
+Problem 3.1: no link
+Body: 3(c) solution
+[3
+]
+Contents: chapter Answers
+Heading: level=1; number=1; title=First; anchor=chapter.1
+Problem: key=1; number=1.1; title=Alpha; question=problem-title.1.0.0.1; bookmark level=2
+Response: answer
+Problem: key=3; number=1.3; title=; question=problem-title.1.0.0.3; bookmark level=2
+Part: key=3.1; number=(a); title=Beta; question=SubProblemNum.1.0.0.3.1
+Response: subanswer
+Problem: key=4; number=1.4; title=; question=problem-title.1.0.0.4; bookmark level=2
+Response: answer
+Heading: level=1; number=2; title=Second; anchor=chapter.2
+Heading: level=2; number=2.1; title=Grouped; anchor=section.2.1
+Problem: key=5; number=2.1; title=; question=problem-title.2.1.0.1; bookmark level=3
+Response: answer
+[4
+]
+Body: 1 solution
+Body: 1 answer
+Body: 1 verification
+Body: 3(a) solution
+Body: 4 answer
+Body: 2.1.1 solution
+References: 1.1, 1.3(a), 2.2
+Reference pages: 4, 4
+Equation after: 3.0
+Second print: 5-> 5
+Problem 1: number=1; done=1; unfinished parts=[]
+Problem 2: number=2; done=0; unfinished parts=[]
+Problem 3: number=3; done=0; unfinished parts=[b]
+Problem 4: number=4; done=0; unfinished parts=[]
+Problem 5: number=1; done=1; unfinished parts=[]
+Problem 6: number=1; done=0; unfinished parts=[]
+Total: 2/6
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0

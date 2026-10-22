@@ -1,0 +1,5 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{solutions=answers at end}
+\input sm-solutions-test.tex

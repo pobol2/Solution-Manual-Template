@@ -1,0 +1,33 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{solutions=answers at end}
+\makeatletter
+\def\SMTestLog{}
+\newcommand\SMTestBody[1]{\g@addto@macro\SMTestLog{\TYPE{Body: #1}}#1.}
+\AddToHook{cmd/chapter/before}{\g@addto@macro\SMTestLog{\TYPE{Chapter}}}
+\let\SMTestContentsLine\addcontentsline
+\def\addcontentsline#1#2#3{%
+  \edef\@tempa{\noexpand\TYPE{Contents: #2 \detokenize\expandafter{#3}}}%
+  \expandafter\g@addto@macro\expandafter\SMTestLog\expandafter{\@tempa}%
+  \SMTestContentsLine{#1}{#2}{#3}}
+\makeatother
+% Without \printsolutions, the solutions follow the last page of the document.
+\AddToHook{enddocument/afterlastpage}{%
+  \TIMO
+  \SMTestLog
+  \TYPE{Pages: \getpagerefnumber{at-end:question} ->
+    \getpagerefnumber{at-end:solution}}%
+  \OMIT}
+\begin{document}
+\chapter{Only}
+\begin{problem}{Question.\label{at-end:question}}
+{\SMTestBody{solution}\label{at-end:solution}}{\SMTestBody{answer}}
+\end{problem}
+\START
+\TYPE{Before the end:}
+\SMTestLog
+\gdef\SMTestLog{}
+\TYPE{At the end:}
+\OMIT
+\end{document}

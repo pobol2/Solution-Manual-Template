@@ -34,7 +34,9 @@ Customize the manual from the project files only.
 | `problem on new page`  | `true`                                   |
 | `problem titles in contents` | `true` (include problem titles and titled part entries) |
 | `problem numbering`    | `chapter` (or `subdivision`, `continuous`) |
-| `solutions`            | `shown` (or `hidden`, `answers only`; `answers at end` is reserved and reports an error for now) |
+| `solutions`            | `shown` (or `hidden`, `answers only`, `answers at end`: see [Writing problems](writing-problems.md)) |
+| `solutions title`      | `Solutions` (chapter of `\printsolutions`) |
+| `solution link label`  | `Solution p.` (link from a question to its solution, followed by the page) |
 | `chapter abbreviation` | `Chap.` (`\probref`)                     |
 | `section abbreviation` | `Sec.` (`\probref`)                      |
 | `problem abbreviation` | `Prob.` (`\probref`)                     |

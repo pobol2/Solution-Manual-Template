@@ -1,7 +1,14 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
-Class error (SolutionManual): solutions=answers at end is not implemented yet
-Help: Use solutions=shown, hidden or answers only.
+Before the end:
+Chapter
+Contents: chapter \protect \numberline {\thechapter }Only
+At the end:
+Chapter
+Contents: chapter Solutions
+Body: solution
+Body: answer
+Pages: 1 -> 2
 ***************
 Compilation 1 of test file completed with exit status 0
 Compilation 2 of test file completed with exit status 0

@@ -50,6 +50,8 @@
 \newcommand*{\SM@solutionlabel}{Solution:}
 \newcommand*{\SM@answerlabel}{Answer to Problem}
 \newcommand*{\SM@verificationlabel}{Verification:}
+\newcommand*{\SM@solutionstitle}{Solutions}
+\newcommand*{\SM@sollinklabel}{Solution p.}
 \newcommand*{\SM@footer}{%
     \SM@titleprefix~\mainTitle
     \SM@ifnotblank{\authorName}{~by \authorName}}
@@ -88,7 +90,8 @@
 
 % Completion tracking (markers, overview and Markdown report)
 \newif\ifSM@completion
-% Response visibility: 0 = shown, 1 = hidden, 2 = answers only.
+% Response visibility: 0 = shown, 1 = hidden, 2 = answers only, 3 = answers
+% at end (see \printsolutions).
 \def\SM@solutions{0}
 \newif\ifSM@showsolution
 % Completion display: -1 = automatic (shown mode only), 0 = off, 1 = on.
@@ -110,6 +113,8 @@
     solution label/.code={\def\SM@solutionlabel{#1}},
     answer label/.code={\def\SM@answerlabel{#1}},
     verification label/.code={\def\SM@verificationlabel{#1}},
+    solutions title/.code={\def\SM@solutionstitle{#1}},
+    solution link label/.code={\def\SM@sollinklabel{#1}},
     chapter abbreviation/.code={\def\SM@chapabbrev{#1}},
     section abbreviation/.code={\def\SM@secabbrev{#1}},
     problem abbreviation/.code={\def\SM@probabbrev{#1}},
@@ -134,9 +139,7 @@
     solutions/shown/.code={\def\SM@solutions{0}},
     solutions/hidden/.code={\def\SM@solutions{1}},
     solutions/answers only/.code={\def\SM@solutions{2}},
-    solutions/answers at end/.code={\ClassError{SolutionManual}{%
-        solutions=answers at end is not implemented yet}{%
-        Use solutions=shown, hidden or answers only.}},
+    solutions/answers at end/.code={\def\SM@solutions{3}},
     % Completion tracking
     completion tracking/.is if=SM@completion,
     completion markers/.is choice,
@@ -250,6 +253,10 @@
                 {\csname the\csname SM@name@\romannumeral#1\endcsname\endcsname}%
             \SM@record{\SM@do@heading{\arabic{SM@heading}}{#1}%
                 {\csname SM@num@\romannumeral#1\endcsname}{#2}{\@currentHref}}%
+            % Level, number, title and anchor, for the solutions part
+            \expandafter\protected@xdef\csname SM@hd@\arabic{SM@heading}\endcsname
+                {{#1}{\csname SM@num@\romannumeral#1\endcsname}%
+                 {\unexpanded{#2}}{\@currentHref}}%
         \fi
     \fi
     \ifnum#1>1 \global\SM@afterheadingtrue\fi
@@ -260,6 +267,12 @@
 % #1 = Level
 \newcommand*{\SM@beforeheading}[1]{%
     \SM@finishproblem
+    % Final equation, figure and table numbers of the chapter: its solutions
+    % continue them at the end
+    \ifnum#1=1
+        \expandafter\xdef\csname SM@ends@\SM@id@i\endcsname
+            {{\the\c@equation}{\the\c@figure}{\the\c@table}}%
+    \fi
     \ifnum#1=1 \clearpage\fi % the last page of a chapter keeps its number
     \SM@restorenumber{subsection}%
     \ifnum#1<3 \SM@restorenumber{section}\fi
@@ -451,14 +464,14 @@
 \newtcolorbox{question}{enhanced, breakable,
                       colback=\SM@questionback,
                       colframe=\SM@questionframe,
-                      title=\hypertarget{problem-title.\theHProblemNum}{\scshape \SM@problemlabel{} \theProblemNum}.\SM@titlesuffix\SM@marker\SM@pagewrite{first}\SM@pagewrite{last}
+                      title=\hypertarget{problem-title.\theHProblemNum}{\scshape \SM@problemlabel{} \theProblemNum}.\SM@titlesuffix\SM@marker\SM@sollink\SM@pagewrite{first}\SM@pagewrite{last}
                       }
 
 % Define subproblem environment
 \newtcolorbox{subquestion}{enhanced, breakable,
                            colback=\SM@questionback,
                            colframe=\SM@subquestionframe,
-                           title=\theSubProblemNum\SM@titlesuffix\SM@marker\SM@pagewrite{last}
+                           title=\theSubProblemNum\SM@titlesuffix\SM@marker\SM@sollink\SM@pagewrite{last}
                           }
 
 % Define solution command
@@ -494,7 +507,8 @@
 
 % Response visibility is decided here, after source-based completion tracking.
 % A local show solution override restores the full response in any mode.
-% Blank arguments are always omitted.
+% Blank arguments are always omitted. With answers at end, the response is
+% collected for \printsolutions instead (see \SM@collect).
 % #1 = Solution
 % #2 = Answer
 % #3 = Verification
@@ -508,6 +522,15 @@
     \ifnum\SM@responsemode=1
         \let\SM@printanswer\@gobble
     \else\let\SM@printanswer\@firstofone\fi
+    \ifnum\SM@responsemode=3
+        \expandafter\@firstoftwo
+    \else
+        \expandafter\@secondoftwo
+    \fi
+    {\SM@collect{#1}{#2}{#3}{#4}}%
+    {\SM@printresponse{#1}{#2}{#3}{#4}}}
+% Same arguments, printed as set by \SM@printworked and \SM@printanswer
+\newcommand{\SM@printresponse}[4]{%
     \SM@printworked{\SM@ifblank{#1}{}{\solution #1\SM@pagewrite{last}\par}}%
     \SM@printanswer{\SM@ifblank{#2}{}{\begin{#4}#2\SM@pagewrite{last}\end{#4}}}%
     \SM@printworked{\SM@ifblank{#3}{}{\par\smallskip\noindent{\scshape \SM@verificationlabel} #3\SM@pagewrite{last}\par}}%
@@ -552,6 +575,8 @@
     \ifSM@problemnewpage\else\ifSM@afterheading\else\bigskip\fi\fi
     \global\SM@afterheadingfalse
     \SM@startproblem{#3}%
+    \SM@solpending
+    \SM@setsollink{\arabic{SM@problem}}%
     \begin{question}
         #2\SM@pagewrite{last}%
     \end{question}
@@ -580,6 +605,7 @@
                 \protect\hyperlink{\@currentHref}{\theSubProblemNum\space\SM@title}%
                 \hspace{0.5em}\dotfill\thepage\par}%
         \fi}%
+    \SM@setsollink{\arabic{SM@problem}.\arabic{SubProblemNum}}%
     \begin{subquestion}
         #2\SM@pagewrite{last}%
     \end{subquestion}
@@ -614,6 +640,199 @@
     \fi}
 % #1 = Default text, #2 = Anchor, #3 = Text (or empty)
 \newcommand{\SM@reflink}[3]{\hyperlink{#2}{\ifblank{#3}{#1}{#3}}}
+
+% ============ Solutions at the end ============ %
+% With solutions=answers at end, each response that has a solution or an
+% answer is kept as tokens (never typeset in place), with the headings and the
+% problem header it needs, and \printsolutions typesets the list:
+%   \SM@sol@heading{serial}{level}{number}{title}{anchor}
+%   \SM@sol@problem{key}{number}{title}{question anchor}{bookmark level}
+%   \SM@sol@part{key}{number}{title}{question anchor}
+%   \SM@sol@response{answer environment}{solution}{answer}{verification}
+% The key is the problem serial, with ".<part>" for a part. Each problem or
+% part header writes \SM@solpage{key}{page} to the aux file, for the
+% "Solution p. N" link of its question in the next run.
+\ExplSyntaxOn
+\tl_new:N \g__SM_sol_tl
+\tl_new:N \l__SM_sol_tl
+\cs_new_protected:Npn \SM@sol@add #1 { \tl_gput_right:Nn \g__SM_sol_tl {#1} }
+% #1 = Level (i, ii or iii), #2 = Heading serial (0 if none): add the heading
+% unless it is the last one added at that level
+\cs_new_protected:Npn \SM@sol@addheading #1#2
+  {
+    \int_compare:nNnT {#2} > { 0 }
+      {
+        \int_compare:nNnF {#2} = { \use:c { SM@sol@last@#1 } }
+          {
+            \tl_gset:cn { SM@sol@last@#1 } {#2}
+            \tl_gput_right:Nx \g__SM_sol_tl
+              { \exp_not:N \SM@sol@heading {#2} \exp_not:v { SM@hd@#2 } }
+          }
+      }
+  }
+% Print the solutions collected so far, if any, and start a new list
+\NewDocumentCommand \printsolutions { }
+  {
+    \SM@finishproblem
+    \tl_if_empty:NF \g__SM_sol_tl
+      {
+        \tl_set_eq:NN \l__SM_sol_tl \g__SM_sol_tl
+        \tl_gclear:N \g__SM_sol_tl
+        \gdef \SM@sol@last@i {0}
+        \gdef \SM@sol@last@ii {0}
+        \gdef \SM@sol@last@iii {0}
+        \SM@printsolutions
+      }
+  }
+\cs_new_protected:Npn \SM@sol@use { \tl_use:N \l__SM_sol_tl }
+\ExplSyntaxOff
+\def\SM@sol@last@i{0}\def\SM@sol@last@ii{0}\def\SM@sol@last@iii{0}
+
+% Headings and header of the current problem, added before its first
+% collected response: {chapter}{section}{subsection}{header}
+\def\SM@sol@pending{}
+\newcommand*{\SM@solpending}{%
+    \protected@xdef\SM@sol@pending{{\SM@id@i}{\SM@id@ii}{\SM@id@iii}%
+        {\noexpand\SM@sol@problem{\arabic{SM@problem}}%
+            {\p@ProblemNum\theProblemNum}{\unexpanded\expandafter{\SM@title}}%
+            {problem-title.\theHProblemNum}{\the\numexpr\SM@depth+2}}}}
+\newcommand*{\SM@sol@flush}{%
+    \ifx\SM@sol@pending\@empty\else
+        \expandafter\SM@sol@flush@i\SM@sol@pending
+        \global\let\SM@sol@pending\@empty
+    \fi}
+\newcommand{\SM@sol@flush@i}[4]{%
+    \SM@sol@addheading{i}{#1}\SM@sol@addheading{ii}{#2}%
+    \SM@sol@addheading{iii}{#3}\SM@sol@add{#4}}
+
+% Arguments of \SM@response. A response without solution or answer is skipped.
+\newcommand{\SM@collect}[4]{%
+    \SM@ifblank{#1#2}{}{%
+        \SM@sol@flush
+        \ifstrequal{#4}{subanswer}{%
+            \protected@edef\@tempa{\noexpand\SM@sol@part
+                {\arabic{SM@problem}.\arabic{SubProblemNum}}{\theSubProblemNum}%
+                {\unexpanded\expandafter{\SM@title}}{\@currentHref}}%
+            \expandafter\SM@sol@add\expandafter{\@tempa}}{}%
+        \SM@sol@add{\SM@sol@response{#4}{#1}{#2}{#3}}}}
+
+% Link of a question to its solution: \SM@sollink, in the question title,
+% from the page recorded in the previous run. #1 = Key
+\newcommand*{\SM@setsollink}[1]{%
+    \let\SM@sollink\@empty
+    \ifnum\SM@solutions=3
+        \ifcsname SM@solpg@#1\endcsname
+            \edef\SM@sollink{\noexpand\SM@sollinkbox{#1}%
+                {\csname SM@solpg@#1\endcsname}}%
+        \fi
+    \fi}
+\let\SM@sollink\@empty
+% #1 = Key, #2 = Page. The link keeps the color of the title text.
+\newcommand*{\SM@sollinkbox}[2]{%
+    \ifx\SM@marker\@empty\hfill\else\quad\fi
+    {\colorlet{SM@titlecolor}{.}\normalfont\footnotesize
+     \hyperlink{SMsolution.#1}{\color{SM@titlecolor}\SM@sollinklabel~#2}}}
+\newcommand*{\SM@solpage}[2]{\expandafter\gdef\csname SM@solpg@#1\endcsname{#2}}
+% At the end, the aux file is read again: a new or moved page needs a rerun
+\newcommand*{\SM@solpagetest}[2]{%
+    \def\reserved@a{#2}%
+    \expandafter\ifx\csname SM@solpg@#1\endcsname\reserved@a\else
+        \@tempswatrue
+    \fi}
+\AtEndDocument{\printsolutions\let\SM@solpage\SM@solpagetest}
+
+% The solutions part: a starred chapter, with the headings of the problems.
+% Equations, figures and tables continue the numbers of their chapter.
+\newif\ifSM@insolutions % running header without chapter number
+\newif\ifSM@solkeep % keep the next line with a heading or header
+\newcounter{SM@solprint}
+\newcommand*{\SM@printsolutions}{%
+    \if@openright\cleardoublepage\else\clearpage\fi
+    \global\SM@insolutionstrue
+    \stepcounter{SM@solprint}%
+    \chapter*{\SM@solutionstitle}%
+    \phantomsection
+    \addcontentsline{toc}{chapter}{\SM@solutionstitle}%
+    \markboth{\SM@solutionstitle}{}\InsertMark{SMproblem}{}%
+    \edef\SM@sol@restore{%
+        \global\c@equation\the\c@equation\relax
+        \global\c@figure\the\c@figure\relax
+        \global\c@table\the\c@table\relax}%
+    \begingroup
+        \let\SM@printworked\@firstofone
+        \let\SM@printanswer\@firstofone
+        \let\SM@pagewrite\@gobble
+        \def\theHequation{\SM@sol@key.\arabic{equation}}%
+        \def\theHfigure{\SM@sol@key.\arabic{figure}}%
+        \def\theHtable{\SM@sol@key.\arabic{table}}%
+        \c@chapter\z@ % problems before the first chapter
+        \SM@sol@setcounts{0}%
+        \SM@solkeepfalse
+        \SM@sol@use
+    \endgroup
+    \SM@sol@restore
+    \clearpage
+    \global\SM@insolutionsfalse}
+% #1 = Chapter serial (0 before the first chapter)
+\newcommand*{\SM@sol@setcounts}[1]{%
+    \ifcsname SM@ends@#1\endcsname
+        \expandafter\expandafter\expandafter\SM@sol@setcounts@i
+            \csname SM@ends@#1\endcsname
+    \fi}
+\newcommand*{\SM@sol@setcounts@i}[3]{%
+    \setcounter{equation}{#1}\setcounter{figure}{#2}\setcounter{table}{#3}}
+\newcommand*{\SM@solpagewrite}[1]{%
+    \protected@write\@auxout{}{\string\SM@solpage{#1}{\thepage}}%
+    \ifcsname SM@solpg@#1\endcsname\else\G@refundefinedtrue\fi}
+
+\def\SM@sol@heading#1#2#3#4#5{%
+    \ifnum#2=\@ne
+        \c@chapter\@ne \def\thechapter{#3}%
+        \SM@sol@setcounts{#1}%
+    \fi
+    \par
+    \ifnum#2=\@ne\addvspace{2\bigskipamount}\else\addvspace\bigskipamount\fi
+    \SM@needspace{6\baselineskip}%
+    \ifnum#2=\@ne
+        \pdfbookmark[1]{#4}{SMsolutions.\arabic{SM@solprint}.#1}%
+    \else
+        \pdfbookmark[#2]{#3\space#4}{SMsolutions.\arabic{SM@solprint}.#1}%
+    \fi
+    {\parindent\z@ \interlinepenalty\@M \let\label\@gobble
+     \ifcase#2\or\Large\or\large\else\normalsize\fi \scshape
+     \ifnum#2=\@ne\chaptername~\fi\hyperlink{#5}{\bfseries #3}%
+     \ifnum#2=\@ne.\fi\quad #4\par}%
+    \nobreak\medskip
+    \SM@solkeeptrue}
+\def\SM@sol@problem#1#2#3#4#5{%
+    \par
+    \ifSM@solkeep\else
+        \addvspace\bigskipamount\SM@needspace{5\baselineskip}%
+    \fi
+    \def\theProblemNum{#2}\def\SM@sol@ref{#2}\def\SM@sol@key{#1}%
+    \pdfbookmark[#5]{\SM@problemlabel\space#2\ifblank{#3}{}{.\space#3}}%
+        {SMsolutionbm.#1}%
+    \protected@edef\@currentlabel{#2}\def\@currentHref{SMsolution.#1}%
+    \noindent\hypertarget{SMsolution.#1}{}%
+    \InsertMark{SMproblem}{\SM@problemhead{#4}{}{#2}}%
+    \SM@solpagewrite{#1}%
+    \hyperlink{#4}{\bfseries\scshape \SM@problemlabel~#2.}\ifblank{#3}{}{\space #3}\par
+    \nobreak
+    \SM@solkeeptrue}
+\def\SM@sol@part#1#2#3#4{%
+    \par
+    \ifSM@solkeep\else
+        \addvspace\medskipamount\SM@needspace{4\baselineskip}%
+    \fi
+    \def\theSubProblemNum{#2}\def\SM@sol@key{#1}%
+    \protected@edef\@currentlabel{\SM@sol@ref#2}\def\@currentHref{SMsolution.#1}%
+    \noindent\hypertarget{SMsolution.#1}{}\SM@solpagewrite{#1}%
+    \hyperlink{#4}{\bfseries #2}\ifblank{#3}{}{\space #3}\par
+    \nobreak
+    \SM@solkeeptrue}
+\def\SM@sol@response#1#2#3#4{%
+    \SM@solkeepfalse
+    \SM@printresponse{#2}{#3}{#4}{#1}}
 
 % ============ Completion tracking ============ %
 % A problem or subproblem is done when its solution is not blank; the
@@ -1122,8 +1341,9 @@
 % Header and footer for other pages
 \fancyfoot[L]{\footnotesize \scshape \SM@footer}
 \fancyfoot[R]{\footnotesize \scshape Page \thepage\ of \pageref{LastPage}}
+% The solutions part follows the last chapter but shows its own title alone
 \fancyhead[L]{%
-    \ifnum\value{chapter}>0\relax
+    \ifnum\ifSM@insolutions 0\else\value{chapter}\fi>0\relax
         \hyperlink{chapter-title.\theHchapter}{\scshape \chaptername{}~\thechapter. \quad \leftmark}%
     \else
         {\scshape \leftmark}%

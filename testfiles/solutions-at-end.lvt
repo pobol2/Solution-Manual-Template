@@ -1,0 +1,92 @@
+\input regression-test.tex
+\documentclass{SolutionManual}
+\input sm-test.tex
+\SolutionManualSetup{solutions=answers at end, solutions title={Answers},
+  solution link label={See p.}}
+\makeatletter
+% Links of the questions, as set when each question is typeset
+\def\SMTestLinks{}
+\newcommand\SMTestLink[1]{%
+  \ifx\SM@sollink\@empty
+    \g@addto@macro\SMTestLinks{\TYPE{#1: no link}}%
+  \else
+    \edef\@tempa{\noexpand\TYPE{#1: \detokenize\expandafter{\SM@sollink}}}%
+    \expandafter\g@addto@macro\expandafter\SMTestLinks\expandafter{\@tempa}%
+  \fi}
+% Response bodies, in the order they are executed
+\def\SMTestBodies{}
+\newcommand\SMTestBody[1]{\g@addto@macro\SMTestBodies{\TYPE{Body: #1}}#1.}
+% The collected list, as it is printed
+\newcommand\SMTestObserve{%
+  \let\SMTestHeading\SM@sol@heading
+  \def\SM@sol@heading##1##2##3##4##5{%
+    \TYPE{Heading: level=##2; number=##3; title=##4; anchor=##5}%
+    \SMTestHeading{##1}{##2}{##3}{##4}{##5}}%
+  \let\SMTestProblem\SM@sol@problem
+  \def\SM@sol@problem##1##2##3##4##5{%
+    \TYPE{Problem: key=##1; number=##2; title=##3; question=##4;
+      bookmark level=##5}%
+    \SMTestProblem{##1}{##2}{##3}{##4}{##5}}%
+  \let\SMTestPart\SM@sol@part
+  \def\SM@sol@part##1##2##3##4{%
+    \TYPE{Part: key=##1; number=##2; title=##3; question=##4}%
+    \SMTestPart{##1}{##2}{##3}{##4}}%
+  \let\SMTestResponse\SM@sol@response
+  \def\SM@sol@response##1##2##3##4{%
+    \TYPE{Response: ##1}\SMTestResponse{##1}{##2}{##3}{##4}}%
+  \let\SMTestContentsLine\addcontentsline
+  \def\addcontentsline##1##2##3{%
+    \TYPE{Contents: ##2 \detokenize\expandafter{##3}}%
+    \SMTestContentsLine{##1}{##2}{##3}}}
+\makeatother
+\begin{document}
+\chapter{First}
+\begin{problem}[title={Alpha}]
+{\SMTestLink{Problem 1}Question.}
+{\SMTestBody{1 solution}\label{at-end:one}}{\SMTestBody{1 answer}}
+[\SMTestBody{1 verification}]
+\end{problem}
+% A verification alone is skipped, like blank arguments.
+\begin{problem}
+{\SMTestLink{Problem 2}Question.}{ }{}[\SMTestBody{2 verification}]
+\end{problem}
+% The parent has no response of its own: its header comes with part (a).
+\begin{problem}{\SMTestLink{Problem 3}Parent.}{}{}\end{problem}
+\begin{subproblem}[title={Beta}]
+{\SMTestLink{Part 3(a)}Part.}{\SMTestBody{3(a) solution}\label{at-end:part}}{}
+\end{subproblem}
+\begin{subproblem}{\SMTestLink{Part 3(b)}Part.}{}{}\end{subproblem}
+\begin{subproblem}[show solution]
+{\SMTestLink{Part 3(c)}Part.}{\SMTestBody{3(c) solution}}{}
+\end{subproblem}
+\begin{problem}{\SMTestLink{Problem 4}Question.}{}{\SMTestBody{4 answer}}
+\end{problem}
+\chapter{Second}
+\section{Grouped}
+\begin{problem}
+{\SMTestLink{Problem 2.1.1}Question.\begin{equation}q\end{equation}}
+{\SMTestBody{2.1.1 solution}\begin{equation}s\label{at-end:eq}\end{equation}}{}
+\end{problem}
+\chapter{Unanswered}
+\begin{problem}{\SMTestLink{Problem 3.1}Question.}{}{}\end{problem}
+\START
+\SMTestLinks
+\SMTestBodies
+\gdef\SMTestBodies{}
+\begingroup
+  \SMTestObserve
+  \printsolutions
+\endgroup
+\SMTestBodies
+\TYPE{References: \getrefnumber{at-end:one}, \getrefnumber{at-end:part},
+  \getrefnumber{at-end:eq}}
+\TYPE{Reference pages: \getpagerefnumber{at-end:one},
+  \getpagerefnumber{at-end:part}}
+\TYPE{Equation after: \theequation}
+% The list is empty now: nothing more is printed, here or at the end.
+\edef\SMTestBeforePage{\thepage}
+\printsolutions
+\TYPE{Second print: \SMTestBeforePage -> \thepage}
+\SMTestRecords
+\OMIT
+\end{document}

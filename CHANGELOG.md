@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `solutions=answers at end`: the chapters show the questions, and the
+  solutions, answer boxes and verifications are printed by the new
+  `\printsolutions` command (or at the end of the document) in a starred
+  chapter, grouped under the headings of their problems. Questions link to
+  their solution ("Solution p. N") and each solution links back to its
+  question. Problems without a solution or answer are left out. New
+  `solutions title` and `solution link label` setup keys.
+
 ## [1.3.0] - 2026-10-22
 
 ### Added
