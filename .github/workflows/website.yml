@@ -106,7 +106,7 @@ jobs:
           --out "$GITHUB_WORKSPACE/_site" --base-url "$BASE_URL"
 
       - if: env.DEPLOY == 'true'
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
