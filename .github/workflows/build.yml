@@ -102,7 +102,7 @@ jobs:
       # The website of the project (site/site.toml), from the manual just
       # built. build.py checks its pages, PDFs, links and sitemap, and fails
       # on any error (docs/website.md).
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         if: matrix.site
         with:
           python-version: "3.13"
