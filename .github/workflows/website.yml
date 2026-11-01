@@ -92,7 +92,7 @@ jobs:
 
       - id: pages
         if: env.DEPLOY == 'true'
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       # From the project folder, which has site/site.toml. Fails, and deploys
       # nothing, when a check of the website fails. Without deployment, the
